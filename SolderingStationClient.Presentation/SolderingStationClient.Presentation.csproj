@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <LangVersion>default</LangVersion>
+        <AssemblyName>SolderingStationClient</AssemblyName>
+    </PropertyGroup>
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\**" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Ardalis.GuardClauses" Version="4.0.1" />
+        <PackageReference Include="Avalonia" Version="0.10.21" />
+        <PackageReference Include="Avalonia.Desktop" Version="0.10.21" />
+        <PackageReference Include="Avalonia.Diagnostics" Version="0.10.21" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.21" />
+        <PackageReference Include="MessageBox.Avalonia" Version="2.1.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.4.0" />
+        <PackageReference Include="OxyPlot.Avalonia" Version="2.1.0-20210506.4" />
+        <PackageReference Include="ThemeEditor.Controls.ColorPicker" Version="0.10.17" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\SolderingStation.DAL.Implementation\SolderingStation.DAL.Implementation.csproj" />
+        <ProjectReference Include="..\SolderingStation.Hardware.Implementation\SolderingStation.Hardware.Implementation.csproj" />
+        <ProjectReference Include="..\SolderingStationClient.BLL.Abstractions\SolderingStationClient.BLL.Abstractions.csproj" />
+        <ProjectReference Include="..\SolderingStationClient.BLL.Implementation\SolderingStationClient.BLL.Implementation.csproj" />
+        <ProjectReference Include="..\SolderingStationClient.Models\SolderingStationClient.Models.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Update="Resources\Localization.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>Localization.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Update="Resources\Localization.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Localization.resx</DependentUpon>
+        </Compile>
+        <Compile Update="Views\JobPlotView.axaml.cs">
+          <DependentUpon>JobPlotView.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+    </ItemGroup>
+</Project>

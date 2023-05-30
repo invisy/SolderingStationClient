@@ -1,0 +1,107 @@
+<Window
+    Height="720"
+    Icon="/Assets/avalonia-logo.ico"
+    MinHeight="720"
+    MinWidth="1280"
+    Title="{DynamicResource Localization.MainWindowTitle}"
+    Width="1280"
+    WindowStartupLocation="CenterScreen"
+    d:DesignHeight="768"
+    d:DesignWidth="1280"
+    mc:Ignorable="d"
+    x:Class="SolderingStationClient.Presentation.Views.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:implementations="clr-namespace:SolderingStationClient.Presentation.ViewModels.Implementations"
+    xmlns:interfaces="clr-namespace:SolderingStationClient.Presentation.ViewModels.Interfaces"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:SolderingStationClient.Presentation.Views"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <views:LanguageSettingsView DataContext="{Binding LanguageSettingsViewModel}" Grid.Row="0" />
+        <Grid Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="400" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Column="0" Margin="5,0,0,5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Border Classes="GroupBorder" Grid.Row="0">
+                    <views:ConnectionView DataContext="{Binding ConnectionViewModel}" />
+                </Border>
+                <views:DevicesListView DataContext="{Binding DevicesListViewModel}" Grid.Row="1" />
+            </Grid>
+            <Grid Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Border Classes="GroupBorder" Grid.Row="0">
+                    <ContentControl Content="{Binding MainPlotViewModel, Mode=TwoWay}">
+                        <ContentControl.DataTemplates>
+                            <DataTemplate DataType="{x:Type interfaces:IIdlePlotViewModel}">
+                                <views:IdlePlotView />
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type interfaces:IJobPlotViewModel}">
+                                <views:JobPlotView />
+                            </DataTemplate>
+                        </ContentControl.DataTemplates>
+                    </ContentControl>
+                </Border>
+                <Border Classes="GroupBorder" Grid.Row="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button
+                            Command="{Binding OpenThermalProfileEditorWindow}"
+                            Content="{DynamicResource Localization.ThermalProfilesManagementButton}"
+                            Grid.Column="0"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            IsEnabled="{Binding !IsJobRunning, Mode=TwoWay}"
+                            Margin="3,3,10,3" />
+                        <Button
+                            Classes.IsIdle="{Binding !IsJobRunning, Mode=TwoWay}"
+                            Classes.IsRunning="{Binding IsJobRunning, Mode=TwoWay}"
+                            Command="{Binding OpenThermalProfileRunnerWindow}"
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Margin="3">
+                            <Button.Styles>
+                                <Style Selector="Button.IsRunning">
+                                    <Style.Setters>
+                                        <Setter Property="Content" Value="{DynamicResource Localization.StopThermalProfile}" />
+                                    </Style.Setters>
+                                </Style>
+                                <Style Selector="Button.IsIdle">
+                                    <Style.Setters>
+                                        <Setter Property="Content" Value="{DynamicResource Localization.ChooseAndRunThermalProfileButton}" />
+                                    </Style.Setters>
+                                </Style>
+                            </Button.Styles>
+                        </Button>
+                        <ProgressBar
+                            Grid.Column="2"
+                            Margin="0,4,5,4"
+                            Maximum="1"
+                            Minimum="0"
+                            Value="{Binding JobProgress}"
+                            VerticalAlignment="Stretch" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

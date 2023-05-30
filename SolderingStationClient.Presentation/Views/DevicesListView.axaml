@@ -1,0 +1,21 @@
+﻿<UserControl
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d"
+    x:Class="SolderingStationClient.Presentation.Views.DevicesListView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:interfaces="clr-namespace:SolderingStationClient.Presentation.ViewModels.Interfaces"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:SolderingStationClient.Presentation.Views"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer>
+        <ItemsControl Items="{Binding DevicesList}" Margin="4,0,4,0">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type interfaces:IDeviceViewModel}">
+                    <views:DeviceView Margin="0,5,0,0" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,38 @@
+---
+name: "Release"
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  release:
+    name: "Release"
+    runs-on: "windows-latest"
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+          include-prerelease: true
+    
+      - name: "Build & test"
+        run: |
+          cd SolderingStationClient.Presentation
+          dotnet publish -r win-x64 -c Release /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+          dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+          echo "done!"
+
+      - name: "Release"
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: false
+          title: "Release Build"
+          files: |
+            */bin/Release/*/win-x64/publish/SolderingStationClient.exe
+            */bin/Release/*/linux-x64/publish/SolderingStationClient

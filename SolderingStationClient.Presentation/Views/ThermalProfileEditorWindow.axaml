@@ -1,0 +1,72 @@
+﻿<Window
+    MinHeight="500"
+    MinWidth="800"
+    Title="{DynamicResource Localization.ThermalProfileEditorTitle}"
+    WindowStartupLocation="CenterOwner"
+    d:DesignHeight="768"
+    d:DesignWidth="1280"
+    mc:Ignorable="d"
+    x:Class="SolderingStationClient.Presentation.Views.ThermalProfileEditorWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:avalonia="http://oxyplot.org/avalonia"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:SolderingStationClient.Presentation.Views"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="400" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid Column="0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Border Classes="GroupBorder" Grid.Row="0">
+                        <views:ThermalProfileSelectorView Margin="0,5,0,0" />
+                    </Border>
+                    <Border Classes="GroupBorder" Grid.Row="1">
+                        <views:ThermalProfilePartSelectorView DataContext="{Binding SelectedThermalProfile}" Margin="0,5,0,0" />
+                    </Border>
+                </Grid>
+            </Grid>
+            <Grid Column="1">
+                <Border Classes="GroupBorder" Grid.Row="0">
+                    <avalonia:PlotView
+                        Controller="{Binding SelectedThermalProfile.PlotController}"
+                        MinHeight="400"
+                        MinWidth="300"
+                        Model="{Binding SelectedThermalProfile.PlotModel}" />
+                </Border>
+            </Grid>
+        </Grid>
+        <Grid Row="1">
+            <StackPanel
+                HorizontalAlignment="Right"
+                Margin="5,0,5,5"
+                Orientation="Horizontal">
+                <Button
+                    Command="{Binding SaveCommand}"
+                    Content="{DynamicResource Localization.ThermalProfileSave}"
+                    HorizontalAlignment="Right"
+                    HorizontalContentAlignment="Center"
+                    Margin="5,0,0,0"
+                    MinWidth="100" />
+                <Button
+                    Command="{Binding CloseCommand}"
+                    Content="{DynamicResource Localization.ThermalProfileWindowClose}"
+                    HorizontalAlignment="Right"
+                    HorizontalContentAlignment="Center"
+                    Margin="5,0,0,0"
+                    MinWidth="100" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

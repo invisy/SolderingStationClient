@@ -1,0 +1,26 @@
+﻿<UserControl
+    d:DesignHeight="450"
+    d:DesignWidth="400"
+    mc:Ignorable="d"
+    x:Class="SolderingStationClient.Presentation.Views.PidTemperatureControllerView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Expander
+        Background="transparent"
+        HorizontalContentAlignment="Stretch"
+        VerticalContentAlignment="Top">
+        <Expander.Header>
+            <TextBlock>
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0} {1}">
+                        <DynamicResource ResourceKey="Localization.Pid" />
+                        <Binding Path="PidId" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </Expander.Header>
+    </Expander>
+</UserControl>

@@ -1,0 +1,88 @@
+﻿<UserControl
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d"
+    x:Class="SolderingStationClient.Presentation.Views.TemperatureControllerSettingsView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Label
+            Content="{DynamicResource Localization.TemperatureSettings}"
+            FontSize="16"
+            FontWeight="Bold"
+            Grid.Row="0"
+            HorizontalAlignment="Center" />
+
+        <Grid Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Label
+                Classes="PidSettingLabelClass"
+                Content="{DynamicResource Localization.CurrentTemperatureLabel}"
+                Grid.Column="0"
+                Grid.Row="0" />
+            <Label
+                Content="{Binding CurrentTemperature, FallbackValue='0'}"
+                FontWeight="Medium"
+                Grid.Column="1"
+                Grid.Row="0"
+                VerticalContentAlignment="Center" />
+            <Label
+                Classes="PidSettingLabelClass"
+                Content="{DynamicResource Localization.ExpectedTemperatureLabel}"
+                Grid.Column="0"
+                Grid.Row="1" />
+            <Label
+                Content="{Binding DesiredTemperature, FallbackValue='0'}"
+                FontWeight="Medium"
+                Grid.Column="1"
+                Grid.Row="1"
+                VerticalContentAlignment="Center" />
+            <Label
+                Classes="PidSettingLabelClass"
+                Content="{DynamicResource Localization.NewTemperatureLabel}"
+                Grid.Column="0"
+                Grid.Row="2" />
+
+            <Grid Column="1" Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <NumericUpDown
+                    Grid.Column="0"
+                    Increment="10"
+                    IsEnabled="{Binding IsActive, Mode=TwoWay}"
+                    Maximum="500"
+                    Minimum="0"
+                    Name="NewDesiredTemperatureNumeric"
+                    Text="{Binding NewDesiredTemperature}" />
+                <Button
+                    Command="{Binding SetTemperature}"
+                    Content="{DynamicResource Localization.ChangeButton}"
+                    Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    IsEnabled="{Binding IsActive, Mode=TwoWay}"
+                    Margin="5,0,0,0" />
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

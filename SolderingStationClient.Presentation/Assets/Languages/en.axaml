@@ -1,0 +1,86 @@
+﻿<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--  MainWindow localization  -->
+    <system:String x:Key="Localization.MainWindowTitle">Soldering station client</system:String>
+
+    <system:String x:Key="Localization.ChooseAndRunThermalProfileButton">Choose and run thermal profile</system:String>
+    <system:String x:Key="Localization.StopThermalProfile">Stop thermal profile</system:String>
+    <system:String x:Key="Localization.ThermalProfilesManagementButton">Thermal profiles management</system:String>
+    <system:String x:Key="Localization.PlotAutoUpdating">Data auto-updating</system:String>
+    <system:String x:Key="Localization.ClearPlotButton">Clear plot</system:String>
+
+    <!--  LanguageView localization  -->
+    <system:String x:Key="Localization.LanguageLabel">Language</system:String>
+
+    <!--  ConnectionView localization  -->
+    <system:String x:Key="Localization.SerialPortSettingsTitle">Serial port settings</system:String>
+    <system:String x:Key="Localization.PortSelectorLabel">Port</system:String>
+    <system:String x:Key="Localization.ConnectButton">Connect</system:String>
+    <system:String x:Key="Localization.CloseButton">Close</system:String>
+    <system:String x:Key="Localization.AdvancedButton">Advanced</system:String>
+
+    <!--  PidView localization  -->
+    <system:String x:Key="Localization.TemperatureController">Temperature controller</system:String>
+    <system:String x:Key="Localization.Pid">PID</system:String>
+    <system:String x:Key="Localization.TemperatureSettings">Temperature settings</system:String>
+    <system:String x:Key="Localization.CurrentTemperatureLabel">Current temperature</system:String>
+    <system:String x:Key="Localization.ExpectedTemperatureLabel">Expected temperature</system:String>
+    <system:String x:Key="Localization.NewTemperatureLabel">New temperature</system:String>
+    <system:String x:Key="Localization.PidSettings">PID settings</system:String>
+    <system:String x:Key="Localization.KpLabel">Kp</system:String>
+    <system:String x:Key="Localization.KiLabel">Ki</system:String>
+    <system:String x:Key="Localization.KdLabel">Kd</system:String>
+    <system:String x:Key="Localization.NewKpLabel">New Kp</system:String>
+    <system:String x:Key="Localization.NewKiLabel">New Ki</system:String>
+    <system:String x:Key="Localization.NewKdLabel">New Kd</system:String>
+    <system:String x:Key="Localization.ChangeButton">Change</system:String>
+
+    <!--  MainPlotView localization  -->
+    <system:String x:Key="Localization.TemperaturePlotTitle">Temperature graph</system:String>
+    <system:String x:Key="Localization.PlotTemperatureLabel">Temperature (°C)</system:String>
+    <system:String x:Key="Localization.PlotTimeLabel">Time (s)</system:String>
+
+    <!--  Apply/Cancel buttons localization  -->
+    <system:String x:Key="Localization.Apply">Apply</system:String>
+    <system:String x:Key="Localization.Cancel">Cancel</system:String>
+
+    <!--  Errors localization  -->
+    <system:String x:Key="Localization.Info">Info</system:String>
+    <system:String x:Key="Localization.Warning">Warning</system:String>
+    <system:String x:Key="Localization.Error">Error</system:String>
+    <system:String x:Key="Localization.DeviceIsNotSupported">Connected device is not supported.</system:String>
+    <system:String x:Key="Localization.ConnectionError">Connection error. Try again.</system:String>
+    <system:String x:Key="Localization.ConnectionLost">Bad connection with device {0}. Reconnect the device or troubleshoot the connection</system:String>
+    <system:String x:Key="Localization.PortsNotFound">Ports were not found</system:String>
+    <system:String x:Key="Localization.UnknownError">Unknown error. Restart program and try again</system:String>
+
+    <!--  AdvancedSettingsWindow localization  -->
+    <system:String x:Key="Localization.AdvancedSerialPortSettingsTitle">Advanced serial port settings</system:String>
+    <system:String x:Key="Localization.AdvancedPort">Port</system:String>
+    <system:String x:Key="Localization.AdvancedBaudRate">Baud rate</system:String>
+    <system:String x:Key="Localization.AdvancedParity">Parity</system:String>
+    <system:String x:Key="Localization.AdvancedDataBits">Data bits</system:String>
+    <system:String x:Key="Localization.AdvancedStopBits">Stop bits</system:String>
+
+    <!--  ThermalProfileRunnerWindow localization  -->
+    <system:String x:Key="Localization.ThermalProfileRunnerTitle">Select thermal profile</system:String>
+    <system:String x:Key="Localization.ThermalProfileControllersSelectorTitle">Select heaters</system:String>
+
+    <!--  ThermalProfileEditorWindow localization  -->
+    <system:String x:Key="Localization.ThermalProfileEditorTitle">Thermal profiles editor</system:String>
+    <system:String x:Key="Localization.ThermalProfileSelectorTitle">Select thermal profile</system:String>
+    <system:String x:Key="Localization.ThermalProfileName">Name</system:String>
+    <system:String x:Key="Localization.ThermalProfileNamePlaceholder">New thermal profile</system:String>
+    <system:String x:Key="Localization.ThermalProfileSelect">Select</system:String>
+    <system:String x:Key="Localization.ThermalProfileSelectPlaceholder">Not found</system:String>
+    <system:String x:Key="Localization.ThermalProfileNew">New</system:String>
+    <system:String x:Key="Localization.ThermalProfileRemove">Remove</system:String>
+    <system:String x:Key="Localization.ThermalProfilePartNew">Add</system:String>
+    <system:String x:Key="Localization.ThermalProfilePartRemove">Remove selected</system:String>
+    <system:String x:Key="Localization.ThermalProfileSave">Save</system:String>
+    <system:String x:Key="Localization.ThermalProfileWindowClose">Close</system:String>
+
+</ResourceDictionary>

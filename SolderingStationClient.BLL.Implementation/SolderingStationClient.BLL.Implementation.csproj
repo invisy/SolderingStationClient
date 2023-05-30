@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>default</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SolderingStation.DAL.Abstractions\SolderingStation.DAL.Abstractions.csproj" />
+        <ProjectReference Include="..\SolderingStation.Hardware.Abstractions\SolderingStation.Hardware.Abstractions.csproj" />
+        <ProjectReference Include="..\SolderingStationClient.BLL.Abstractions\SolderingStationClient.BLL.Abstractions.csproj" />
+        <ProjectReference Include="..\SolderingStationClient.Models\SolderingStationClient.Models.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Ardalis.GuardClauses" Version="4.0.1" />
+        <PackageReference Include="Splat" Version="10.0.1" />
+    </ItemGroup>
+
+</Project>

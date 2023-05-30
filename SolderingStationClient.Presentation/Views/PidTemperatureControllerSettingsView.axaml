@@ -1,0 +1,139 @@
+﻿<UserControl
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d"
+    x:Class="SolderingStationClient.Presentation.Views.PidTemperatureControllerSettingsView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Label
+            Content="{DynamicResource Localization.PidSettings}"
+            FontSize="16"
+            FontWeight="Bold"
+            Grid.Row="0"
+            HorizontalAlignment="Center"
+            Margin="0,5,0,0" />
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Label
+                Classes="PidSettingLabelClass"
+                Content="{DynamicResource Localization.KpLabel}"
+                Grid.Column="0"
+                Grid.Row="0" />
+            <Label
+                Classes="PidSettingLabelClass"
+                Content="{DynamicResource Localization.KiLabel}"
+                Grid.Column="0"
+                Grid.Row="1" />
+            <Label
+                Classes="PidSettingLabelClass"
+                Content="{DynamicResource Localization.KdLabel}"
+                Grid.Column="0"
+                Grid.Row="2" />
+            <Label
+                Content="{DynamicResource Localization.NewKpLabel}"
+                Grid.Column="0"
+                Grid.Row="3"
+                VerticalContentAlignment="Center" />
+            <Label
+                Content="{DynamicResource Localization.NewKiLabel}"
+                Grid.Column="0"
+                Grid.Row="4"
+                VerticalContentAlignment="Center" />
+            <Label
+                Content="{DynamicResource Localization.NewKdLabel}"
+                Grid.Column="0"
+                Grid.Row="5"
+                VerticalContentAlignment="Center" />
+            <Label
+                Content="{Binding PidKp, FallbackValue='0'}"
+                FontWeight="Medium"
+                Grid.Column="1"
+                Grid.Row="0"
+                VerticalContentAlignment="Center" />
+            <Label
+                Content="{Binding PidKi, FallbackValue='0'}"
+                FontWeight="Medium"
+                Grid.Column="1"
+                Grid.Row="1"
+                VerticalContentAlignment="Center" />
+            <Label
+                Content="{Binding PidKd, FallbackValue='0'}"
+                FontWeight="Medium"
+                Grid.Column="1"
+                Grid.Row="2"
+                VerticalContentAlignment="Center" />
+            <NumericUpDown
+                Grid.Column="1"
+                Grid.Row="3"
+                Increment="0.01"
+                IsEnabled="{Binding IsActive, Mode=TwoWay}"
+                Maximum="1000"
+                Minimum="0"
+                Text="{Binding NewPidKp}" />
+            <NumericUpDown
+                Grid.Column="1"
+                Grid.Row="4"
+                Increment="0.01"
+                IsEnabled="{Binding IsActive, Mode=TwoWay}"
+                Maximum="1000"
+                Minimum="0"
+                Text="{Binding NewPidKi}" />
+            <NumericUpDown
+                Grid.Column="1"
+                Grid.Row="5"
+                Increment="0.01"
+                IsEnabled="{Binding IsActive, Mode=TwoWay}"
+                Maximum="1000"
+                Minimum="0"
+                Text="{Binding NewPidKd}" />
+            <Button
+                Command="{Binding SetKp}"
+                Content="{DynamicResource Localization.ChangeButton}"
+                Grid.Column="2"
+                Grid.Row="3"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                IsEnabled="{Binding IsActive, Mode=TwoWay}"
+                Margin="5,0,0,0" />
+            <Button
+                Command="{Binding SetKi}"
+                Content="{DynamicResource Localization.ChangeButton}"
+                Grid.Column="2"
+                Grid.Row="4"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                IsEnabled="{Binding IsActive, Mode=TwoWay}"
+                Margin="5,0,0,0" />
+            <Button
+                Command="{Binding SetKd}"
+                Content="{DynamicResource Localization.ChangeButton}"
+                Grid.Column="2"
+                Grid.Row="5"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                IsEnabled="{Binding IsActive, Mode=TwoWay}"
+                Margin="5,0,0,0" />
+        </Grid>
+    </Grid>
+</UserControl>

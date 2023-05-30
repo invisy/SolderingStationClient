@@ -1,0 +1,86 @@
+﻿<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--  MainWindow localization  -->
+    <system:String x:Key="Localization.MainWindowTitle">Клієнт паяльної станції</system:String>
+
+    <system:String x:Key="Localization.ChooseAndRunThermalProfileButton">Обрати і запустити термопрофіль</system:String>
+    <system:String x:Key="Localization.StopThermalProfile">Зупинити термопрофіль</system:String>
+    <system:String x:Key="Localization.ThermalProfilesManagementButton">Управління термопрофілями</system:String>
+    <system:String x:Key="Localization.PlotAutoUpdating">Автооновлення даних</system:String>
+    <system:String x:Key="Localization.ClearPlotButton">Очистити графік</system:String>
+
+    <!--  LanguageView localization  -->
+    <system:String x:Key="Localization.LanguageLabel">Мова</system:String>
+
+    <!--  ConnectionView localization  -->
+    <system:String x:Key="Localization.SerialPortSettingsTitle">Налаштування послідовного порту</system:String>
+    <system:String x:Key="Localization.PortSelectorLabel">Порт</system:String>
+    <system:String x:Key="Localization.ConnectButton">Підключити</system:String>
+    <system:String x:Key="Localization.CloseButton">Відключити</system:String>
+    <system:String x:Key="Localization.AdvancedButton">Розширені</system:String>
+
+    <!--  Temperature controllers localization  -->
+    <system:String x:Key="Localization.TemperatureController">Контролер температури</system:String>
+    <system:String x:Key="Localization.Pid">ПІД</system:String>
+    <system:String x:Key="Localization.TemperatureSettings">Налаштування температури</system:String>
+    <system:String x:Key="Localization.CurrentTemperatureLabel">Поточна температура</system:String>
+    <system:String x:Key="Localization.ExpectedTemperatureLabel">Очікувана температура</system:String>
+    <system:String x:Key="Localization.NewTemperatureLabel">Нова температура</system:String>
+    <system:String x:Key="Localization.PidSettings">Налаштування ПІД</system:String>
+    <system:String x:Key="Localization.KpLabel">Kp</system:String>
+    <system:String x:Key="Localization.KiLabel">Ki</system:String>
+    <system:String x:Key="Localization.KdLabel">Kd</system:String>
+    <system:String x:Key="Localization.NewKpLabel">Новий Kp</system:String>
+    <system:String x:Key="Localization.NewKiLabel">Новий Ki</system:String>
+    <system:String x:Key="Localization.NewKdLabel">Новий Kd</system:String>
+    <system:String x:Key="Localization.ChangeButton">Змінити</system:String>
+
+    <!--  MainPlotView localization  -->
+    <system:String x:Key="Localization.TemperaturePlotTitle">Графік температур</system:String>
+    <system:String x:Key="Localization.PlotTemperatureLabel">Температура (°C)</system:String>
+    <system:String x:Key="Localization.PlotTimeLabel">Час (с)</system:String>
+
+    <!--  Apply/Cancel buttons localization  -->
+    <system:String x:Key="Localization.Apply">Підтвердити</system:String>
+    <system:String x:Key="Localization.Cancel">Відмінити</system:String>
+
+    <!--  Errors localization  -->
+    <system:String x:Key="Localization.Info">Інформація</system:String>
+    <system:String x:Key="Localization.Warning">Попередження</system:String>
+    <system:String x:Key="Localization.Error">Помилка</system:String>
+    <system:String x:Key="Localization.DeviceIsNotSupported">Підключений пристрій не підтримується.</system:String>
+    <system:String x:Key="Localization.ConnectionError">Помилка з'єднання. Спробуйте знову.</system:String>
+    <system:String x:Key="Localization.ConnectionLost">Погане з'єднання з пристроєм {0}. Перепідключіть пристрій або усуньте проблеми зі з'єднанням</system:String>
+    <system:String x:Key="Localization.PortsNotFound">Порти не було знайдено</system:String>
+    <system:String x:Key="Localization.UnknownError">Невідома помилка. Перезапустіть програму та спробуйте ще раз.</system:String>
+
+    <!--  AdvancedSettingsWindow localization  -->
+    <system:String x:Key="Localization.AdvancedSerialPortSettingsTitle">Розширені налаштування послідовного порту</system:String>
+    <system:String x:Key="Localization.AdvancedPort">Порт</system:String>
+    <system:String x:Key="Localization.AdvancedBaudRate">Швидкість</system:String>
+    <system:String x:Key="Localization.AdvancedParity">Паритет</system:String>
+    <system:String x:Key="Localization.AdvancedDataBits">Біти даних</system:String>
+    <system:String x:Key="Localization.AdvancedStopBits">Стоп біти</system:String>
+
+    <!--  ThermalProfileRunnerWindow localization  -->
+    <system:String x:Key="Localization.ThermalProfileRunnerTitle">Виберіть термопрофіль</system:String>
+    <system:String x:Key="Localization.ThermalProfileControllersSelectorTitle">Виберіть контролери</system:String>
+
+    <!--  ThermalProfileEditorWindow localization  -->
+    <system:String x:Key="Localization.ThermalProfileEditorTitle">Редактор термопрофілів</system:String>
+    <system:String x:Key="Localization.ThermalProfileSelectorTitle">Вибрати термопрофіль</system:String>
+    <system:String x:Key="Localization.ThermalProfileName">Назва</system:String>
+    <system:String x:Key="Localization.ThermalProfileNamePlaceholder">Новий термопрофіль</system:String>
+    <system:String x:Key="Localization.ThermalProfileSelect">Обрати</system:String>
+    <system:String x:Key="Localization.ThermalProfileSelectPlaceholder">Не знайдено</system:String>
+    <system:String x:Key="Localization.ThermalProfileNew">Новий</system:String>
+    <system:String x:Key="Localization.ThermalProfileRemove">Видалити</system:String>
+    <system:String x:Key="Localization.ThermalProfilePartNew">Новий</system:String>
+    <system:String x:Key="Localization.ThermalProfilePartRemove">Видалити обраний</system:String>
+    <system:String x:Key="Localization.ThermalProfileSave">Зберегти</system:String>
+    <system:String x:Key="Localization.ThermalProfileWindowClose">Закрити</system:String>
+
+</ResourceDictionary>

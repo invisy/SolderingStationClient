@@ -1,0 +1,68 @@
+﻿<UserControl
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d"
+    x:Class="SolderingStationClient.Presentation.Views.ThermalProfilePartSelectorView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:colorPicker="clr-namespace:ThemeEditor.Controls.ColorPicker;assembly=ThemeEditor.Controls.ColorPicker"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:interfaces="clr-namespace:SolderingStationClient.Presentation.ViewModels.Implementations"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:SolderingStationClient.Presentation.Views"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer>
+        <StackPanel>
+            <ListBox
+                Items="{Binding ThermalProfileParts}"
+                Margin="4,0,4,0"
+                SelectedItem="{Binding ActiveThermalProfilePart}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type interfaces:ThermalProfilePartViewModel}">
+                        <Grid Margin="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.Resources>
+                                <SolidColorBrush Color="{Binding Color}" x:Key="ColorBrush" />
+                            </Grid.Resources>
+                            <Button
+                                Background="{StaticResource ColorBrush}"
+                                Grid.Column="0"
+                                Height="20"
+                                Margin="0,0,10,0"
+                                Width="20">
+                                <Button.Resources>
+                                    <SolidColorBrush Color="{Binding Color}" x:Key="ColorBrush" />
+                                </Button.Resources>
+                                <Button.Flyout>
+                                    <Flyout>
+                                        <colorPicker:ColorPicker Color="{Binding Color, Mode=TwoWay}" />
+                                    </Flyout>
+                                </Button.Flyout>
+                            </Button>
+                            <TextBox
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                Text="{Binding Name}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button
+                Command="{Binding Add}"
+                Content="{DynamicResource Localization.ThermalProfilePartNew}"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                Margin="10"
+                VerticalContentAlignment="Center" />
+            <Button
+                Command="{Binding Remove}"
+                Content="{DynamicResource Localization.ThermalProfilePartRemove}"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                Margin="10,0,10,10"
+                VerticalContentAlignment="Center" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,92 @@
+﻿<UserControl
+    d:DesignWidth="400"
+    mc:Ignorable="d"
+    x:Class="SolderingStationClient.Presentation.Views.ConnectionView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            FontSize="16"
+            FontWeight="Bold"
+            Grid.Row="0"
+            HorizontalAlignment="Center"
+            Margin="0,5,0,10"
+            Text="{DynamicResource Localization.SerialPortSettingsTitle}"
+            TextAlignment="Center"
+            TextWrapping="Wrap" />
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition MinWidth="170" />
+            </Grid.ColumnDefinitions>
+
+            <Label
+                Content="{DynamicResource Localization.PortSelectorLabel}"
+                Grid.Column="0"
+                Grid.Row="0"
+                Margin="0,0,5,0"
+                VerticalContentAlignment="Center" />
+            <ComboBox
+                Grid.Column="1"
+                Grid.Row="0"
+                HorizontalAlignment="Stretch"
+                IsEnabled="{Binding IsActive}"
+                Items="{Binding AvailablePorts}"
+                PlaceholderText="{DynamicResource Localization.PortsNotFound}"
+                SelectedIndex="0"
+                SelectedItem="{Binding SelectedPort}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding SerialPortName}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </Grid>
+
+        <Grid Grid.Row="2" Margin="0,5,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button
+                Classes.IsConnected="{Binding SelectedPort.IsConnected, FallbackValue=False}"
+                Classes.IsDisconnected="{Binding !SelectedPort.IsConnected, FallbackValue=True}"
+                Command="{Binding Toggle}"
+                Grid.Column="0"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                IsEnabled="{Binding IsActive}"
+                Margin="0,0,5,0">
+                <Button.Styles>
+                    <Style Selector="Button.IsConnected">
+                        <Style.Setters>
+                            <Setter Property="Content" Value="{DynamicResource Localization.CloseButton}" />
+                        </Style.Setters>
+                    </Style>
+                    <Style Selector="Button.IsDisconnected">
+                        <Style.Setters>
+                            <Setter Property="Content" Value="{DynamicResource Localization.ConnectButton}" />
+                        </Style.Setters>
+                    </Style>
+                </Button.Styles>
+            </Button>
+            <Button
+                Command="{Binding OpenAdvancedSettings}"
+                Content="{DynamicResource Localization.AdvancedButton}"
+                Grid.Column="1"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                IsEnabled="{Binding IsActive}" />
+        </Grid>
+    </Grid>
+</UserControl>

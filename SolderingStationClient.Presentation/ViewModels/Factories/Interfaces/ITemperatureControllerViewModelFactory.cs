@@ -1,0 +1,10 @@
+﻿using SolderingStationClient.Models.TemperatureControllers;
+using SolderingStationClient.Presentation.ViewModels.Interfaces;
+
+namespace SolderingStationClient.Presentation.ViewModels.Factories.Interfaces;
+
+public interface ITemperatureControllerViewModelFactory
+{
+    ITemperatureControllerSettingsViewModel CreateTemperatureController(TemperatureControllerKey key);
+    ITemperatureControllerSettingsViewModel CreatePidTemperatureController(TemperatureControllerKey key);
+}

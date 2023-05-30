@@ -1,0 +1,53 @@
+<Application
+    x:Class="SolderingStationClient.Presentation.App"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:local="using:SolderingStationClient.Presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Application.DataTemplates>
+        <local:ViewLocator />
+    </Application.DataTemplates>
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="/Assets/Languages/en.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme Mode="Light" />
+        <StyleInclude Source="resm:OxyPlot.Avalonia.Themes.Default.xaml?assembly=OxyPlot.Avalonia" />
+        <StyleInclude Source="avares://ThemeEditor.Controls.ColorPicker/ColorPicker.axaml" />
+
+        <Style Selector="Border.GroupBorder">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="Black" />
+            <Setter Property="BorderThickness" Value="0.3" />
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="Padding" Value="5" />
+        </Style>
+
+        <Style Selector="Label.PidSettingLabelClass">
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0 0 5 0" />
+        </Style>
+
+        <Style Selector="Button:pointerover">
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="ComboBox:pointerover">
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="ComboBoxItem:pointerover">
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="CheckBox:pointerover">
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="NumericUpDown:pointerover">
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+    </Application.Styles>
+</Application>

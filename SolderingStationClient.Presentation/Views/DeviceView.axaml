@@ -1,0 +1,74 @@
+﻿<UserControl
+    d:DesignHeight="450"
+    d:DesignWidth="450"
+    mc:Ignorable="d"
+    x:Class="SolderingStationClient.Presentation.Views.DeviceView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:interfaces="clr-namespace:SolderingStationClient.Presentation.ViewModels.Interfaces"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:SolderingStationClient.Presentation.Views"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel HorizontalAlignment="Stretch" Margin="0,5,0,0">
+        <Label
+            Background="#faebd7"
+            Content="{Binding Name, FallbackValue=Device0}"
+            HorizontalContentAlignment="Center"
+            Padding="10" />
+        <ItemsControl Items="{Binding TemperatureControllers}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <ContentControl Content="{Binding .}">
+                        <ContentControl.DataTemplates>
+                            <DataTemplate DataType="{x:Type interfaces:IPidTemperatureControllerSettingsViewModel}">
+                                <StackPanel>
+                                    <Expander
+                                        Background="transparent"
+                                        HorizontalContentAlignment="Stretch"
+                                        VerticalContentAlignment="Top">
+                                        <Expander.Header>
+                                            <TextBlock>
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0} {1}">
+                                                        <DynamicResource ResourceKey="Localization.Pid" />
+                                                        <Binding Path="ControllerId" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </Expander.Header>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
+                                            <views:TemperatureControllerSettingsView Grid.Row="0" Margin="0,5,0,0" />
+                                            <views:PidTemperatureControllerSettingsView Grid.Row="1" Margin="0,5,0,0" />
+                                        </Grid>
+                                    </Expander>
+                                </StackPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type interfaces:ITemperatureControllerSettingsViewModel}">
+                                <Expander
+                                    Background="transparent"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Top">
+                                    <Expander.Header>
+                                        <TextBlock>
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0} {1}">
+                                                    <DynamicResource ResourceKey="Localization.TemperatureController" />
+                                                    <Binding Path="PidId" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </Expander.Header>
+                                    <views:TemperatureControllerSettingsView Margin="0,5,0,0" />
+                                </Expander>
+                            </DataTemplate>
+                        </ContentControl.DataTemplates>
+                    </ContentControl>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
+</UserControl>

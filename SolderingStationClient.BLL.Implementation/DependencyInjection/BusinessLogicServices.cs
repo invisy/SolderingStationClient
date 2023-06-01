@@ -1,4 +1,5 @@
-﻿using SolderingStation.Hardware.Abstractions;
+﻿using SolderingStation.DAL.Abstractions;
+using SolderingStation.Hardware.Abstractions;
 using SolderingStation.Hardware.Models.ConnectionParameters;
 using SolderingStationClient.BLL.Abstractions;
 using SolderingStationClient.BLL.Abstractions.Services;
@@ -24,7 +25,9 @@ public static class BusinessLogicServices
             resolver.GetService<IHardwareDetector<SerialConnectionParameters>>(),
             resolver.GetService<ISerialPortsMonitor>()
         ));
-        services.Register<ILocalizationService>(() => new LocalizationService());
+        services.Register<ILocalizationService>(() => new LocalizationService(
+            resolver.GetService<IUnitOfWork>()
+        ));
 
         services.Register<IDevicesService>(() => new DevicesService(
             resolver.GetService<IDeviceManager>())

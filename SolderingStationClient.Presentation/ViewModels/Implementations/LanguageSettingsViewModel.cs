@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Avalonia;
 using Avalonia.Collections;
@@ -21,17 +21,20 @@ public class LanguageSettingsViewModel : ViewModelBase, ILanguageSettingsViewMod
     public LanguageSettingsViewModel(ILocalizationService localizationService)
     {
         _localizationService = Guard.Against.Null(localizationService);;
+        
 
-        var viewModels = localizationService.GetLanguagesByCodesList(new List<string>(new[] { "en", "uk" }))
-            .Select(x => new LanguageViewModel(x));
-        AvailableLanguages = new AvaloniaList<LanguageViewModel>(viewModels);
-
-        //TODO initialize Selected language with database value
-        SelectedLanguage = AvailableLanguages.First(lang =>
-            lang.Locale.CultureCode == _localizationService.GetCurrentLanguageCode());
     }
 
-    public IAvaloniaList<LanguageViewModel> AvailableLanguages { get; }
+    public async Task Init()
+    {
+        var locales = await _localizationService.GetAvailableLocalizations();
+        var selectedLocalizationCode = await _localizationService.GetCurrentLanguageCode();
+        var i = 0;
+        AvailableLanguages.AddRange(locales.Select(locale => new LanguageViewModel(locale)));
+        SelectedLanguage = AvailableLanguages.First(lang => lang.Locale.CultureCode == selectedLocalizationCode);
+    }
+
+    public IAvaloniaList<LanguageViewModel> AvailableLanguages { get; } = new AvaloniaList<LanguageViewModel>();
 
     public LanguageViewModel SelectedLanguage
     {
@@ -45,8 +48,8 @@ public class LanguageSettingsViewModel : ViewModelBase, ILanguageSettingsViewMod
 
     private void UpdateLocalization(Locale locale)
     {
-        //TODO save new value
-
+        _localizationService.SaveSelectedLocalization(locale.Id).GetAwaiter().GetResult();
+        
         var translations = Application.Current?.Resources.MergedDictionaries.OfType<ResourceInclude>()
             .FirstOrDefault(x => x.Source?.OriginalString?.Contains("/Languages/") ?? false);
 

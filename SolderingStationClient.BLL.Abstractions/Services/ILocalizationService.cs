@@ -4,6 +4,7 @@ namespace SolderingStationClient.BLL.Abstractions.Services;
 
 public interface ILocalizationService
 {
-    IEnumerable<Locale> GetLanguagesByCodesList(IList<string> languageCodes);
-    string GetCurrentLanguageCode();
+    Task<IEnumerable<Locale>> GetAvailableLocalizations();
+    Task<string> GetCurrentLanguageCode();
+    Task SaveSelectedLocalization(int languageId);
 }

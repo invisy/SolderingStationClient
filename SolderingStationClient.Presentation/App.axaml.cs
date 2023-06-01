@@ -2,6 +2,7 @@ using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using SolderingStation.DAL.Implementation;
 using SolderingStationClient.Presentation.ViewModels.Interfaces;
 using SolderingStationClient.Presentation.Views;
 using Splat;
@@ -19,10 +20,14 @@ public class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            // Initialize database
+            var solderingStationContext = Locator.Current.GetService<SolderingStationDbContext>() ?? 
+                                          throw new NullReferenceException(nameof(SolderingStationDbContext));
+            solderingStationContext.Seed();
+            
+            //Load viewmodel and open main window
             DataContext = Locator.Current.GetService<IMainWindowViewModel>() ??
                           throw new NullReferenceException(nameof(IMainWindowViewModel));
-            
-            //((IMainWindowViewModel)DataContext).Init();
 
             desktop.MainWindow = new MainWindow()
             {

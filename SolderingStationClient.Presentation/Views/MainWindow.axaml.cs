@@ -23,6 +23,11 @@ public class MainWindow : ReactiveWindow<IMainWindowViewModel>
         );
         
         this.WhenActivated(d =>
+            d(ViewModel!.ConnectionViewModel.ShowSerialPortAdvancedSettingsWindow.RegisterHandler(
+                DoShowSerialPortAdvancedSettingsWindow))
+        );
+        
+        this.WhenActivated(d =>
             d(ViewModel!.ShowThermalProfileEditorWindow.RegisterHandler(
                 DoShowThermalProfileEditorWindow))
         );

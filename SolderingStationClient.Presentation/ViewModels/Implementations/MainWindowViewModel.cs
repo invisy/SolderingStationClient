@@ -1,5 +1,6 @@
 ﻿using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Avalonia.Collections;
@@ -26,6 +27,8 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         ConnectionViewModel = Guard.Against.Null(connectionViewModel);
         MainPlotViewModel = Guard.Against.Null(mainPlotViewModel);
         DevicesListViewModel = Guard.Against.Null(devicesListViewModel);
+        
+        RxApp.MainThreadScheduler.Schedule(Init);
     }
 
     public ILanguageSettingsViewModel LanguageSettingsViewModel { get; }
@@ -35,8 +38,9 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
 
     public IAvaloniaList<Locale> LanguagesList { get; } = new AvaloniaList<Locale>();
 
-    public async Task Init()
+    private async void Init()
     {
+        await LanguageSettingsViewModel.Init();
         //await DevicesListViewModel.Init();
     }
     

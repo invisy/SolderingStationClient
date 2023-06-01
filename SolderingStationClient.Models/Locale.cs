@@ -2,14 +2,16 @@
 
 public class Locale
 {
-    public Locale(string nativeName, string englishName, string cultureCode)
+    public Locale(int id, string nativeName, string englishName, string cultureCode)
     {
+        Id = id;
         NativeName = nativeName;
         EnglishName = englishName;
         CultureCode = cultureCode;
     }
 
-    public string NativeName { get; set; }
-    public string EnglishName { get; set; }
-    public string CultureCode { get; set; }
+    public int Id { get; set; }
+    public string NativeName { get; }
+    public string EnglishName { get; }
+    public string CultureCode { get; }
 }

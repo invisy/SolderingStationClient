@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolderingStation.Entities",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolderingStation.DAL.Abstractions", "SolderingStation.DAL.Abstractions\SolderingStation.DAL.Abstractions.csproj", "{51D43D67-3C56-4C50-B3F7-4D30ACB3C96E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolderingStation.DAL.Implementation", "SolderingStation.DAL.Implementation\SolderingStation.DAL.Implementation.csproj", "{3B7B4E2E-A3FC-4F01-906C-B098CD5D16E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,5 +62,9 @@ Global
 		{51D43D67-3C56-4C50-B3F7-4D30ACB3C96E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51D43D67-3C56-4C50-B3F7-4D30ACB3C96E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51D43D67-3C56-4C50-B3F7-4D30ACB3C96E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B7B4E2E-A3FC-4F01-906C-B098CD5D16E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B7B4E2E-A3FC-4F01-906C-B098CD5D16E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B7B4E2E-A3FC-4F01-906C-B098CD5D16E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B7B4E2E-A3FC-4F01-906C-B098CD5D16E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

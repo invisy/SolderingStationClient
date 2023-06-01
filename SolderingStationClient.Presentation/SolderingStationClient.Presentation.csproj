@@ -21,6 +21,7 @@
         <PackageReference Include="ThemeEditor.Controls.ColorPicker" Version="0.10.17" />
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="..\SolderingStation.DAL.Implementation\SolderingStation.DAL.Implementation.csproj" />
         <ProjectReference Include="..\SolderingStation.Hardware.Implementation\SolderingStation.Hardware.Implementation.csproj" />
         <ProjectReference Include="..\SolderingStationClient.BLL.Abstractions\SolderingStationClient.BLL.Abstractions.csproj" />
         <ProjectReference Include="..\SolderingStationClient.BLL.Implementation\SolderingStationClient.BLL.Implementation.csproj" />

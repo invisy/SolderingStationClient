@@ -2,6 +2,6 @@
 
 public class ThermalProfilePartEntity : BaseEntity<int>
 {
-    public string Name { get; }
-    public IEnumerable<TemperatureMeasurementPointEntity> TemperatureCurve { get; }
+    public string Name { get; set; }
+    public IEnumerable<TemperatureMeasurementPointEntity> TemperatureCurve { get; set; }
 }

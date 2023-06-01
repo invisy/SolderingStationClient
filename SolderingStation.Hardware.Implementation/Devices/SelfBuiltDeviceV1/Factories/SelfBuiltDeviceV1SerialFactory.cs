@@ -1,5 +1,5 @@
-﻿using Invisy.SerialCommunication.Factories;
-using Invisy.SerialCommunication.Models;
+﻿using Invisy.SerialCommunicationProtocol.Factories;
+using Invisy.SerialCommunicationProtocol.Models;
 using SolderingStation.Hardware.Abstractions;
 using SolderingStation.Hardware.Implementation.Devices.SelfBuiltDeviceV1.Connections;
 using SolderingStation.Hardware.Models.ConnectionParameters;
@@ -17,14 +17,8 @@ public class SelfBuiltDeviceV1SerialFactory : IDeviceFactory<SerialConnectionPar
 
     public IDevice Create(SerialConnectionParameters parameters)
     {
-        var serialPortSettings = new SerialPortSettings
-        {
-            PortName = parameters.PortName,
-            BaudRate = parameters.BaudRate,
-            Parity = parameters.Parity,
-            DataBits = parameters.DataBits,
-            StopBits = parameters.StopBits
-        };
+        var serialPortSettings = new SerialPortSettings(parameters.PortName, parameters.BaudRate, parameters.Parity,
+            parameters.DataBits, parameters.StopBits);
 
         var client = _serialCommunicationClientFactory.Create(serialPortSettings);
         var connection = new SelfBuiltDeviceSerialConnection(client, parameters);

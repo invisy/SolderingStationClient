@@ -1,5 +1,5 @@
-﻿using Invisy.SerialCommunication.Factories;
-using Invisy.SerialCommunication.Utils;
+﻿using Invisy.SerialCommunicationProtocol.Factories;
+using Invisy.SerialCommunicationProtocol.Utils;
 using SolderingStation.Hardware.Abstractions;
 using SolderingStation.Hardware.Implementation.Devices.SelfBuiltDeviceV1.Factories;
 using SolderingStation.Hardware.Models.ConnectionParameters;

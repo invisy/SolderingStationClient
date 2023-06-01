@@ -1,4 +1,5 @@
 ﻿using Invisy.SerialCommunication;
+using Invisy.SerialCommunication.Exceptions;
 using Invisy.SerialCommunication.Models;
 using SolderingStation.Hardware.Abstractions.Connections;
 using SolderingStation.Hardware.Abstractions.Devices.SelfBuiltDeviceV1;
@@ -23,9 +24,20 @@ public class SelfBuiltDeviceSerialConnection : IConnectionGeneric<SerialConnecti
 
     public bool Connect()
     {
-        var result = _client.Connect();
-
-        return result == ConnectionResult.Ok;
+        try
+        {
+            _client.Connect();
+        }
+        catch (ConnectionException)
+        {
+            return false;
+        }
+        catch (Exception)
+        {
+            //TODO log exception
+        }
+        
+        return true;
     }
 
     public void Disconnect()
@@ -53,11 +65,9 @@ public class SelfBuiltDeviceSerialConnection : IConnectionGeneric<SerialConnecti
         ISelfBuiltDeviceCommand<TRequest, TResponse> command)
         where TRequest : struct where TResponse : struct
     {
+        //TODO rethrow exception
         var result = await _client.ExecuteCommandAsync<TRequest, TResponse>(command.Command, command.ParamsRequest);
-
-        if (result.Status != CommandExecutionStatus.Ok)
-            throw new Exception();
-
-        return result.Data;
+        
+        return result;
     }
 }

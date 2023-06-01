@@ -1,4 +1,5 @@
-﻿using Invisy.SerialCommunication.Models;
+﻿using Invisy.SerialCommunication.Exceptions;
+using Invisy.SerialCommunication.Models;
 using Invisy.SerialCommunication.Utils;
 
 namespace Invisy.SerialCommunication;
@@ -33,23 +34,18 @@ public class SerialCommunicationClient : ISerialCommunicationClient
 
     public SerialPortSettings PortSettings { get; }
 
-    public ConnectionResult Connect()
+    public void Connect()
     {
         if (_serialPort.IsOpen)
-            return ConnectionResult.PortIsBusy;
+            throw new ConnectionException("Serial port is already opened!");
 
         try
         {
             _serialPort.Open();
-            return ConnectionResult.Ok;
         }
-        catch (FileNotFoundException)
+        catch (Exception e)
         {
-            return ConnectionResult.PortIsNotFound;
-        }
-        catch (Exception)
-        {
-            return ConnectionResult.PortIsBusy;
+            throw new ConnectionException("Serial port connection can`t be established", e);
         }
     }
 
@@ -58,31 +54,31 @@ public class SerialCommunicationClient : ISerialCommunicationClient
         Dispose();
     }
 
-    public CommandExecutionResult ExecuteCommand<TParameters>(ushort commandCode, TParameters parameters)
+    public void ExecuteCommand<TParameters>(ushort commandCode, TParameters parameters)
         where TParameters : struct
     {
         var commandParams = _serializer.Serialize(parameters);
-        var byteResult = ExecuteCommand(commandCode, commandParams);
-        if (byteResult.Status == CommandExecutionStatus.Ok && byteResult.Data.Length == 0)
-            return new CommandExecutionResult(CommandExecutionStatus.Ok);
-
-        return new CommandExecutionResult(CommandExecutionStatus.UnexpectedResponse);
+        var data = ExecuteCommand(commandCode, commandParams);
+        if (data.Length != 0)
+            throw new UnexpectedResponseException("Unexpected response. It must not contain any data.");
     }
 
-    public CommandExecutionResult<TResult> ExecuteCommand<TParameters, TResult>(ushort commandCode,
+    public TResult ExecuteCommand<TParameters, TResult>(ushort commandCode,
         TParameters parameters)
         where TParameters : struct where TResult : struct
     {
         var commandParams = _serializer.Serialize(parameters);
-        var byteResult = ExecuteCommand(commandCode, commandParams);
+        var data = ExecuteCommand(commandCode, commandParams);
 
-        var response = _serializer.Deserialize<TResult>(byteResult.Data);
-        return response != null
-            ? new CommandExecutionResult<TResult>(byteResult.Status, response.Value)
-            : new CommandExecutionResult<TResult>(CommandExecutionStatus.UnexpectedResponse, new TResult());
+        var response = _serializer.Deserialize<TResult>(data);
+
+        if (response == null)
+            throw new UnexpectedResponseException("Unexpected response. Data is not present or it does not fits structure.");
+
+        return response.Value;
     }
 
-    public CommandExecutionResult<byte[]> ExecuteCommand(ushort command, byte[] parameters)
+    public byte[] ExecuteCommand(ushort command, byte[] parameters)
     {
         try
         {
@@ -96,24 +92,24 @@ public class SerialCommunicationClient : ISerialCommunicationClient
         }
         catch (Exception ex) when (ex is InvalidOperationException or TimeoutException)
         {
-            return new CommandExecutionResult<byte[]>(CommandExecutionStatus.PortError, Array.Empty<byte>());
+            throw new ConnectionException("Connection was lost");
         }
     }
 
-    public async  Task<CommandExecutionResult> ExecuteCommandAsync<TParameters>(ushort commandCode, TParameters parameters)
+    public async Task ExecuteCommandAsync<TParameters>(ushort commandCode, TParameters parameters)
         where TParameters : struct
     {
-        return await Task.Run(() => ExecuteCommand(commandCode, parameters));
+        await Task.Run(() => ExecuteCommand(commandCode, parameters));
     }
 
-    public async Task<CommandExecutionResult<TResult>> ExecuteCommandAsync<TParameters, TResult>(ushort commandCode,
+    public async Task<TResult> ExecuteCommandAsync<TParameters, TResult>(ushort commandCode,
         TParameters parameters)
         where TParameters : struct where TResult : struct
     {
         return await Task.Run(() => ExecuteCommand<TParameters, TResult>(commandCode, parameters));
     }
 
-    public async Task<CommandExecutionResult<byte[]>> ExecuteCommandAsync(ushort command, byte[] parameters)
+    public async Task<byte[]> ExecuteCommandAsync(ushort command, byte[] parameters)
     {
         return await Task.Run(() => ExecuteCommand(command, parameters));
     }
@@ -156,7 +152,7 @@ public class SerialCommunicationClient : ISerialCommunicationClient
             Thread.Sleep(3);
     }
 
-    private CommandExecutionResult<byte[]> ReceivePacket()
+    private byte[] ReceivePacket()
     {
         var buffer = new byte[256];
         var headerLength = 2;
@@ -164,22 +160,22 @@ public class SerialCommunicationClient : ISerialCommunicationClient
 
         var isAnyResponse = IsAnyResponse();
         if (!isAnyResponse)
-            return new CommandExecutionResult<byte[]>(CommandExecutionStatus.NoResponse, Array.Empty<byte>());
+            throw new PackageIsCorruptedException("No response.");
 
         var isHeaderInBuffer = IsDataInBuffer(headerLength);
         if (!isHeaderInBuffer)
-            return new CommandExecutionResult<byte[]>(CommandExecutionStatus.PackageIsCorrupted, Array.Empty<byte>());
+            throw new PackageIsCorruptedException("Header is not fully present in packet");
 
         _serialPort.Read(buffer, 0, headerLength); // read header
 
         var dataLength = buffer[headerLength - 1];
         if (dataLength > MaxDataLength)
-            return new CommandExecutionResult<byte[]>(CommandExecutionStatus.PackageIsCorrupted, Array.Empty<byte>());
+            throw new PackageIsCorruptedException("The data length value received was too large. Data cannot be processed.");
 
         var dataAndChecksumLength = dataLength + crcLength;
         var isFullPacketInBuffer = IsDataInBuffer(dataAndChecksumLength);
         if (!isFullPacketInBuffer)
-            return new CommandExecutionResult<byte[]>(CommandExecutionStatus.PackageIsCorrupted, Array.Empty<byte>());
+            throw new PackageIsCorruptedException("Received incomplete package.");
         _serialPort.Read(buffer, 2, dataAndChecksumLength); // read to end of packet
 
         var fullPacketLength = headerLength + dataAndChecksumLength;
@@ -187,14 +183,20 @@ public class SerialCommunicationClient : ISerialCommunicationClient
         var calculatedCrc = _crc16Calculator.Calculate(buffer, 0, headerLength + dataLength);
         var receivedCrc = buffer[fullPacketLength - 2] | (buffer[fullPacketLength - 1] << 8);
         if (calculatedCrc != receivedCrc)
-            return new CommandExecutionResult<byte[]>(CommandExecutionStatus.PackageIsCorrupted, Array.Empty<byte>());
+            throw new PackageIsCorruptedException("Packet checksum is invalid");
 
-        if (buffer[0] != (byte)CommandExecutionStatus.Ok)
-            return new CommandExecutionResult<byte[]>((CommandExecutionStatus)buffer[0], Array.Empty<byte>());
+        if (buffer[0] != (byte)CommandResponse.Ok)
+        {
+            byte maxCommandResponseCode = (byte)Enum.GetValues(typeof(CommandResponse)).Cast<CommandResponse>().Max();
+            if (buffer[0] <= maxCommandResponseCode)
+                throw new CommandResponseException(CommandResponse.WrongCommand);
+            else
+                throw new UnexpectedResponseException("Unexpected error code received");
+        }
 
         var resultData = new byte[dataLength];
         Array.Copy(buffer, headerLength, resultData, 0, dataLength);
-        return new CommandExecutionResult<byte[]>(CommandExecutionStatus.Ok, resultData);
+        return resultData;
     }
 
     private bool IsAnyResponse()

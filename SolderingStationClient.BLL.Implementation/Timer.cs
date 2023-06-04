@@ -31,7 +31,7 @@ public class Timer : ITimer
         add
         {
             var internalHandler =
-                (ElapsedEventHandler)((sender, args) => { value.Invoke(sender, args.SignalTime); });
+                (ElapsedEventHandler)((sender, args) => { value.Invoke(sender!, args.SignalTime); });
 
             if (!_handlers.ContainsKey(value)) _handlers.Add(value, new List<ElapsedEventHandler>());
 
@@ -77,9 +77,9 @@ public class Timer : ITimer
                     internalHandlers.ForEach(handler => _timer.Elapsed -= handler);
 
             _timer.Dispose();
-            _timer = null;
+            _timer = null!;
             _handlers.Clear();
-            _handlers = null;
+            _handlers = null!;
         }
 
         _isDisposed = true;

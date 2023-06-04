@@ -8,10 +8,12 @@ namespace SolderingStationClient.BLL.Implementation.Services;
 public class LocalizationService : ILocalizationService
 {
     private readonly IUnitOfWork _uow;
+    private readonly IUserProfileService _userProfileService;
 
-    public LocalizationService(IUnitOfWork uow)
+    public LocalizationService(IUnitOfWork uow, IUserProfileService userProfileService)
     {
         _uow = uow;
+        _userProfileService = userProfileService;
     }
 
     public async Task<IEnumerable<Locale>> GetAvailableLocalizations()
@@ -26,7 +28,8 @@ public class LocalizationService : ILocalizationService
 
     public async Task<string> GetCurrentLanguageCode()
     {
-        var spec = new ProfileWithLanguageSpecification(1);
+        var currentProfileId = _userProfileService.GetProfileId();
+        var spec = new ProfileWithLanguageSpecification(currentProfileId);
         var profile = await _uow.ProfilesRepository.GetBySpecAsync(spec);
         if (profile is null)
             throw new ArgumentException("Profile doesn`t exist");
@@ -34,9 +37,10 @@ public class LocalizationService : ILocalizationService
         return profile.Language.Code;
     }
 
-    public async Task SaveSelectedLocalization(int languageId)
+    public async Task SaveSelectedLocalization(uint languageId)
     {
-        var profile = await _uow.ProfilesRepository.GetByIdAsync(1);
+        var currentProfileId = _userProfileService.GetProfileId();
+        var profile = await _uow.ProfilesRepository.GetByIdAsync(currentProfileId);
         if (profile is null)
             throw new ArgumentException("Profile doesn`t exist");
         profile.LanguageId = languageId;

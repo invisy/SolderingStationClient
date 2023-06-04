@@ -41,7 +41,7 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
     private async void Init()
     {
         await LanguageSettingsViewModel.Init();
-        //await DevicesListViewModel.Init();
+        await DevicesListViewModel.Init();
     }
     
     public async Task OpenThermalProfileEditorWindow()

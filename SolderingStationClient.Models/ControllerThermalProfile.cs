@@ -2,4 +2,4 @@
 
 namespace SolderingStationClient.Models;
 
-public record ControllerThermalProfile(uint Id, string Name, int ArgbColor, IEnumerable<TemperatureMeasurement> TemperatureMeasurements);
+public record ControllerThermalProfile(uint Id, string Name, int ArgbColor, IEnumerable<TemperatureMeasurementPoint> TemperatureMeasurements);

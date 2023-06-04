@@ -1,9 +1,10 @@
-﻿using Avalonia.Collections;
+﻿using System.Threading.Tasks;
+using Avalonia.Collections;
 
 namespace SolderingStationClient.Presentation.ViewModels.Interfaces;
 
 public interface IDevicesListViewModel : IViewModelBase
 {
-    //Task Init();
+    Task Init();
     IAvaloniaList<IDeviceViewModel> DevicesList { get; }
 }

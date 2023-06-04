@@ -6,7 +6,7 @@ using SolderingStation.Entities;
 
 namespace SolderingStation.DAL.Implementation;
 
-public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseEntity<int>
+public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseEntity<uint>
 {
     private readonly SolderingStationDbContext _dbContext;
     private readonly ISpecificationEvaluator _specificationEvaluator;
@@ -30,7 +30,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         return entity;
     }
     
-    public virtual async Task<TEntity?> GetByIdAsync(int id)
+    public virtual async Task<TEntity?> GetByIdAsync(uint id)
     {
         return await _dbContext.Set<TEntity>().FindAsync(new object[] { id });
     }
@@ -72,7 +72,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         _dbContext.Set<TEntity>().Remove(entity);
     }
     
-    public virtual void Delete(int id)
+    public virtual void Delete(uint id)
     {
         var selected = _dbContext.Set<TEntity>().FirstOrDefault(entity => entity.Id == id);
         if (selected == null)

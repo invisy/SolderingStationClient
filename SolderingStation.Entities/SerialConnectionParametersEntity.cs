@@ -1,7 +1,8 @@
 ﻿namespace SolderingStation.Entities;
 
-public class SerialConnectionParametersEntity : BaseEntity<int>
+public class SerialConnectionParametersEntity : BaseEntity<uint>
 {
+    public uint ProfileId { get; set; }
     public string PortName { get; set; } = string.Empty;
     public int BaudRate { get; set; }
     public int Parity { get; set; }

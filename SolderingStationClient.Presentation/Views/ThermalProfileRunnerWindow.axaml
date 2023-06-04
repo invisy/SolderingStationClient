@@ -1,0 +1,98 @@
+﻿<Window
+    CanResize="False"
+    SizeToContent="WidthAndHeight"
+    Title="Thermal profile runner"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d"
+    x:Class="SolderingStationClient.Presentation.Views.ThermalProfileRunnerWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="5" Width="400">
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                FontSize="16"
+                FontWeight="Bold"
+                Grid.Row="0"
+                HorizontalAlignment="Center"
+                Margin="10"
+                Text="{DynamicResource Localization.ThermalProfileRunnerTitle}"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+
+            <ComboBox
+                Grid.Row="1"
+                HorizontalAlignment="Stretch"
+                Margin="5"
+                PlaceholderText="Test thermal profile" />
+
+            <TextBlock
+                FontSize="16"
+                FontWeight="Bold"
+                Grid.Row="2"
+                HorizontalAlignment="Center"
+                Margin="10"
+                Text="{DynamicResource Localization.ThermalProfileControllersSelectorTitle}"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition MinWidth="170" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Label
+                    Content="Bottom heater"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Margin="5"
+                    VerticalContentAlignment="Center" />
+                <ComboBox
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    HorizontalAlignment="Stretch"
+                    Margin="5"
+                    PlaceholderText="COM5:0" />
+            </Grid>
+
+            <Grid Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button
+                    Command="{Binding ApplyCommand}"
+                    Content="{DynamicResource Localization.Apply}"
+                    Grid.Column="0"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Margin="5" />
+                <Button
+                    Command="{Binding CloseCommand}"
+                    Content="{DynamicResource Localization.Cancel}"
+                    Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Margin="5" />
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

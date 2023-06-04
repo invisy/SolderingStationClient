@@ -1,6 +1,6 @@
 ﻿namespace SolderingStation.Hardware.Abstractions.Connections;
 
-internal interface IWirelessConnectionCapability : IConnectionCapability
+public interface IWirelessConnectionCapability : IConnectionCapability
 {
     int GetSignalStrength();
 }

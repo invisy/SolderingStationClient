@@ -16,7 +16,6 @@ public class SerialPortsMonitor : ISerialPortsMonitor
     {
         _timer = timer;
         _serialPortsProvider = serialPortsProvider;
-        _timer.TimerIntervalElapsed += CheckPortsStatus;
     }
 
     public IReadOnlyList<string> AllPortNames => _lastDetectedPortNames.AsReadOnly();
@@ -24,12 +23,14 @@ public class SerialPortsMonitor : ISerialPortsMonitor
 
     public void Start(uint scanPeriodMs)
     {
+        _timer.TimerIntervalElapsed += CheckPortsStatus;
         _timer.Interval = scanPeriodMs;
         _timer.Start();
     }
 
     public void Stop()
     {
+        _timer.TimerIntervalElapsed -= CheckPortsStatus;
         _timer.Stop();
     }
 

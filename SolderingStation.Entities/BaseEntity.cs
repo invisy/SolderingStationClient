@@ -2,5 +2,5 @@
 
 public class BaseEntity<TKey>
 {
-    public TKey Id { get; }
+    public TKey Id { get; protected set; }
 }

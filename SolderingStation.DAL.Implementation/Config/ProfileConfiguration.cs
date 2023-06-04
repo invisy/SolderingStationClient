@@ -16,5 +16,11 @@ public class ProfileConfiguration : IEntityTypeConfiguration<ProfileEntity>
 
         builder.HasOne(entity => entity.Language).WithMany().HasForeignKey(entity => entity.LanguageId)
             .IsRequired();
+        
+        builder.HasMany<ThermalProfileEntity>().WithOne().HasForeignKey(entity => entity.ProfileId)
+            .IsRequired();
+        
+        builder.HasMany<SerialConnectionParametersEntity>().WithOne().HasForeignKey(entity => entity.ProfileId)
+            .IsRequired();
     }
 }

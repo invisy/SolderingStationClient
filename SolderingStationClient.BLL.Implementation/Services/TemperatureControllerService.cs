@@ -1,6 +1,7 @@
 ﻿using SolderingStation.Hardware.Abstractions;
 using SolderingStation.Hardware.Abstractions.Capabilities;
 using SolderingStationClient.BLL.Abstractions.Services;
+using SolderingStationClient.BLL.Implementation.Exceptions;
 using SolderingStationClient.Models.TemperatureControllers;
 
 namespace SolderingStationClient.BLL.Implementation.Services;
@@ -45,7 +46,7 @@ public class TemperatureControllerService : ITemperatureControllerService
         var handle = _deviceManager.TryGetDeviceCapability<ITemperatureControllerCapability>(deviceId);
 
         if (handle == null)
-            throw new Exception();
+            throw new CapabilityIsNotSupportedException();
 
         return handle;
     }

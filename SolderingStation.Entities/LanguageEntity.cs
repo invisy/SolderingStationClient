@@ -1,7 +1,13 @@
 ﻿namespace SolderingStation.Entities;
 
-public class LanguageEntity : BaseEntity<int>
+public class LanguageEntity : BaseEntity<uint>
 {
+    //For EF
+    public LanguageEntity()
+    {
+        
+    }
+    
     public LanguageEntity(string englishName, string nativeName, string code)
     {
         EnglishName = englishName;

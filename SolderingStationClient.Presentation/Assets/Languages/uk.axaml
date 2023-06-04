@@ -62,6 +62,10 @@
     <system:String x:Key="Localization.AdvancedDataBits">Біти даних</system:String>
     <system:String x:Key="Localization.AdvancedStopBits">Стоп біти</system:String>
 
+    <!--  ThermalProfileRunnerWindow localization  -->
+    <system:String x:Key="Localization.ThermalProfileRunnerTitle">Виберіть термопрофіль</system:String>
+    <system:String x:Key="Localization.ThermalProfileControllersSelectorTitle">Виберіть контролери</system:String>
+
     <!--  ThermalProfileEditorWindow localization  -->
     <system:String x:Key="Localization.ThermalProfileEditorTitle">Редактор термопрофілів</system:String>
     <system:String x:Key="Localization.ThermalProfileSelectorTitle">Вибрати термопрофіль</system:String>

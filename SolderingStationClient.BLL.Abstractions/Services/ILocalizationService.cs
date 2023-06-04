@@ -6,5 +6,5 @@ public interface ILocalizationService
 {
     Task<IEnumerable<Locale>> GetAvailableLocalizations();
     Task<string> GetCurrentLanguageCode();
-    Task SaveSelectedLocalization(int languageId);
+    Task SaveSelectedLocalization(uint languageId);
 }

@@ -25,8 +25,12 @@ public static class BusinessLogicServices
             resolver.GetService<IHardwareDetector<SerialConnectionParameters>>(),
             resolver.GetService<ISerialPortsMonitor>()
         ));
+        
+        services.RegisterConstant<IUserProfileService>(new UserProfileService());
+        
         services.Register<ILocalizationService>(() => new LocalizationService(
-            resolver.GetService<IUnitOfWork>()
+            resolver.GetService<IUnitOfWork>(),
+            resolver.GetService<IUserProfileService>()
         ));
 
         services.Register<IDevicesService>(() => new DevicesService(
@@ -44,6 +48,7 @@ public static class BusinessLogicServices
         services.RegisterLazySingleton<ITemperatureHistoryTracker>(() => new TemperatureHistoryTracker());
         
         services.RegisterLazySingleton<ITemperatureMonitorService>(() => new TemperatureMonitorService(
+            resolver.GetService<IDevicesService>(),
             resolver.GetService<ITemperatureControllerService>(),
             resolver.GetService<ITemperatureHistoryTracker>(),
             resolver.GetService<ITimer>()
@@ -51,6 +56,9 @@ public static class BusinessLogicServices
         
         services.RegisterLazySingleton<ITemperatureHistoryTracker>(() => new TemperatureHistoryTracker());
         
-        services.Register<IThermalProfileService>(() => new ThermalProfileService());
+        services.Register<IThermalProfileService>(() => new ThermalProfileService(
+            resolver.GetService<IUnitOfWork>(),
+            resolver.GetService<IUserProfileService>()
+        ));
     }
 }

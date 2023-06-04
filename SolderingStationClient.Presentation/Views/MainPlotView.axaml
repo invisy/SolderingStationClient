@@ -5,6 +5,7 @@
     x:Class="SolderingStationClient.Presentation.Views.MainPlotView"
     xmlns="https://github.com/avaloniaui"
     xmlns:avalonia="http://oxyplot.org/avalonia"
+    xmlns:colorPicker="clr-namespace:ThemeEditor.Controls.ColorPicker;assembly=ThemeEditor.Controls.ColorPicker"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
@@ -24,7 +25,32 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-
+            <Grid Column="0" IsVisible="False">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border Classes="GroupBorder">
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox />
+                        <Button
+                            Background="Orange"
+                            Height="20"
+                            Margin="0,0,10,0"
+                            Width="20">
+                            <Button.Flyout>
+                                <Flyout>
+                                    <colorPicker:ColorPicker Color="Orange" />
+                                </Flyout>
+                            </Button.Flyout>
+                        </Button>
+                        <Label
+                            Content="COM5:0"
+                            FontWeight="Bold"
+                            VerticalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+            </Grid>
             <Border Classes="GroupBorder" Grid.Column="1">
                 <StackPanel Orientation="Horizontal">
                     <CheckBox

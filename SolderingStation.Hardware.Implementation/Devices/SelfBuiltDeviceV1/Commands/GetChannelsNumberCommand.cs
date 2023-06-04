@@ -11,10 +11,10 @@ public struct GetPidsNumberCommandParameters
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct GetPidsNumberCommandResult
 {
-    public byte PidsNumber { get; }
+    public byte ChannelsNumber { get; }
 }
 
-public class GetPidsNumberCommand : ISelfBuiltDeviceCommand<GetPidsNumberCommandParameters,
+public class GetChannelsNumberCommand : ISelfBuiltDeviceCommand<GetPidsNumberCommandParameters,
     GetPidsNumberCommandResult>
 {
     public ushort Command => (ushort)CommandsEnum.GetPidsNumber;

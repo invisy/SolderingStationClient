@@ -1,27 +1,35 @@
-﻿using SolderingStationClient.BLL.Abstractions;
+﻿using SolderingStation.Hardware.Abstractions;
+using SolderingStationClient.BLL.Abstractions;
 using SolderingStationClient.BLL.Abstractions.Services;
+using SolderingStationClient.Models;
 using SolderingStationClient.Models.TemperatureControllers;
 
 namespace SolderingStationClient.BLL.Implementation.Services;
 
 public class TemperatureMonitorService : ITemperatureMonitorService
 {
+    private readonly IDevicesService _devicesService;
     private readonly ITemperatureControllerService _temperatureControllerService;
     private readonly ITimer _timer;
     private readonly ITemperatureHistoryTracker _temperatureHistoryTracker;
-    private readonly List<TemperatureControllerKey> _trackingControllers = new List<TemperatureControllerKey>();
     private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1,1);
+    
+    private readonly Dictionary<TemperatureControllerKey, bool> _trackedControllers = new();
 
     private DateTime StartTime;
     
     public TemperatureMonitorService(
+        IDevicesService devicesService,
         ITemperatureControllerService temperatureControllerService,
         ITemperatureHistoryTracker temperatureHistoryTracker,
         ITimer timer)
     {
+        _devicesService = devicesService;
         _temperatureHistoryTracker = temperatureHistoryTracker;
         _temperatureControllerService = temperatureControllerService;
         _timer = timer;
+        _devicesService.DeviceConnected += OnDeviceConnected;
+        _devicesService.DeviceDisconnected -= OnDeviceDisconnected;
     }
 
     public event EventHandler<TemperatureMeasurementEventArgs>? NewTemperatureMeasurement;
@@ -34,34 +42,62 @@ public class TemperatureMonitorService : ITemperatureMonitorService
         _timer.TimerIntervalElapsed += Tick;
     }
 
+    public void ChangeInterval(double ms)
+    {
+        _timer.Stop();
+        _timer.Interval = ms;
+        _timer.Start();
+    }
+
     public void StartControllerTracking(TemperatureControllerKey temperatureControllerKey)
     {
-        _semaphoreSlim.Wait();
-        _trackingControllers.Add(temperatureControllerKey);
-        _semaphoreSlim.Release();
+        SwitchControllerState(temperatureControllerKey, true);
     }
 
     public void StopControllerTracking(TemperatureControllerKey temperatureControllerKey)
     {
-        _semaphoreSlim.Wait();
-        _trackingControllers.Remove(temperatureControllerKey);
-        _temperatureHistoryTracker.RemoveControllerHistory(temperatureControllerKey);
-        _semaphoreSlim.Release();
+        SwitchControllerState(temperatureControllerKey, false);
     }
 
-    public void StopDeviceTracking(ulong deviceId)
+    private void OnDeviceConnected(object? sender, DeviceConnectedEventArgs args)
     {
         _semaphoreSlim.Wait();
-        var controllersKeys = _trackingControllers.Where(controller => 
-            controller.DeviceId == deviceId).ToList();
+        var controllerKeys = args.Device.TemperatureControllersKeys;
+        
+        foreach (var key in controllerKeys)
+            _trackedControllers[key] = true;
+
+        _semaphoreSlim.Release();
+    }
+    
+    private void OnDeviceDisconnected(object? sender, DeviceDisconnectedEventArgs args)
+    {
+        _semaphoreSlim.Wait();
+        var controllersKeys = _trackedControllers.Keys.Where(controller => 
+            controller.DeviceId == args.DeviceId).ToList();
         
         foreach (var key in controllersKeys)
         {
-            _trackingControllers.Remove(key);
+            _trackedControllers.Remove(key);
             _temperatureHistoryTracker.RemoveControllerHistory(key);
         }
         
         _semaphoreSlim.Release();
+    }
+
+    private void SwitchControllerState(TemperatureControllerKey temperatureControllerKey, bool state)
+    {
+        var containsKey = true;
+        
+        _semaphoreSlim.Wait();
+        if (_trackedControllers.ContainsKey(temperatureControllerKey))
+            _trackedControllers[temperatureControllerKey] = state;
+        else
+            containsKey = false;
+        _semaphoreSlim.Release();
+
+        if (!containsKey)
+            throw new ArgumentException($"{nameof(temperatureControllerKey)} is not valid");
     }
     
     private async void Tick(object? sender, DateTime time)
@@ -69,9 +105,10 @@ public class TemperatureMonitorService : ITemperatureMonitorService
         await _semaphoreSlim.WaitAsync();
         try
         {
-            var tasks = _trackingControllers.Select(async key =>
+            var tasks = _trackedControllers.Select(async key =>
             {
-                await MeasureTemperature(key, time);
+                if(key.Value)
+                    await MeasureTemperature(key.Key, time);
             });
             await Task.WhenAll(tasks);
         }

@@ -2,6 +2,6 @@
 
 namespace SolderingStation.DAL.Abstractions;
 
-public interface IGenericRepository<TEntity> : IGenericRepositoryWithTypedKey<int, TEntity> where TEntity: BaseEntity<int>
+public interface IGenericRepository<TEntity> : IGenericRepositoryWithTypedKey<uint, TEntity> where TEntity: BaseEntity<uint>
 {
 }

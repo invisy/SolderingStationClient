@@ -2,7 +2,7 @@
 
 public class Locale
 {
-    public Locale(int id, string nativeName, string englishName, string cultureCode)
+    public Locale(uint id, string nativeName, string englishName, string cultureCode)
     {
         Id = id;
         NativeName = nativeName;
@@ -10,7 +10,7 @@ public class Locale
         CultureCode = cultureCode;
     }
 
-    public int Id { get; set; }
+    public uint Id { get; set; }
     public string NativeName { get; }
     public string EnglishName { get; }
     public string CultureCode { get; }

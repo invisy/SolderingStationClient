@@ -1,6 +1,5 @@
 ﻿using Invisy.SerialCommunicationProtocol;
 using Invisy.SerialCommunicationProtocol.Exceptions;
-using Invisy.SerialCommunicationProtocol.Models;
 using SolderingStation.Hardware.Abstractions.Connections;
 using SolderingStation.Hardware.Abstractions.Devices.SelfBuiltDeviceV1;
 using SolderingStation.Hardware.Models.ConnectionParameters;

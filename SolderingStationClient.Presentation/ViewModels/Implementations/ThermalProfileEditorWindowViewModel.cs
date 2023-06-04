@@ -25,7 +25,7 @@ public class ThermalProfileEditorWindowViewModel : ViewModelBase, IThermalProfil
         _thermalProfileService = thermalProfileService;
 
         var thermalProfiles = _thermalProfileService.GetAll();
-        foreach (var thermalProfile in thermalProfiles)
+        foreach (var thermalProfile in thermalProfiles.GetAwaiter().GetResult())
             ThermalProfiles.Add(GetVmFromModel(thermalProfile));
         
         if(ThermalProfiles.Count != 0)

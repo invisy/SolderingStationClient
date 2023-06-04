@@ -62,6 +62,10 @@
     <system:String x:Key="Localization.AdvancedDataBits">Data bits</system:String>
     <system:String x:Key="Localization.AdvancedStopBits">Stop bits</system:String>
 
+    <!--  ThermalProfileRunnerWindow localization  -->
+    <system:String x:Key="Localization.ThermalProfileRunnerTitle">Select thermal profile</system:String>
+    <system:String x:Key="Localization.ThermalProfileControllersSelectorTitle">Select heaters</system:String>
+
     <!--  ThermalProfileEditorWindow localization  -->
     <system:String x:Key="Localization.ThermalProfileEditorTitle">Thermal profiles editor</system:String>
     <system:String x:Key="Localization.ThermalProfileSelectorTitle">Select thermal profile</system:String>

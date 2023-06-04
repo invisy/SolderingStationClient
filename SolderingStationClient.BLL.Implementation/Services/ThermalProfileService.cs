@@ -1,5 +1,8 @@
 ﻿using System.Drawing;
+using SolderingStation.DAL.Abstractions;
+using SolderingStation.Entities;
 using SolderingStationClient.BLL.Abstractions.Services;
+using SolderingStationClient.BLL.Implementation.Specifications;
 using SolderingStationClient.Models;
 using SolderingStationClient.Models.TemperatureControllers;
 
@@ -7,60 +10,85 @@ namespace SolderingStationClient.BLL.Implementation.Services;
 
 public class ThermalProfileService : IThermalProfileService
 {
-    private List<ThermalProfile> testProfiles = new()
-    {
-        new ThermalProfile(1, "TestProfile", new []
-        {
-           new ControllerThermalProfile(1, "BottomHeater", Color.Green.ToArgb(), new []
-           {
-               new TemperatureMeasurement(0, 0),
-               new TemperatureMeasurement(5, 10),
-               new TemperatureMeasurement(10, 40)
-           }) 
-        }),
-        new ThermalProfile(2, "TestProfile2", new []
-        {
-            new ControllerThermalProfile(1, "BottomHeater", Color.Green.ToArgb(), new []
-            {
-                new TemperatureMeasurement(0, 0),
-                new TemperatureMeasurement(17, 5),
-                new TemperatureMeasurement(25, 40)
-            }),
-            new ControllerThermalProfile(1, "TopHeater", Color.Blue.ToArgb(), new []
-            {
-                new TemperatureMeasurement(0, 0),
-                new TemperatureMeasurement(9, 40),
-            }) 
-        })
-    };
+    private readonly IUnitOfWork _uow;
+    private readonly IUserProfileService _userProfileService;
 
-    public IEnumerable<ThermalProfile> GetAll()
+    public ThermalProfileService(IUnitOfWork uow, IUserProfileService userProfileService)
     {
-        return testProfiles;
+        _uow = uow;
+        _userProfileService = userProfileService;
     }
 
-    public ThermalProfile? GetById(int thermalProfileId)
+    public async Task<IEnumerable<ThermalProfile>> GetAll()
     {
-        return testProfiles.FirstOrDefault(profile => profile.Id == thermalProfileId);
+        var spec = new ThermalProfileWithAllDataSpecification();
+        var result = await _uow.ThermalProfilesRepository.GetListBySpecAsync(spec);
+        return result.Select(Map);
     }
 
-    public void Add(ThermalProfile thermalProfile)
+    public async Task<ThermalProfile> GetById(uint thermalProfileId)
     {
-        testProfiles.Add(thermalProfile);
+        var spec = new ThermalProfileWithAllDataSpecification(thermalProfileId);
+        var result = await _uow.ThermalProfilesRepository.GetBySpecAsync(spec);
+        if (result == null)
+            throw new ArgumentNullException(nameof(thermalProfileId));
+        
+        return Map(result);
     }
 
-    public void Remove(int thermalProfileId)
+    public async Task Add(ThermalProfile thermalProfile)
     {
-        ThermalProfile? found = testProfiles.FirstOrDefault(profile => profile.Id == thermalProfileId);
-        if (found != null)
-            testProfiles.Remove(found);
+        var userProfileId = _userProfileService.GetProfileId();
+        var thermalProfileEntity = Map(thermalProfile);
+        thermalProfileEntity.ProfileId = userProfileId;
+        _uow.ThermalProfilesRepository.Add(thermalProfileEntity);
+        await _uow.SaveChanges();
     }
 
-    public void Update(ThermalProfile thermalProfile)
+    public async Task Remove(uint thermalProfileId)
     {
-        ThermalProfile? found = testProfiles.FirstOrDefault(profile => profile.Id == thermalProfile.Id);
-        if (found != null)
-            testProfiles.Remove(found);
-        testProfiles.Add(thermalProfile);
+        _uow.ThermalProfilesRepository.Delete(thermalProfileId);
+        await _uow.SaveChanges();
+    }
+
+    public async Task Update(ThermalProfile thermalProfile)
+    {
+        _uow.ThermalProfilesRepository.Update(Map(thermalProfile));
+        await _uow.SaveChanges();
+    }
+
+    
+    private ThermalProfile Map(ThermalProfileEntity entity)
+    {
+        var controllerThermalProfiles = entity.Parts.Select(Map).ToList();
+        return new ThermalProfile(entity.Id, entity.Name, controllerThermalProfiles);
+    }
+    
+    private ThermalProfileEntity Map(ThermalProfile model)
+    {
+        var controllerThermalProfilesParts = model.ControllersThermalProfiles.Select(Map).ToList();
+        return new ThermalProfileEntity(model.Id, model.Name, controllerThermalProfilesParts);
+    }
+    
+    private ControllerThermalProfile Map(ThermalProfilePartEntity entity)
+    {
+        var curve = entity.TemperatureCurve.Select(Map).ToList();
+        return new ControllerThermalProfile(entity.Id, entity.Name, entity.Color, curve);
+    }
+    
+    private ThermalProfilePartEntity Map(ControllerThermalProfile model)
+    {
+        var curve = model.TemperatureMeasurements.Select(Map).ToList();
+        return new ThermalProfilePartEntity(model.Id, model.Name, model.ArgbColor, curve);
+    }
+    
+    private TemperatureMeasurementPoint Map(TemperatureMeasurementPointEntity entity)
+    {
+        return new TemperatureMeasurementPoint(entity.Id, entity.SecondsElapsed, entity.Temperature);
+    }
+    
+    private TemperatureMeasurementPointEntity Map(TemperatureMeasurementPoint model)
+    {
+        return new TemperatureMeasurementPointEntity(model.Id, model.SecondsElapsed, model.Temperature);
     }
 }

@@ -56,10 +56,10 @@ public class
 
     public async Task<byte> GetChannelsNumber()
     {
-        var command = new GetPidsNumberCommand();
+        var command = new GetChannelsNumberCommand();
         var result = await _connection.ExecuteCommand(command);
 
-        return result.PidsNumber;
+        return result.ChannelsNumber;
     }
 
     public async Task<ushort> GetCurrentTemperature(byte channel)
@@ -82,8 +82,6 @@ public class
     {
         var command = new SetDesireTemperatureCommand(channel, temperature);
         await _connection.ExecuteCommand(command);
-
-        var eventArgs = new DesiredTemperatureChangedEventArgs(channel, temperature);
     }
 
     public async Task<PidCoefficients> GetCoefficients(byte channel)

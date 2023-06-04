@@ -13,5 +13,8 @@ public class ThermalProfilePartConfiguration : IEntityTypeConfiguration<ThermalP
         builder.Property(entity => entity.Name)
             .HasMaxLength(100)
             .IsRequired();
+        
+        builder.Property(entity => entity.Color)
+            .IsRequired();
     }
 }

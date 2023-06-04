@@ -79,7 +79,9 @@
                     Grid.Row="4"
                     Margin="5"
                     VerticalContentAlignment="Center" />
-                <ComboBox
+                <Label
+                    Content="COM5"
+                    FontWeight="Bold"
                     Grid.Column="1"
                     Grid.Row="0"
                     HorizontalAlignment="Stretch"
@@ -89,23 +91,26 @@
                     Grid.Row="1"
                     Margin="5"
                     Minimum="0"
-                    Text="" />
+                    Value="9600" />
                 <ComboBox
                     Grid.Column="1"
                     Grid.Row="2"
                     HorizontalAlignment="Stretch"
-                    Margin="5" />
+                    Margin="5"
+                    PlaceholderText="None" />
                 <NumericUpDown
                     Grid.Column="1"
                     Grid.Row="3"
                     Margin="5"
                     Minimum="0"
-                    Text="" />
+                    Text=""
+                    Value="8" />
                 <ComboBox
                     Grid.Column="1"
                     Grid.Row="4"
                     HorizontalAlignment="Stretch"
-                    Margin="5" />
+                    Margin="5"
+                    PlaceholderText="1" />
             </Grid>
 
             <Grid Grid.Row="2">

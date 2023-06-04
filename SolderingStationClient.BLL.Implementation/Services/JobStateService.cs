@@ -1,4 +1,5 @@
 ﻿using SolderingStationClient.BLL.Abstractions;
+using SolderingStationClient.BLL.Implementation.Exceptions;
 using SolderingStationClient.BLL.Implementation.Extensions;
 using SolderingStationClient.Models.Jobs;
 
@@ -13,7 +14,7 @@ public class JobStateService
     public void AddJob(IJob job)
     {
         if (ActiveJob != null)
-            throw new Exception("You can`t run second job at the same time!");
+            throw new JobException("You can`t run second job at the same time!");
         
         SubscribeToJobEvents(job);
 

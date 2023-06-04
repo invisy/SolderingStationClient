@@ -21,7 +21,8 @@ public class ThermalProfileService : IThermalProfileService
 
     public async Task<IEnumerable<ThermalProfile>> GetAll()
     {
-        var spec = new ThermalProfileWithAllDataSpecification();
+        var userProfileId = _userProfileService.GetProfileId();
+        var spec = new ThermalProfileWithAllDataByUserSpecification(userProfileId);
         var result = await _uow.ThermalProfilesRepository.GetListBySpecAsync(spec);
         return result.Select(Map);
     }
@@ -38,9 +39,7 @@ public class ThermalProfileService : IThermalProfileService
 
     public async Task Add(ThermalProfile thermalProfile)
     {
-        var userProfileId = _userProfileService.GetProfileId();
         var thermalProfileEntity = Map(thermalProfile);
-        thermalProfileEntity.ProfileId = userProfileId;
         _uow.ThermalProfilesRepository.Add(thermalProfileEntity);
         await _uow.SaveChanges();
     }
@@ -66,8 +65,9 @@ public class ThermalProfileService : IThermalProfileService
     
     private ThermalProfileEntity Map(ThermalProfile model)
     {
+        var profileId = _userProfileService.GetProfileId();
         var controllerThermalProfilesParts = model.ControllersThermalProfiles.Select(Map).ToList();
-        return new ThermalProfileEntity(model.Id, model.Name, controllerThermalProfilesParts);
+        return new ThermalProfileEntity(model.Id, model.Name, controllerThermalProfilesParts, profileId);
     }
     
     private ControllerThermalProfile Map(ThermalProfilePartEntity entity)

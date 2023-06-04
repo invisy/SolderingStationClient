@@ -19,18 +19,24 @@ public static class BusinessLogicServices
             resolver.GetService<ITimer>(),
             resolver.GetService<ISerialPortsProvider>()
         ));
-
-        services.RegisterLazySingleton<ISerialPortsService>(() => new SerialPortsService(
-            resolver.GetService<IDeviceManager>(),
-            resolver.GetService<IHardwareDetector<SerialConnectionParameters>>(),
-            resolver.GetService<ISerialPortsMonitor>()
-        ));
         
         services.RegisterConstant<IUserProfileService>(new UserProfileService());
         
         services.Register<ILocalizationService>(() => new LocalizationService(
             resolver.GetService<IUnitOfWork>(),
             resolver.GetService<IUserProfileService>()
+        ));
+        
+        services.RegisterLazySingleton<ISerialPortsSettingsService>(() => new SerialPortsSettingsService(
+            resolver.GetService<IUnitOfWork>(),
+            resolver.GetService<IUserProfileService>()
+        ));
+
+        services.RegisterLazySingleton<ISerialPortsService>(() => new SerialPortsService(
+            resolver.GetService<IDeviceManager>(),
+            resolver.GetService<IHardwareDetector<SerialConnectionParameters>>(),
+            resolver.GetService<ISerialPortsMonitor>(),
+            resolver.GetService<ISerialPortsSettingsService>()
         ));
 
         services.Register<IDevicesService>(() => new DevicesService(

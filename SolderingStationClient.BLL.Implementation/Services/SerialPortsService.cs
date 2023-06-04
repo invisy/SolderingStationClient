@@ -13,17 +13,20 @@ public class SerialPortsService : ISerialPortsService
 {
     private readonly IDeviceManager _deviceManager;
     private readonly IHardwareDetector<SerialConnectionParameters> _hardwareDetector;
+    private readonly ISerialPortsSettingsService _serialPortsSettingsService;
 
     private readonly ConcurrentDictionary<string, SerialPortInfo> _serialPorts = new();
     private readonly ISerialPortsMonitor _serialPortsMonitor;
 
     public SerialPortsService(IDeviceManager deviceManager,
         IHardwareDetector<SerialConnectionParameters> hardwareDetector,
-        ISerialPortsMonitor serialPortsMonitor)
+        ISerialPortsMonitor serialPortsMonitor,
+        ISerialPortsSettingsService serialPortsSettingsService)
     {
         _deviceManager = deviceManager;
         _hardwareDetector = hardwareDetector;
         _serialPortsMonitor = serialPortsMonitor;
+        _serialPortsSettingsService = serialPortsSettingsService;
 
         SubscribeEvents();
         _serialPortsMonitor.Start(1000);
@@ -35,15 +38,17 @@ public class SerialPortsService : ISerialPortsService
     public event EventHandler<SerialPortRemovedEventArgs>? PortRemoved;
     public event EventHandler<SerialPortInfoEventArgs>? PortInfoUpdateEvent;
 
-    public async Task Connect(SerialConnectionParameters connectionParameters)
+    public async Task Connect(string portName)
     {
-        var portExists = _serialPorts.TryGetValue(connectionParameters.PortName, out var port);
+        var serialPortSettings = await _serialPortsSettingsService.GetByPortName(portName) ?? new SerialPortSettings(portName);
+        
+        var portExists = _serialPorts.TryGetValue(portName, out var port);
 
         if (!portExists || port?.ConnectedDeviceId != 0)
             return;
 
-        var id = await _hardwareDetector.ConnectDeviceWithIdentification(connectionParameters);
-        UpdatePortInfo(connectionParameters.PortName, id);
+        var id = await _hardwareDetector.ConnectDeviceWithIdentification(Map(serialPortSettings));
+        UpdatePortInfo(portName, id);
     }
 
     public void Disconnect(string portName)
@@ -91,5 +96,17 @@ public class SerialPortsService : ISerialPortsService
     {
         var isConnected = portInfo.ConnectedDeviceId != 0;
         return new SerialPortInfoDto(portInfo.SerialPortName, isConnected);
+    }
+
+    private SerialPortSettings Map(SerialConnectionParameters parameters)
+    {
+        return new SerialPortSettings(
+            parameters.PortName, parameters.BaudRate, parameters.Parity, parameters.DataBits, parameters.StopBits);
+    }
+    
+    private SerialConnectionParameters Map(SerialPortSettings parameters)
+    {
+        return new SerialConnectionParameters(
+            parameters.PortName, parameters.BaudRate, parameters.Parity, parameters.DataBits, parameters.StopBits);
     }
 }

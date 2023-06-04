@@ -14,6 +14,8 @@ public class
     private readonly TConnection _connection;
     private bool _disposed;
 
+    public IConnection Connection => _connection;
+
     public SelfBuiltDeviceV1(TConnection connection)
     {
         _connection = connection;

@@ -45,8 +45,7 @@ public static class SolderingStationContextSeed
                     new TemperatureMeasurementPointEntity(0, 0, 0),
                     new TemperatureMeasurementPointEntity(0, 9, 40),
                 })
-            });
-            thermalProfile.ProfileId = 1;
+            }, 1);
 
             dbContext.ThermalProfiles.Add(thermalProfile);
 

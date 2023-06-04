@@ -1,5 +1,4 @@
-﻿using SolderingStation.Hardware.Models.ConnectionParameters;
-using SolderingStationClient.Models;
+﻿using SolderingStationClient.Models;
 using SolderingStationClient.Models.Dto;
 
 namespace SolderingStationClient.BLL.Abstractions.Services;
@@ -11,6 +10,6 @@ public interface ISerialPortsService
     event EventHandler<SerialPortRemovedEventArgs> PortRemoved;
     event EventHandler<SerialPortInfoEventArgs> PortInfoUpdateEvent;
 
-    Task Connect(SerialConnectionParameters connectionParameters);
+    Task Connect(string portName);
     void Disconnect(string portName);
 }

@@ -3,12 +3,12 @@ using SolderingStation.Entities;
 
 namespace SolderingStationClient.BLL.Implementation.Specifications;
 
-public sealed class ThermalProfileWithAllDataSpecification : Specification<ThermalProfileEntity>
+public sealed class ThermalProfileWithAllDataByUserSpecification : Specification<ThermalProfileEntity>
 {
-    public ThermalProfileWithAllDataSpecification(uint id)
+    public ThermalProfileWithAllDataByUserSpecification(uint profileId)
     {
         Query
-            .Where(entity => entity.Id == id)
+            .Where(entity => entity.ProfileId == profileId)
             .Include(entity => entity.Parts)
             .ThenInclude(partEntity => partEntity.TemperatureCurve);
     }

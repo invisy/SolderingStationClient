@@ -27,19 +27,9 @@ public class DeviceManager : IDeviceManager
                 yield return new CapabilityHandle<T>(deviceKey, (T)_connectedDevices[deviceKey]);
     }
 
-    public IEnumerable<CapabilityHandle<T>> GetByConnectionCapability<T>() where T : class, IConnectionCapability
+    public string GetConnectionNameByDeviceId(ulong id)
     {
-        throw new NotImplementedException();
-    }
-
-    public bool IsConnectionCapabilitySupported<T>(ulong id) where T : IDeviceCapability
-    {
-        throw new NotImplementedException();
-    }
-
-    public T? TryGetConnectionCapability<T>(ulong id) where T : IConnectionCapability
-    {
-        throw new NotImplementedException();
+        return _connectedDevices[id].Connection.Name;
     }
 
     public bool IsDeviceCapabilitySupported<T>(ulong id) where T : IDeviceCapability
@@ -55,6 +45,31 @@ public class DeviceManager : IDeviceManager
         _connectedDevices.TryGetValue(id, out var device);
 
         if (device is T value)
+            capabilityInterface = value;
+
+        return capabilityInterface;
+    }
+    
+    public IEnumerable<CapabilityHandle<T>> GetByConnectionCapability<T>() where T : class, IConnectionCapability
+    {
+        foreach (var deviceKey in _connectedDevices.Keys)
+            if (_connectedDevices[deviceKey].Connection is T)
+                yield return new CapabilityHandle<T>(deviceKey, (T)_connectedDevices[deviceKey].Connection);
+    }
+
+    public bool IsConnectionCapabilitySupported<T>(ulong id) where T : IConnectionCapability
+    {
+        _connectedDevices.TryGetValue(id, out var device);
+        return device?.Connection is T;
+    }
+
+    public T? TryGetConnectionCapability<T>(ulong id) where T : IConnectionCapability
+    {
+        var capabilityInterface = default(T);
+
+        _connectedDevices.TryGetValue(id, out var device);
+
+        if (device?.Connection is T value)
             capabilityInterface = value;
 
         return capabilityInterface;

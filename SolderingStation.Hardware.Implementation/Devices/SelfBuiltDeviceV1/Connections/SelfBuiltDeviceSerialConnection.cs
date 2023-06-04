@@ -11,6 +11,8 @@ public class SelfBuiltDeviceSerialConnection : IConnectionGeneric<SerialConnecti
 {
     private readonly ISerialCommunicationClient _client;
     private bool _disposed;
+    
+    public string Name => _client.PortSettings.PortName;
 
     public SelfBuiltDeviceSerialConnection(ISerialCommunicationClient client,
         SerialConnectionParameters connectionParameters)

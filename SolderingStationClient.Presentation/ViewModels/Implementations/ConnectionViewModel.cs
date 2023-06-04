@@ -1,14 +1,11 @@
 ﻿using System;
-using System.IO.Ports;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Avalonia.Collections;
-using Avalonia.Threading;
 using ReactiveUI;
-using SolderingStation.Hardware.Models.ConnectionParameters;
 using SolderingStationClient.BLL.Abstractions.Services;
 using SolderingStationClient.Models;
 using SolderingStationClient.Models.Dto;
@@ -77,16 +74,9 @@ public class ConnectionViewModel : ViewModelBase, IConnectionViewModel
         {
             IsActive = false;
             if (!(bool)_selectedPort?.IsConnected)
-            {
-                //TODO parameters from database
-                var portSettings =
-                    new SerialConnectionParameters(_selectedPort.SerialPortName, 9600, Parity.None, 8, StopBits.One);
-                await _serialPortService.Connect(portSettings);
-            }
+                await _serialPortService.Connect(_selectedPort.SerialPortName);
             else
-            {
                 _serialPortService.Disconnect(_selectedPort.SerialPortName);
-            }
         }
         catch (Exception)
         {

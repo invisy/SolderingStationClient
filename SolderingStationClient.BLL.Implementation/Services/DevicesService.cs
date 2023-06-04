@@ -25,12 +25,13 @@ public class DevicesService : IDevicesService
         var controllersKeys = new List<TemperatureControllerKey>();
 
         var deviceName = GetDeviceName(deviceId);
+        var connectionName = GetConnectionName(deviceId);
         var supportsPid = SupportsPid(deviceId);
 
         await foreach (var key in GetControllersKeys(deviceId))
             controllersKeys.Add(key);
 
-        return new Device(deviceId, deviceName, controllersKeys, supportsPid);
+        return new Device(deviceId, deviceName, connectionName, controllersKeys, supportsPid);
     }
 
     public async Task<IEnumerable<Device>> GetDevices()
@@ -47,6 +48,11 @@ public class DevicesService : IDevicesService
     private string GetDeviceName(ulong deviceId)
     {
         return _deviceManager.GetDeviceNameById(deviceId);
+    }
+    
+    private string GetConnectionName(ulong deviceId)
+    {
+        return _deviceManager.GetConnectionNameByDeviceId(deviceId);
     }
 
     private bool SupportsPid(ulong deviceId)

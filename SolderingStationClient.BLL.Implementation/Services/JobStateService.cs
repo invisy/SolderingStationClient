@@ -1,12 +1,14 @@
 ﻿using SolderingStationClient.BLL.Abstractions;
+using SolderingStationClient.BLL.Abstractions.Services;
 using SolderingStationClient.BLL.Implementation.Exceptions;
 using SolderingStationClient.BLL.Implementation.Extensions;
 using SolderingStationClient.Models.Jobs;
 
 namespace SolderingStationClient.BLL.Implementation.Services;
 
-public class JobStateService
+public class JobStateService : IJobStateService
 {
+    private bool _isDisposed;
     public IJob? ActiveJob { get; private set; }
 
     public event EventHandler<JobStartedEventArgs> JobStarted;
@@ -43,5 +45,21 @@ public class JobStateService
 
         ActiveJob = null;
         UnsubscribeFromJobEvents(job);
+    }
+    
+    public void Dispose()
+    {
+        Dispose(true);
+    }
+    
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_isDisposed)
+            return;
+
+        if (disposing && ActiveJob != null)
+            UnsubscribeFromJobEvents(ActiveJob);
+            
+        _isDisposed = true;
     }
 }

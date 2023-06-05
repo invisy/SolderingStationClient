@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Avalonia;
@@ -21,15 +23,12 @@ public class LanguageSettingsViewModel : ViewModelBase, ILanguageSettingsViewMod
     public LanguageSettingsViewModel(ILocalizationService localizationService)
     {
         _localizationService = Guard.Against.Null(localizationService);;
-        
-
     }
 
     public async Task Init()
     {
         var locales = await _localizationService.GetAvailableLocalizations();
         var selectedLocalizationCode = await _localizationService.GetCurrentLanguageCode();
-        var i = 0;
         AvailableLanguages.AddRange(locales.Select(locale => new LanguageViewModel(locale)));
         SelectedLanguage = AvailableLanguages.First(lang => lang.Locale.CultureCode == selectedLocalizationCode);
     }
@@ -53,8 +52,10 @@ public class LanguageSettingsViewModel : ViewModelBase, ILanguageSettingsViewMod
         var translations = Application.Current?.Resources.MergedDictionaries.OfType<ResourceInclude>()
             .FirstOrDefault(x => x.Source?.OriginalString?.Contains("/Languages/") ?? false);
 
-        if (translations != null)
-            Application.Current?.Resources.MergedDictionaries.Remove(translations);
+        if (translations == null) 
+            return;
+        
+        Application.Current?.Resources.MergedDictionaries.Remove(translations);
 
         Application.Current?.Resources.MergedDictionaries.Add(
             new ResourceInclude

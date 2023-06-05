@@ -2,7 +2,7 @@
 
 namespace SolderingStationClient.BLL.Abstractions.Services;
 
-public interface IDevicesService
+public interface IDevicesService : IDisposable
 {
     event EventHandler<DeviceConnectedEventArgs>? DeviceConnected;
     event EventHandler<DeviceDisconnectedEventArgs>? DeviceDisconnected;

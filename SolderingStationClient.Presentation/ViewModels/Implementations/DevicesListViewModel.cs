@@ -40,15 +40,20 @@ public class DevicesListViewModel : ViewModelBase, IDevicesListViewModel
         _devicesService.DeviceConnected += OnDeviceConnected;
         _devicesService.DeviceDisconnected += OnDeviceDisconnected;
         _temperatureMonitor.NewTemperatureMeasurement += OnTemperatureMeasurement;
-        _temperatureMonitor.Enable();
     }
 
     private async void OnDeviceConnected(object? sender, DeviceConnectedEventArgs args)
     {
-        var deviceVm = _deviceViewModelFactory.Create(args.Device);
-        await deviceVm.Init();
-        
-        _applicationDispatcher.Dispatch(() => DevicesList.Add(deviceVm));
+        await _applicationDispatcher.DispatchAsync(async () =>
+        {
+            if (DevicesList.Count == 0)
+                _temperatureMonitor.Enable();
+            
+            var deviceVm = _deviceViewModelFactory.Create(args.Device);
+            await deviceVm.Init();
+
+            DevicesList.Add(deviceVm);
+        });
     }
 
     private void OnDeviceDisconnected(object? sender, DeviceDisconnectedEventArgs args)
@@ -60,6 +65,9 @@ public class DevicesListViewModel : ViewModelBase, IDevicesListViewModel
             {
                 DevicesList.Remove(device);
             }
+            
+            if(DevicesList.Count == 0)
+                _temperatureMonitor.Disable();
         });
     }
     

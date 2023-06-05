@@ -3,7 +3,7 @@ using SolderingStationClient.Models.Dto;
 
 namespace SolderingStationClient.BLL.Abstractions.Services;
 
-public interface ISerialPortsService
+public interface ISerialPortsService : IDisposable
 {
     IEnumerable<SerialPortInfoDto> SerialPorts { get; }
     event EventHandler<SerialPortInfoEventArgs> PortAdded;

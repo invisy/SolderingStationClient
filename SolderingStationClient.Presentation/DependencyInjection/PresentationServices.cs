@@ -35,8 +35,14 @@ public static class PresentationServices
             resolver.GetService<IMessageBoxService>()
         ));
 
+        services.RegisterLazySingleton<IPlotModelFactory>(() => new PlotModelFactory());
+        
         services.Register<IMainPlotViewModel>(() => new MainPlotViewModel(
-            resolver.GetService<IResourceProvider>()
+            resolver.GetService<IApplicationDispatcher>(),
+            resolver.GetService<IResourceProvider>(),
+            resolver.GetService<IPlotModelFactory>(),
+            resolver.GetService<IDevicesService>(),
+            resolver.GetService<ITemperatureMonitorService>()
         ));
 
         services.Register<ITemperatureControllerViewModelFactory>(() =>

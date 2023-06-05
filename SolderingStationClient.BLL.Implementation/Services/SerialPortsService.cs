@@ -18,6 +18,8 @@ public class SerialPortsService : ISerialPortsService
     private readonly ConcurrentDictionary<string, SerialPortInfo> _serialPorts = new();
     private readonly ISerialPortsMonitor _serialPortsMonitor;
 
+    private bool _isDisposed;
+
     public SerialPortsService(IDeviceManager deviceManager,
         IHardwareDetector<SerialConnectionParameters> hardwareDetector,
         ISerialPortsMonitor serialPortsMonitor,
@@ -108,5 +110,24 @@ public class SerialPortsService : ISerialPortsService
     {
         return new SerialConnectionParameters(
             parameters.PortName, parameters.BaudRate, parameters.Parity, parameters.DataBits, parameters.StopBits);
+    }
+    
+    public void Dispose()
+    {
+        Dispose(true);
+    }
+    
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_isDisposed)
+            return;
+
+        if (disposing)
+        {
+            _serialPortsMonitor.PortPresenceStatusChanged -= OnPortPresenceChanged;
+            _serialPortsMonitor.Dispose();
+        }
+
+        _isDisposed = true;
     }
 }

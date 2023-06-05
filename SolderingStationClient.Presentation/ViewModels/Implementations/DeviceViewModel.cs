@@ -36,12 +36,12 @@ public class DeviceViewModel : ViewModelBase, IDeviceViewModel
     public async Task Init()
     {
         DeviceId = _device.Id;
-        Name = _device.Name;
+        Name = $"[{_device.ConnectionName}] {_device.Name}";
 
         foreach (var controllerKey in _device.TemperatureControllersKeys)
         {
             ITemperatureControllerSettingsViewModel controllerVm;
-            if (_device.SupportsPid)
+            if(_device.SupportsPid)
                 controllerVm = _temperatureControllerViewModelFactory.CreatePidTemperatureController(controllerKey);
             else
                 controllerVm = _temperatureControllerViewModelFactory.CreateTemperatureController(controllerKey);

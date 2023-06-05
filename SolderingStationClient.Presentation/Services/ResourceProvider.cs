@@ -14,5 +14,6 @@ public class ResourceProvider : IResourceProvider
         }
         
         throw new ArgumentException(name);
+        
     }
 }

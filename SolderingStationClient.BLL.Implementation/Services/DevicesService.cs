@@ -9,6 +9,7 @@ namespace SolderingStationClient.BLL.Implementation.Services;
 
 public class DevicesService : IDevicesService
 {
+    private bool _isDisposed;
     private readonly IDeviceManager _deviceManager;
 
     public DevicesService(IDeviceManager deviceManager)
@@ -78,5 +79,21 @@ public class DevicesService : IDevicesService
             DeviceConnected?.Invoke(this, new DeviceConnectedEventArgs(await GetDevice(args.DeviceId)));
         else
             DeviceDisconnected?.Invoke(this, new DeviceDisconnectedEventArgs(args.DeviceId));
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+    }
+    
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_isDisposed)
+            return;
+
+        if (disposing)
+            _deviceManager.DevicePresenceChanged -= OnDevicePresenceChanged;
+            
+        _isDisposed = true;
     }
 }

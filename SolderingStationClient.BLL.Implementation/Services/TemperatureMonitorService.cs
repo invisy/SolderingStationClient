@@ -16,6 +16,7 @@ public class TemperatureMonitorService : ITemperatureMonitorService
     
     private readonly Dictionary<TemperatureControllerKey, bool> _trackedControllers = new();
 
+    private bool _isDisposed;
     private DateTime StartTime;
     
     public TemperatureMonitorService(
@@ -29,17 +30,33 @@ public class TemperatureMonitorService : ITemperatureMonitorService
         _temperatureControllerService = temperatureControllerService;
         _timer = timer;
         _devicesService.DeviceConnected += OnDeviceConnected;
-        _devicesService.DeviceDisconnected -= OnDeviceDisconnected;
+        _devicesService.DeviceDisconnected += OnDeviceDisconnected;
     }
+
+    public bool IsRunning { get; private set; }
 
     public event EventHandler<TemperatureMeasurementEventArgs>? NewTemperatureMeasurement;
     
     public void Enable()
     {
+        if (IsRunning) 
+            return;
+        
         StartTime = DateTime.Now;
         _timer.Interval = 1000;
         _timer.Start();
         _timer.TimerIntervalElapsed += Tick;
+        IsRunning = true;
+    }
+    
+    public void Disable()
+    {
+        if (!IsRunning) 
+            return;
+        
+        _timer.TimerIntervalElapsed -= Tick;
+        _timer.Stop();
+        IsRunning = false;
     }
 
     public void ChangeInterval(double ms)
@@ -47,6 +64,12 @@ public class TemperatureMonitorService : ITemperatureMonitorService
         _timer.Stop();
         _timer.Interval = ms;
         _timer.Start();
+    }
+
+    public void ClearHistory()
+    {
+        StartTime = DateTime.Now;
+        _temperatureHistoryTracker.Clear();
     }
 
     public void StartControllerTracking(TemperatureControllerKey temperatureControllerKey)
@@ -107,10 +130,14 @@ public class TemperatureMonitorService : ITemperatureMonitorService
         {
             var tasks = _trackedControllers.Select(async key =>
             {
-                if(key.Value)
+                if (key.Value)
                     await MeasureTemperature(key.Key, time);
             });
             await Task.WhenAll(tasks);
+        }
+        catch(Exception e)
+        {
+            // ignored
         }
         finally
         {
@@ -120,19 +147,33 @@ public class TemperatureMonitorService : ITemperatureMonitorService
 
     private async Task MeasureTemperature(TemperatureControllerKey key, DateTime time)
     {
-        try
+        var temperatureController = await _temperatureControllerService.GetTemperatureController(key);
+        var elapsed = ((float)(time - StartTime).TotalMilliseconds)/1000;
+        var temperatureMeasurement = new TemperatureMeasurement(elapsed, temperatureController.CurrentTemperature);
+        var desiredTemperature = temperatureController.DesiredTemperature;
+        _temperatureHistoryTracker.AddMeasurement(key, temperatureMeasurement);
+        NewTemperatureMeasurement?.Invoke(this,
+            new TemperatureMeasurementEventArgs(key, temperatureMeasurement, desiredTemperature));
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+    }
+    
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_isDisposed)
+            return;
+
+        if (disposing)
         {
-            var temperatureController = await _temperatureControllerService.GetTemperatureController(key);
-            var elapsed = ((float)(time - StartTime).Milliseconds) / 1000;
-            var temperatureMeasurement = new TemperatureMeasurement(elapsed, temperatureController.CurrentTemperature);
-            var desiredTemperature = temperatureController.DesiredTemperature;
-            _temperatureHistoryTracker.AddMeasurement(key, temperatureMeasurement);
-            NewTemperatureMeasurement?.Invoke(this,
-                new TemperatureMeasurementEventArgs(key, temperatureMeasurement, desiredTemperature));
+            _devicesService.DeviceConnected -= OnDeviceConnected;
+            _devicesService.DeviceDisconnected -= OnDeviceDisconnected;
+            _timer.Dispose();
+            _semaphoreSlim.Dispose();
         }
-        catch (Exception)
-        {
-            // ignored
-        }
+
+        _isDisposed = true;
     }
 }

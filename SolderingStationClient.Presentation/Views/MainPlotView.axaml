@@ -7,6 +7,7 @@
     xmlns:avalonia="http://oxyplot.org/avalonia"
     xmlns:colorPicker="clr-namespace:ThemeEditor.Controls.ColorPicker;assembly=ThemeEditor.Controls.ColorPicker"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:implementations="clr-namespace:SolderingStationClient.Presentation.ViewModels.Implementations"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Grid VerticalAlignment="Stretch">
@@ -25,39 +26,52 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Grid Column="0" IsVisible="False">
+            <Grid Column="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Border Classes="GroupBorder">
-                    <StackPanel Orientation="Horizontal">
-                        <CheckBox />
-                        <Button
-                            Background="Orange"
-                            Height="20"
-                            Margin="0,0,10,0"
-                            Width="20">
-                            <Button.Flyout>
-                                <Flyout>
-                                    <colorPicker:ColorPicker Color="Orange" />
-                                </Flyout>
-                            </Button.Flyout>
-                        </Button>
-                        <Label
-                            Content="COM5:0"
-                            FontWeight="Bold"
-                            VerticalAlignment="Center" />
-                    </StackPanel>
-                </Border>
+                <WrapPanel Orientation="Vertical">
+                    <ItemsControl Items="{Binding TemperatureControllers}" Margin="4,0,4,0">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type implementations:TemperatureControllerViewModel}">
+                                <Border Classes="GroupBorder">
+                                    <StackPanel Orientation="Horizontal">
+                                        <StackPanel.Resources>
+                                            <SolidColorBrush Color="{Binding Color}" x:Key="ColorBrush" />
+                                        </StackPanel.Resources>
+                                        <CheckBox IsChecked="{Binding IsVisible, Mode=TwoWay}" />
+                                        <Button
+                                            Background="{StaticResource ColorBrush}"
+                                            Height="20"
+                                            Margin="0,0,10,0"
+                                            Width="20">
+                                            <Button.Flyout>
+                                                <Flyout>
+                                                    <colorPicker:ColorPicker Color="{Binding Color, Mode=TwoWay}" />
+                                                </Flyout>
+                                            </Button.Flyout>
+                                        </Button>
+                                        <Label
+                                            Content="{Binding Name}"
+                                            FontWeight="Bold"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </WrapPanel>
             </Grid>
             <Border Classes="GroupBorder" Grid.Column="1">
                 <StackPanel Orientation="Horizontal">
                     <CheckBox
                         Content="{DynamicResource Localization.PlotAutoUpdating}"
-                        IsChecked="True"
+                        IsChecked="{Binding IsAutoUpdatable, Mode=TwoWay}"
                         Margin="3" />
                     <Button
+                        Command="{Binding ClearPlot}"
                         Content="{DynamicResource Localization.ClearPlotButton}"
                         HorizontalContentAlignment="Center"
                         Margin="10,0,0,0" />

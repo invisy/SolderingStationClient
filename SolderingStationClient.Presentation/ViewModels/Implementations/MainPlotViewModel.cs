@@ -1,10 +1,6 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using Avalonia.Collections;
-using Avalonia.Media;
 using OxyPlot;
-using OxyPlot.Annotations;
-using OxyPlot.Series;
 using ReactiveUI;
 using SolderingStationClient.BLL.Abstractions.Services;
 using SolderingStationClient.Models;

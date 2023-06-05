@@ -1,4 +1,5 @@
-﻿using SolderingStationClient.BLL.Abstractions.Services;
+﻿using SolderingStationClient.BLL.Abstractions;
+using SolderingStationClient.BLL.Abstractions.Services;
 using SolderingStationClient.Presentation.Services;
 using SolderingStationClient.Presentation.ViewModels.Factories.Implementations;
 using SolderingStationClient.Presentation.ViewModels.Factories.Interfaces;
@@ -21,8 +22,9 @@ public static class PresentationServices
             resolver.GetService<IResourceProvider>()
         ));
         
-        services.Register<ISerialPortAdvancedSettingsWindowViewModel>(() =>
-            new SerialPortAdvancedSettingsWindowViewModel());
+        services.Register<ISerialPortAdvancedSettingsWindowViewModel>(() => new SerialPortAdvancedSettingsWindowViewModel(
+            resolver.GetService<ISerialPortsSettingsService>()   
+        ));
 
         services.Register<ILanguageSettingsViewModel>(() => new LanguageSettingsViewModel(
             resolver.GetService<ILocalizationService>()
@@ -71,7 +73,8 @@ public static class PresentationServices
             resolver.GetService<ILanguageSettingsViewModel>(),
             resolver.GetService<IConnectionViewModel>(),
             resolver.GetService<IMainPlotViewModel>(),
-            resolver.GetService<IDevicesListViewModel>()
+            resolver.GetService<IDevicesListViewModel>(),
+            resolver.GetService<IJobStateService>()
         ));
         
     }

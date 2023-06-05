@@ -90,6 +90,10 @@ public class ConnectionViewModel : ViewModelBase, IConnectionViewModel
 
     public async Task OpenAdvancedSettings()
     {
+        if (_selectedPort == null)
+            return;
+        
+        await _serialPortAdvancedSettingsWindowViewModel.Edit(_selectedPort.SerialPortName);
         var result = await ShowSerialPortAdvancedSettingsWindow.Handle(_serialPortAdvancedSettingsWindowViewModel);
     }
 

@@ -10,8 +10,10 @@
     x:Class="SolderingStationClient.Presentation.Views.SerialPortAdvancedSettingsWindow"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="clr-namespace:SolderingStationClient.Presentation.Helpers"
     xmlns:implementations="clr-namespace:SolderingStationClient.Presentation.ViewModels.Implementations"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ports="clr-namespace:System.IO.Ports;assembly=System.IO.Ports"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Design.DataContext>
@@ -80,7 +82,7 @@
                     Margin="5"
                     VerticalContentAlignment="Center" />
                 <Label
-                    Content="COM5"
+                    Content="{Binding PortName}"
                     FontWeight="Bold"
                     Grid.Column="1"
                     Grid.Row="0"
@@ -91,26 +93,30 @@
                     Grid.Row="1"
                     Margin="5"
                     Minimum="0"
-                    Value="9600" />
+                    Value="{Binding BaudRate, Mode=TwoWay}" />
                 <ComboBox
                     Grid.Column="1"
                     Grid.Row="2"
                     HorizontalAlignment="Stretch"
+                    Items="{Binding Source={helpers:EnumBindingSource {x:Type ports:Parity}}}"
                     Margin="5"
-                    PlaceholderText="None" />
+                    PlaceholderText="None"
+                    SelectedIndex="{Binding SelectedParity, Mode=TwoWay}" />
                 <NumericUpDown
                     Grid.Column="1"
                     Grid.Row="3"
                     Margin="5"
                     Minimum="0"
                     Text=""
-                    Value="8" />
+                    Value="{Binding DataBits, Mode=TwoWay}" />
                 <ComboBox
                     Grid.Column="1"
                     Grid.Row="4"
                     HorizontalAlignment="Stretch"
+                    Items="{Binding Source={helpers:EnumBindingSource {x:Type ports:StopBits}}}"
                     Margin="5"
-                    PlaceholderText="1" />
+                    PlaceholderText="1"
+                    SelectedIndex="{Binding SelectedStopBits, Mode=TwoWay}" />
             </Grid>
 
             <Grid Grid.Row="2">

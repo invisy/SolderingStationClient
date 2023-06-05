@@ -20,6 +20,8 @@ public static class BusinessLogicServices
             resolver.GetService<ISerialPortsProvider>()
         ));
         
+        services.RegisterLazySingleton<IJobStateService>(() => new JobStateService());
+
         services.RegisterConstant<IUserProfileService>(new UserProfileService());
         
         services.Register<ILocalizationService>(() => new LocalizationService(

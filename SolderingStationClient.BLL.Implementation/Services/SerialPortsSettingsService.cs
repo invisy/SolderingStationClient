@@ -48,7 +48,18 @@ public class SerialPortsSettingsService : ISerialPortsSettingsService
 
     public async Task Update(SerialPortSettings portSettings)
     {
-        _uow.SerialConnectionParametersRepository.Update(Map(portSettings));
+        var userProfileId = _userProfileService.GetProfileId();
+        var spec = new SerialConnectionParametersByPortNameSpecification(userProfileId, portSettings.PortName);
+        var serialConnectionParameters = await _uow.SerialConnectionParametersRepository.GetBySpecAsync(spec);
+        if (serialConnectionParameters == null)
+            return;
+        
+        serialConnectionParameters.PortName = portSettings.PortName;
+        serialConnectionParameters.Parity = (int)portSettings.Parity;
+        serialConnectionParameters.BaudRate = portSettings.BaudRate;
+        serialConnectionParameters.StopBits = (int)portSettings.StopBits;
+        serialConnectionParameters.DataBits = portSettings.DataBits;
+        _uow.SerialConnectionParametersRepository.Update(serialConnectionParameters);
         await _uow.SaveChanges();
     }
     

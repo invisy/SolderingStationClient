@@ -16,5 +16,8 @@ public class ThermalProfilePartConfiguration : IEntityTypeConfiguration<ThermalP
         
         builder.Property(entity => entity.Color)
             .IsRequired();
+        
+        builder.HasMany(e => e.TemperatureCurve)
+            .WithOne().OnDelete(DeleteBehavior.ClientCascade);
     }
 }

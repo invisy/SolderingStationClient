@@ -28,7 +28,7 @@ public class MainPlotViewModel : ViewModelBase, IMainPlotViewModel
 
     public bool IsAutoUpdatable
     {
-        get => _temperatureMonitorService.IsRunning;
+        get => _isAutoUpdatable;
         set
         {
             if (value)
@@ -39,7 +39,7 @@ public class MainPlotViewModel : ViewModelBase, IMainPlotViewModel
             else
                 _temperatureMonitorService.Disable();
             
-            this.RaiseAndSetIfChanged(ref _isAutoUpdatable, value);
+            this.RaiseAndSetIfChanged(ref _isAutoUpdatable, _temperatureMonitorService.IsRunning);
         }
     }
     public AvaloniaList<TemperatureControllerViewModel> TemperatureControllers { get; } = new();
@@ -130,7 +130,7 @@ public class MainPlotViewModel : ViewModelBase, IMainPlotViewModel
     
     private void RemoveController(TemperatureControllerViewModel controller)
     {
-        var curve = Model.Series.Remove(controller.TemperatureCurve);
+        Model.Series.Remove(controller.TemperatureCurve);
         Model.Annotations.Remove(controller.DesiredTemperature);
         TemperatureControllers.Remove(controller);
         Model.InvalidatePlot(false);

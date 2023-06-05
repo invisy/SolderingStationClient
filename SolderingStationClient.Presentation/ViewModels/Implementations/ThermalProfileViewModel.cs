@@ -27,7 +27,7 @@ public class ThermalProfileViewModel : ViewModelBase
     public IAvaloniaList<ThermalProfilePartViewModel> ThermalProfileParts { get; } =
         new AvaloniaList<ThermalProfilePartViewModel>();
     
-    public ThermalProfilePartViewModel ActiveThermalProfilePart
+    public ThermalProfilePartViewModel? ActiveThermalProfilePart
     {
         get => _activeThermalProfilePartViewModel!;
         set => this.RaiseAndSetIfChanged(ref _activeThermalProfilePartViewModel, value);
@@ -78,14 +78,10 @@ public class ThermalProfileViewModel : ViewModelBase
                 else
                 {
                     var closePoint = GetClosePoint(ActiveThermalProfilePart.Curve.Points, point);
-                    if(closePoint != null)
+                    if(closePoint != null && closePoint.Value is not { X: 0, Y: 0 })
                         ActiveThermalProfilePart.Curve.Points.Remove(closePoint.Value);
                     else
-                    {
                         TryInsertPoint(ActiveThermalProfilePart.Curve.Points, point);
-                        var dataPoint = new DataPoint(Math.Round(point.X), Math.Round(point.Y));
-                        ActiveThermalProfilePart.Curve.Points.Add(dataPoint);
-                    }
                 }
                 PlotModel.InvalidatePlot(true);
             });
@@ -94,7 +90,7 @@ public class ThermalProfileViewModel : ViewModelBase
         PlotController.BindMouseEnter(PlotCommands.HoverPointsOnlyTrack);
     }
     
-    private bool TryInsertPoint(List<DataPoint> points, DataPoint click)
+    private void TryInsertPoint(List<DataPoint> points, DataPoint click)
     {
         for (int i=0;i<points.Count-1;i++)
         {
@@ -103,10 +99,15 @@ public class ThermalProfileViewModel : ViewModelBase
             var distance = nextPoint - previousPoint;
             
             if (previousPoint < click.X && click.X < nextPoint && distance >=2)
-                return true;
+            {
+                var dataPoint = new DataPoint(Math.Round(click.X), Math.Round(click.Y));
+                if (Math.Abs(dataPoint.X - previousPoint) > 0 && Math.Abs(dataPoint.X - nextPoint) > 0)
+                {
+                    ActiveThermalProfilePart?.Curve.Points.Insert(i+1, dataPoint);
+                    return;
+                }
+            }
         }
-
-        return false;
     }
 
     private DataPoint? GetClosePoint(List<DataPoint> points, DataPoint click)

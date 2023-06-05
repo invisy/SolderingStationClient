@@ -69,12 +69,15 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
     
     public virtual void Delete(TEntity entity)
     {
-        _dbContext.Set<TEntity>().Remove(entity);
+        var selected = _dbContext.FindAsync<TEntity>(entity.Id).Result;
+        if (selected == null)
+            throw new ArgumentException(nameof(entity));
+        _dbContext.Set<TEntity>().Remove(selected);
     }
     
     public virtual void Delete(uint id)
     {
-        var selected = _dbContext.Set<TEntity>().FirstOrDefault(entity => entity.Id == id);
+        var selected = _dbContext.FindAsync<TEntity>(id).Result;
         if (selected == null)
             throw new ArgumentException(nameof(id));
         _dbContext.Set<TEntity>().Remove(selected);

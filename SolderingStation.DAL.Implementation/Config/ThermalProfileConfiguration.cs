@@ -13,5 +13,8 @@ public class ThermalProfileConfiguration : IEntityTypeConfiguration<ThermalProfi
         builder.Property(entity => entity.Name)
             .HasMaxLength(100)
             .IsRequired();
+
+        builder.HasMany(e => e.Parts)
+            .WithOne().OnDelete(DeleteBehavior.ClientCascade);
     }
 }

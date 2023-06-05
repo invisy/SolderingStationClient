@@ -1,11 +1,8 @@
-﻿using System.Drawing.Drawing2D;
-using System.Security.Cryptography;
-using Avalonia.Media;
+﻿using Avalonia.Media;
 using OxyPlot;
 using OxyPlot.Avalonia;
 using ReactiveUI;
 using SolderingStationClient.Models;
-using Tmds.DBus;
 using LineSeries = OxyPlot.Series.LineSeries;
 
 namespace SolderingStationClient.Presentation.ViewModels.Implementations;
@@ -13,7 +10,6 @@ namespace SolderingStationClient.Presentation.ViewModels.Implementations;
 public class ThermalProfilePartViewModel: ViewModelBase
 {
     private string _name = string.Empty;
-    public uint Id { get; }
     public string Name
     {
         get => _name;
@@ -36,7 +32,6 @@ public class ThermalProfilePartViewModel: ViewModelBase
 
     public ThermalProfilePartViewModel(ControllerThermalProfile thermalProfilePart)
     {
-        Id = thermalProfilePart.Id;
         Name = thermalProfilePart.Name;
 
         foreach (var point in thermalProfilePart.TemperatureMeasurements)
@@ -47,7 +42,6 @@ public class ThermalProfilePartViewModel: ViewModelBase
     
     public ThermalProfilePartViewModel(string name)
     {
-        Id = 0;
         Name = name;
         Curve.Points.Add(new DataPoint(0, 0));
         _color = Colors.Green;

@@ -24,7 +24,7 @@ public class ThermalProfileService : IThermalProfileService
         var userProfileId = _userProfileService.GetProfileId();
         var spec = new ThermalProfileWithAllDataByUserSpecification(userProfileId);
         var result = await _uow.ThermalProfilesRepository.GetListBySpecAsync(spec);
-        return result.Select(Map);
+        return result.Select(Map).ToList();
     }
 
     public async Task<ThermalProfile> GetById(uint thermalProfileId)
@@ -56,7 +56,6 @@ public class ThermalProfileService : IThermalProfileService
         await _uow.SaveChanges();
     }
 
-    
     private ThermalProfile Map(ThermalProfileEntity entity)
     {
         var controllerThermalProfiles = entity.Parts.Select(Map).ToList();

@@ -77,6 +77,7 @@ public static class BusinessLogicServices
         ));
         
         services.Register<IThermalProfileProcessingService>(() => new ThermalProfileProcessingService(
+            resolver.GetService<IJobStateService>(),
             resolver.GetService<ITemperatureControllerService>(),
             resolver.GetService<IThermalProfileService>(),
             resolver.GetService<IThermalProfileProcessingJobFactory>()

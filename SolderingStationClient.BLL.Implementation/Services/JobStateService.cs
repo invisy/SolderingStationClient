@@ -21,7 +21,7 @@ public class JobStateService : IJobStateService
         SubscribeToJobEvents(job);
 
         ActiveJob = job;
-        JobStarted?.Invoke(this, new JobStartedEventArgs(job.JobType));
+        JobStarted?.Invoke(this, new JobStartedEventArgs(job));
     }
 
     private void SubscribeToJobEvents(IJob job)

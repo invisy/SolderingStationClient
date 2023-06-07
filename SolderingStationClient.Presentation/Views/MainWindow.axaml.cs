@@ -4,7 +4,6 @@ using Avalonia;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
-using SolderingStationClient.Presentation.ViewModels.Implementations;
 using SolderingStationClient.Presentation.ViewModels.Interfaces;
 
 namespace SolderingStationClient.Presentation.Views;
@@ -17,11 +16,6 @@ public class MainWindow : ReactiveWindow<IMainWindowViewModel>
 #if DEBUG
         this.AttachDevTools();
 #endif
-
-        this.WhenActivated(d =>
-            d(ViewModel!.ConnectionViewModel.ShowSerialPortAdvancedSettingsWindow.RegisterHandler(
-                DoShowSerialPortAdvancedSettingsWindow))
-        );
         
         this.WhenActivated(d =>
             d(ViewModel!.ConnectionViewModel.ShowSerialPortAdvancedSettingsWindow.RegisterHandler(
@@ -47,15 +41,11 @@ public class MainWindow : ReactiveWindow<IMainWindowViewModel>
     private async Task DoShowSerialPortAdvancedSettingsWindow(
         InteractionContext<ISerialPortAdvancedSettingsWindowViewModel, Unit> interaction)
     {
-        var window = new SerialPortAdvancedSettingsWindow
-        {
-            DataContext = interaction.Input
-        };
-
+        var window = new SerialPortAdvancedSettingsWindow { DataContext = interaction.Input };
         await window.ShowDialog(this);
         interaction.SetOutput(Unit.Default);
     }
-    
+
     private async Task DoShowThermalProfileEditorWindow(
         InteractionContext<IThermalProfileEditorWindowViewModel, Unit> interaction)
     {
@@ -69,7 +59,7 @@ public class MainWindow : ReactiveWindow<IMainWindowViewModel>
     }
     
     private async Task DoShowThermalProfileRunnerWindow(
-        InteractionContext<IThermalProfileRunnerViewModel, Unit> interaction)
+        InteractionContext<IThermalProfileRunnerWindowViewModel, Unit> interaction)
     {
         var window = new ThermalProfileRunnerWindow()
         {

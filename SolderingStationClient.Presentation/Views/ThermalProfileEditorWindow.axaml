@@ -2,6 +2,7 @@
     MinHeight="500"
     MinWidth="800"
     Title="{DynamicResource Localization.ThermalProfileEditorTitle}"
+    WindowStartupLocation="CenterOwner"
     d:DesignHeight="768"
     d:DesignWidth="1280"
     mc:Ignorable="d"

@@ -1,12 +1,14 @@
 ﻿using System.Reactive;
+using System.Threading.Tasks;
 using Avalonia.Collections;
 using ReactiveUI;
 using SolderingStationClient.Presentation.ViewModels.Implementations;
 
 namespace SolderingStationClient.Presentation.ViewModels.Interfaces;
 
-public interface IThermalProfileEditorWindowViewModel
+public interface IThermalProfileEditorWindowViewModel : IViewModelBase
 {
+    Task Init();
     ThermalProfileViewModel? SelectedThermalProfile { get; }
     IAvaloniaList<ThermalProfileViewModel> ThermalProfiles { get; }
     void Create();

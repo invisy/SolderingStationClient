@@ -1,5 +1,5 @@
 <Window
-    Height="768"
+    Height="720"
     Icon="/Assets/avalonia-logo.ico"
     MinHeight="720"
     MinWidth="1280"
@@ -69,6 +69,9 @@
                         <ProgressBar
                             Grid.Column="2"
                             Margin="0,4,5,4"
+                            Maximum="1"
+                            Minimum="0"
+                            Value="{Binding JobProgress}"
                             VerticalAlignment="Stretch" />
                     </Grid>
                 </Border>

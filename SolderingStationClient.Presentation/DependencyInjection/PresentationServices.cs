@@ -14,6 +14,8 @@ public static class PresentationServices
     public static void RegisterPresentationServices(this IMutableDependencyResolver services,
         IReadonlyDependencyResolver resolver)
     {
+        services.RegisterConstant<IViewModelCreator>(new ViewModelCreator(resolver));
+        
         services.RegisterLazySingleton<IApplicationDispatcher>(() => new ApplicationDispatcher());
         
         services.RegisterLazySingleton<IResourceProvider>(() => new ResourceProvider());
@@ -32,8 +34,8 @@ public static class PresentationServices
 
         services.Register<IConnectionViewModel>(() => new ConnectionViewModel(
             resolver.GetService<IApplicationDispatcher>(),
+            resolver.GetService<IViewModelCreator>(),
             resolver.GetService<ISerialPortsService>(),
-            resolver.GetService<ISerialPortAdvancedSettingsWindowViewModel>(),
             resolver.GetService<IMessageBoxService>()
         ));
 
@@ -68,17 +70,12 @@ public static class PresentationServices
             resolver.GetService<IThermalProfileService>()
         ));
         
-        services.Register<IThermalProfileRunnerViewModel>(() => new ThermalProfileRunnerViewModel(
+        services.Register<IThermalProfileRunnerWindowViewModel>(() => new ThermalProfileRunnerWindowViewModel(
             resolver.GetService<IThermalProfileProcessingService>()
         ));
 
         services.Register<IMainWindowViewModel>(() => new MainWindowViewModel(
-            resolver.GetService<IThermalProfileEditorWindowViewModel>(),
-            resolver.GetService<ILanguageSettingsViewModel>(),
-            resolver.GetService<IConnectionViewModel>(),
-            resolver.GetService<IMainPlotViewModel>(),
-            resolver.GetService<IDevicesListViewModel>(),
-            resolver.GetService<IThermalProfileRunnerViewModel>(),
+            resolver.GetService<IViewModelCreator>(),
             resolver.GetService<IJobStateService>()
         ));
         

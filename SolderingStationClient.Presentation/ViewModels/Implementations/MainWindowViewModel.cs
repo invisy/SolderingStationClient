@@ -8,14 +8,14 @@ using ReactiveUI;
 using SolderingStationClient.BLL.Abstractions.Services;
 using SolderingStationClient.Models;
 using SolderingStationClient.Models.Jobs;
+using SolderingStationClient.Presentation.Services;
 using SolderingStationClient.Presentation.ViewModels.Interfaces;
 
 namespace SolderingStationClient.Presentation.ViewModels.Implementations;
 
 public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
 {
-    private readonly IThermalProfileEditorWindowViewModel _thermalProfileEditorVm;
-    private readonly IThermalProfileRunnerViewModel _thermalProfileRunnerVm;
+    private readonly IViewModelCreator _viewModelCreator;
     private readonly IJobStateService _jobStateService;
 
     private bool _isJobRunning;
@@ -27,9 +27,9 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         set
         {
             _isJobRunning = value;
-            ConnectionViewModel.IsActive = false;
-            DevicesListViewModel.IsActive = false;
-            MainPlotViewModel.IsActive = false;
+            ConnectionViewModel.IsActive = !value;
+            DevicesListViewModel.IsActive = !value;
+            MainPlotViewModel.IsActive = !value;
             this.RaiseAndSetIfChanged(ref _isJobRunning, value);
         }
     }
@@ -44,22 +44,16 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
     }
 
     public MainWindowViewModel(
-        IThermalProfileEditorWindowViewModel thermalProfileEditorVm,
-        ILanguageSettingsViewModel languageSettingsViewModel,
-        IConnectionViewModel connectionViewModel,
-        IMainPlotViewModel mainPlotViewModel,
-        IDevicesListViewModel devicesListViewModel,
-        IThermalProfileRunnerViewModel thermalProfileRunnerVm,
+        IViewModelCreator viewModelCreator,
         IJobStateService jobStateService
     )
     {
+        _viewModelCreator = viewModelCreator;
         _jobStateService = Guard.Against.Null(jobStateService);
-        _thermalProfileEditorVm = Guard.Against.Null(thermalProfileEditorVm);
-        _thermalProfileRunnerVm = Guard.Against.Null(thermalProfileRunnerVm);
-        LanguageSettingsViewModel = Guard.Against.Null(languageSettingsViewModel);
-        ConnectionViewModel = Guard.Against.Null(connectionViewModel);
-        MainPlotViewModel = Guard.Against.Null(mainPlotViewModel);
-        DevicesListViewModel = Guard.Against.Null(devicesListViewModel);
+        LanguageSettingsViewModel = viewModelCreator.Create<ILanguageSettingsViewModel>();
+        ConnectionViewModel = viewModelCreator.Create<IConnectionViewModel>();
+        MainPlotViewModel = viewModelCreator.Create<IMainPlotViewModel>();
+        DevicesListViewModel = viewModelCreator.Create<IDevicesListViewModel>();
         
         RxApp.MainThreadScheduler.Schedule(Init);
     }
@@ -80,19 +74,35 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
     
     public async Task OpenThermalProfileEditorWindow()
     {
-        var result = await ShowThermalProfileEditorWindow.Handle(_thermalProfileEditorVm);
+        var thermalProfileEditorVm = _viewModelCreator.Create<IThermalProfileEditorWindowViewModel>();
+        await thermalProfileEditorVm.Init();
+        var result = await ShowThermalProfileEditorWindow.Handle(thermalProfileEditorVm);
     }
     
     public async Task OpenThermalProfileRunnerWindow()
     {
-        var result = await ShowThermalProfileSelectorWindow.Handle(_thermalProfileRunnerVm);
+        var thermalProfileRunnerVm = _viewModelCreator.Create<IThermalProfileRunnerWindowViewModel>();
+        var result = await ShowThermalProfileSelectorWindow.Handle(thermalProfileRunnerVm);
     }
 
     public Interaction<IThermalProfileEditorWindowViewModel, Unit> ShowThermalProfileEditorWindow { get; } = new();
-    public Interaction<IThermalProfileRunnerViewModel, Unit> ShowThermalProfileSelectorWindow { get; } = new();
+    public Interaction<IThermalProfileRunnerWindowViewModel, Unit> ShowThermalProfileSelectorWindow { get; } = new();
 
     private void OnJobStarted(object? sender, JobStartedEventArgs? eventArgs)
     {
         IsJobRunning = true;
+        eventArgs!.Job.ProgressUpdated += OnCurrentProgress;
+        eventArgs.Job.StateChanged += OnStateChanged;
+    }
+
+    private void OnCurrentProgress(object? sender, JobProgressUpdatedEventArgs args)
+    {
+        JobProgress = args.CurrentProgress;
+    }
+    
+    private void OnStateChanged(object? sender, JobStateChangedEventArgs args)
+    {
+        JobProgress = 0;
+        IsJobRunning = false;
     }
 }

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Collections;
-using DynamicData;
 using OxyPlot;
 using ReactiveUI;
 using SolderingStationClient.BLL.Abstractions.Services;
@@ -18,7 +17,7 @@ public class ThermalProfileEditorWindowViewModel : ViewModelBase, IThermalProfil
     private readonly IThermalProfileService _thermalProfileService;
     private ThermalProfileViewModel? _selectedThermalProfile;
 
-    private IList<uint> ThermalProfilesSoftDeleteList = new List<uint>();
+    private IList<uint> _thermalProfilesSoftDeleteList = new List<uint>();
    
     public IAvaloniaList<ThermalProfileViewModel> ThermalProfiles { get; } = new AvaloniaList<ThermalProfileViewModel>();
 
@@ -28,14 +27,20 @@ public class ThermalProfileEditorWindowViewModel : ViewModelBase, IThermalProfil
         set => this.RaiseAndSetIfChanged(ref _selectedThermalProfile, value);
     }
     
+    public ReactiveCommand<Unit, Unit> SaveCommand { get; }
+    public ReactiveCommand<Unit, Unit> CloseCommand { get; }
+    
     public ThermalProfileEditorWindowViewModel(IThermalProfileService thermalProfileService)
     {
         _thermalProfileService = thermalProfileService;
-        
-        LoadAllProfiles().GetAwaiter().GetResult();
 
         SaveCommand = ReactiveCommand.CreateFromTask(UpdateThermalProfiles);
-        CloseCommand = ReactiveCommand.CreateFromTask(CancelChanges);
+        CloseCommand = ReactiveCommand.Create(() => new Unit());
+    }
+
+    public async Task Init()
+    {
+        await LoadAllProfiles();
     }
     
     public void Create()
@@ -49,26 +54,22 @@ public class ThermalProfileEditorWindowViewModel : ViewModelBase, IThermalProfil
     {
         if (SelectedThermalProfile == null)
             return;
-        ThermalProfilesSoftDeleteList.Add(SelectedThermalProfile.Id);
+        _thermalProfilesSoftDeleteList.Add(SelectedThermalProfile.Id);
         ThermalProfiles.Remove(SelectedThermalProfile);
         if(ThermalProfiles.Count != 0)
             SelectedThermalProfile = ThermalProfiles[0];
     }
 
-    public ReactiveCommand<Unit, Unit> SaveCommand { get; }
-
-    public ReactiveCommand<Unit, Unit> CloseCommand { get; }
-
     private async Task UpdateThermalProfiles()
     {
         var allThermalProfiles = ThermalProfiles.Select(profile => Map(profile)).ToList();
 
-        foreach (var id in ThermalProfilesSoftDeleteList)
+        foreach (var id in _thermalProfilesSoftDeleteList)
         {
             if (id != 0)
                 await _thermalProfileService.Remove(id);
         }
-        ThermalProfilesSoftDeleteList.Clear();
+        _thermalProfilesSoftDeleteList.Clear();
 
         foreach (var profile in allThermalProfiles)
         {
@@ -76,15 +77,8 @@ public class ThermalProfileEditorWindowViewModel : ViewModelBase, IThermalProfil
                 await _thermalProfileService.Remove(profile.Id);
             await _thermalProfileService.Add(profile);
         }
-
-        await LoadAllProfiles();
     }
 
-    private async Task CancelChanges()
-    {
-        await LoadAllProfiles();
-    }
-    
     private async Task LoadAllProfiles()
     {
         ThermalProfiles.Clear();

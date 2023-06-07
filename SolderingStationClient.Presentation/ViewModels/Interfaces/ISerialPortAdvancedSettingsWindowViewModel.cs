@@ -6,7 +6,7 @@ namespace SolderingStationClient.Presentation.ViewModels.Interfaces;
 
 public interface ISerialPortAdvancedSettingsWindowViewModel : IViewModelBase
 {
-    public Task Edit(string portName);
+    public Task Init(string portName);
     public string PortName { get; set; }
     public double BaudRate { get; set; }
     public double DataBits { get; set; }

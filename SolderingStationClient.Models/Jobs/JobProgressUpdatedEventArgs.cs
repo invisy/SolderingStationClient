@@ -7,5 +7,5 @@ public class JobProgressUpdatedEventArgs : EventArgs
         CurrentProgress = currentProgress;
     }
 
-    private float CurrentProgress { get; }
+    public float CurrentProgress { get; }
 }

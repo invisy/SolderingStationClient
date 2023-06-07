@@ -22,7 +22,6 @@ public class ThermalProfileProcessingJob : IThermalProfileProcessingJob
     private JobState _state = JobState.NotStarted;
 
     private ConcurrentDictionary<TemperatureControllerKey, bool> _controllersInWork = new();
-    public JobType JobType => JobType.ThermalProfileProcessing;
 
     public JobState State
     {

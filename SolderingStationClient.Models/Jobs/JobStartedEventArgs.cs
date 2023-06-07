@@ -2,10 +2,10 @@
 
 public class JobStartedEventArgs
 {
-    public JobStartedEventArgs(JobType jobType)
+    public JobStartedEventArgs(IJob job)
     {
-        JobType = jobType;
+        Job = job;
     }
 
-    public JobType JobType { get; }
+    public IJob Job { get; }
 }

@@ -1,10 +1,7 @@
-﻿using SolderingStationClient.Models.Jobs;
-
-namespace SolderingStationClient.BLL.Abstractions;
+﻿namespace SolderingStationClient.Models.Jobs;
 
 public interface IJob
 {
-    JobType JobType { get; }
     JobState State { get; }
     float CurrentProgress { get; }
 

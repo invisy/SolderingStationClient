@@ -26,7 +26,7 @@ public class SerialPortAdvancedSettingsWindowViewModel : ViewModelBase, ISerialP
         ApplyCommand = ReactiveCommand.CreateFromTask(Apply);
     }
 
-    public async Task Edit(string portName)
+    public async Task Init(string portName)
     {
         var settings = await _serialPortsSettingsService.GetByPortName(portName);
         if (settings == null)

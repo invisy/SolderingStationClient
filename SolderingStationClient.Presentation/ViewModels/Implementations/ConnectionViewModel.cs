@@ -18,7 +18,7 @@ namespace SolderingStationClient.Presentation.ViewModels.Implementations;
 public class ConnectionViewModel : ViewModelBase, IConnectionViewModel
 {
     private readonly IApplicationDispatcher _applicationDispatcher;
-    private readonly ISerialPortAdvancedSettingsWindowViewModel _serialPortAdvancedSettingsWindowViewModel;
+    private readonly IViewModelCreator _viewModelCreator;
     private readonly ISerialPortsService _serialPortService;
     private readonly IMessageBoxService _messageBoxService;
 
@@ -28,13 +28,13 @@ public class ConnectionViewModel : ViewModelBase, IConnectionViewModel
 
     public ConnectionViewModel(
         IApplicationDispatcher applicationDispatcher,
+        IViewModelCreator viewModelCreator,
         ISerialPortsService serialPortService,
-        ISerialPortAdvancedSettingsWindowViewModel serialPortAdvancedSettingsWindowViewModel,
         IMessageBoxService messageBoxService)
     {
         _applicationDispatcher = Guard.Against.Null(applicationDispatcher);
+        _viewModelCreator = Guard.Against.Null(viewModelCreator);
         _serialPortService = Guard.Against.Null(serialPortService);
-        _serialPortAdvancedSettingsWindowViewModel = Guard.Against.Null(serialPortAdvancedSettingsWindowViewModel);
         _messageBoxService = Guard.Against.Null(messageBoxService);
 
         Init();
@@ -92,9 +92,10 @@ public class ConnectionViewModel : ViewModelBase, IConnectionViewModel
     {
         if (_selectedPort == null)
             return;
-        
-        await _serialPortAdvancedSettingsWindowViewModel.Edit(_selectedPort.SerialPortName);
-        var result = await ShowSerialPortAdvancedSettingsWindow.Handle(_serialPortAdvancedSettingsWindowViewModel);
+
+        var serialPortAdvancedSettingsWindowViewModel = _viewModelCreator.Create<ISerialPortAdvancedSettingsWindowViewModel>();
+        await serialPortAdvancedSettingsWindowViewModel.Init(_selectedPort.SerialPortName);
+        await ShowSerialPortAdvancedSettingsWindow.Handle(serialPortAdvancedSettingsWindowViewModel);
     }
 
     private void Init()

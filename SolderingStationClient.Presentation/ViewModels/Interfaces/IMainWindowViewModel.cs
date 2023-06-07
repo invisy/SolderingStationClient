@@ -6,7 +6,8 @@ namespace SolderingStationClient.Presentation.ViewModels.Interfaces;
 
 public interface IMainWindowViewModel : IViewModelBase
 {
-    public IConnectionViewModel ConnectionViewModel { get; }
-    public Interaction<IThermalProfileEditorWindowViewModel, Unit> ShowThermalProfileEditorWindow { get; }
-    public Task OpenThermalProfileEditorWindow();
+    IConnectionViewModel ConnectionViewModel { get; }
+    Interaction<IThermalProfileRunnerViewModel, Unit> ShowThermalProfileSelectorWindow { get; }
+    Interaction<IThermalProfileEditorWindowViewModel, Unit> ShowThermalProfileEditorWindow { get; }
+    Task OpenThermalProfileEditorWindow();
 }

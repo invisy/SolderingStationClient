@@ -15,9 +15,11 @@ namespace SolderingStationClient.Presentation.ViewModels.Implementations;
 public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
 {
     private readonly IThermalProfileEditorWindowViewModel _thermalProfileEditorVm;
+    private readonly IThermalProfileRunnerViewModel _thermalProfileRunnerVm;
     private readonly IJobStateService _jobStateService;
 
     private bool _isJobRunning;
+    private float _jobProgress;
 
     public bool IsJobRunning
     {
@@ -28,6 +30,16 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
             ConnectionViewModel.IsActive = false;
             DevicesListViewModel.IsActive = false;
             MainPlotViewModel.IsActive = false;
+            this.RaiseAndSetIfChanged(ref _isJobRunning, value);
+        }
+    }
+    
+    public float JobProgress
+    {
+        get => _jobProgress;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _jobProgress, value);
         }
     }
 
@@ -37,11 +49,13 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         IConnectionViewModel connectionViewModel,
         IMainPlotViewModel mainPlotViewModel,
         IDevicesListViewModel devicesListViewModel,
+        IThermalProfileRunnerViewModel thermalProfileRunnerVm,
         IJobStateService jobStateService
     )
     {
-        _jobStateService = jobStateService;
-        _thermalProfileEditorVm = thermalProfileEditorVm;
+        _jobStateService = Guard.Against.Null(jobStateService);
+        _thermalProfileEditorVm = Guard.Against.Null(thermalProfileEditorVm);
+        _thermalProfileRunnerVm = Guard.Against.Null(thermalProfileRunnerVm);
         LanguageSettingsViewModel = Guard.Against.Null(languageSettingsViewModel);
         ConnectionViewModel = Guard.Against.Null(connectionViewModel);
         MainPlotViewModel = Guard.Against.Null(mainPlotViewModel);
@@ -68,8 +82,14 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
     {
         var result = await ShowThermalProfileEditorWindow.Handle(_thermalProfileEditorVm);
     }
+    
+    public async Task OpenThermalProfileRunnerWindow()
+    {
+        var result = await ShowThermalProfileSelectorWindow.Handle(_thermalProfileRunnerVm);
+    }
 
     public Interaction<IThermalProfileEditorWindowViewModel, Unit> ShowThermalProfileEditorWindow { get; } = new();
+    public Interaction<IThermalProfileRunnerViewModel, Unit> ShowThermalProfileSelectorWindow { get; } = new();
 
     private void OnJobStarted(object? sender, JobStartedEventArgs? eventArgs)
     {

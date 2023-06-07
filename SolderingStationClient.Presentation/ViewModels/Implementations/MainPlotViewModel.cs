@@ -30,7 +30,7 @@ public class MainPlotViewModel : ViewModelBase, IMainPlotViewModel
             if (value)
             {
                 ClearPlot();
-                _temperatureMonitorService.Enable();
+                _temperatureMonitorService.Enable(1000);
             }
             else
                 _temperatureMonitorService.Disable();
@@ -38,7 +38,7 @@ public class MainPlotViewModel : ViewModelBase, IMainPlotViewModel
             this.RaiseAndSetIfChanged(ref _isAutoUpdatable, _temperatureMonitorService.IsRunning);
         }
     }
-    public AvaloniaList<TemperatureControllerViewModel> TemperatureControllers { get; } = new();
+    public AvaloniaList<TemperatureControllerIdlePlotViewModel> TemperatureControllers { get; } = new();
 
     public MainPlotViewModel(IApplicationDispatcher applicationDispatcher,
         IResourceProvider resourceProvider, 
@@ -85,7 +85,7 @@ public class MainPlotViewModel : ViewModelBase, IMainPlotViewModel
             
             foreach (var key in args.Device.TemperatureControllersKeys)
             {
-                var vm = new TemperatureControllerViewModel($"{args.Device.ConnectionName}:{key.ChannelId}", key);
+                var vm = new TemperatureControllerIdlePlotViewModel($"{args.Device.ConnectionName}:{key.ChannelId}", key);
                 AddTemperatureController(vm);
             }
         });
@@ -116,7 +116,7 @@ public class MainPlotViewModel : ViewModelBase, IMainPlotViewModel
         }
     }
 
-    private void AddTemperatureController(TemperatureControllerViewModel vm)
+    private void AddTemperatureController(TemperatureControllerIdlePlotViewModel vm)
     {
         TemperatureControllers.Add(vm);
         Model.Series.Add(vm.TemperatureCurve);
@@ -124,11 +124,11 @@ public class MainPlotViewModel : ViewModelBase, IMainPlotViewModel
         Model.InvalidatePlot(false);
     }
     
-    private void RemoveController(TemperatureControllerViewModel controller)
+    private void RemoveController(TemperatureControllerIdlePlotViewModel controllerIdle)
     {
-        Model.Series.Remove(controller.TemperatureCurve);
-        Model.Annotations.Remove(controller.DesiredTemperature);
-        TemperatureControllers.Remove(controller);
+        Model.Series.Remove(controllerIdle.TemperatureCurve);
+        Model.Annotations.Remove(controllerIdle.DesiredTemperature);
+        TemperatureControllers.Remove(controllerIdle);
         Model.InvalidatePlot(false);
     }
 

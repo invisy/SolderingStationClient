@@ -81,12 +81,12 @@ public class ThermalProfileService : IThermalProfileService
         return new ThermalProfilePartEntity(model.Id, model.Name, model.ArgbColor, curve);
     }
     
-    private TemperatureMeasurementPoint Map(TemperatureMeasurementPointEntity entity)
+    private ThermalProfilePoint Map(TemperatureMeasurementPointEntity entity)
     {
-        return new TemperatureMeasurementPoint(entity.Id, entity.SecondsElapsed, entity.Temperature);
+        return new ThermalProfilePoint(entity.Id, entity.SecondsElapsed, entity.Temperature);
     }
     
-    private TemperatureMeasurementPointEntity Map(TemperatureMeasurementPoint model)
+    private TemperatureMeasurementPointEntity Map(ThermalProfilePoint model)
     {
         return new TemperatureMeasurementPointEntity(model.Id, model.SecondsElapsed, model.Temperature);
     }

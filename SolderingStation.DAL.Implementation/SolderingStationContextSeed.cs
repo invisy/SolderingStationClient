@@ -37,8 +37,9 @@ public static class SolderingStationContextSeed
                 new ThermalProfilePartEntity(0, "BottomHeater", Color.Green.ToArgb(), new[]
                 {
                     new TemperatureMeasurementPointEntity(0, 0, 0),
-                    new TemperatureMeasurementPointEntity(0, 17, 5),
-                    new TemperatureMeasurementPointEntity(0, 25, 40)
+                    new TemperatureMeasurementPointEntity(0, 20, 35),
+                    new TemperatureMeasurementPointEntity(0, 30, 35),
+                    new TemperatureMeasurementPointEntity(0, 40, 40)
                 }),
                 new ThermalProfilePartEntity(0, "TopHeater", Color.Blue.ToArgb(), new[]
                 {

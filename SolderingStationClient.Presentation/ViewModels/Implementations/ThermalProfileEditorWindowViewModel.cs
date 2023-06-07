@@ -114,8 +114,8 @@ public class ThermalProfileEditorWindowViewModel : ViewModelBase, IThermalProfil
         return result;
     }
 
-    private TemperatureMeasurementPoint Map(DataPoint point)
+    private ThermalProfilePoint Map(DataPoint point)
     {
-        return new TemperatureMeasurementPoint(0, (float)point.X, (ushort)point.Y);
+        return new ThermalProfilePoint(0, (float)point.X, (ushort)point.Y);
     }
 }

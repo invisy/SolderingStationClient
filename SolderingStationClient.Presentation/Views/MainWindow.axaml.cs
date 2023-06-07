@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
+using SolderingStationClient.Presentation.ViewModels.Implementations;
 using SolderingStationClient.Presentation.ViewModels.Interfaces;
 
 namespace SolderingStationClient.Presentation.Views;
@@ -31,6 +32,11 @@ public class MainWindow : ReactiveWindow<IMainWindowViewModel>
             d(ViewModel!.ShowThermalProfileEditorWindow.RegisterHandler(
                 DoShowThermalProfileEditorWindow))
         );
+        
+        this.WhenActivated(d =>
+            d(ViewModel!.ShowThermalProfileSelectorWindow.RegisterHandler(
+                DoShowThermalProfileRunnerWindow))
+        );
     }
 
     private void InitializeComponent()
@@ -54,6 +60,18 @@ public class MainWindow : ReactiveWindow<IMainWindowViewModel>
         InteractionContext<IThermalProfileEditorWindowViewModel, Unit> interaction)
     {
         var window = new ThermalProfileEditorWindow()
+        {
+            DataContext = interaction.Input
+        };
+
+        await window.ShowDialog(this);
+        interaction.SetOutput(Unit.Default);
+    }
+    
+    private async Task DoShowThermalProfileRunnerWindow(
+        InteractionContext<IThermalProfileRunnerViewModel, Unit> interaction)
+    {
+        var window = new ThermalProfileRunnerWindow()
         {
             DataContext = interaction.Input
         };

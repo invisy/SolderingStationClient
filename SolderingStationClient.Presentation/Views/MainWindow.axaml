@@ -60,6 +60,7 @@
                             HorizontalContentAlignment="Center"
                             Margin="3,3,10,3" />
                         <Button
+                            Command="{Binding OpenThermalProfileRunnerWindow}"
                             Content="{DynamicResource Localization.ChooseAndRunThermalProfileButton}"
                             Grid.Column="1"
                             HorizontalAlignment="Stretch"

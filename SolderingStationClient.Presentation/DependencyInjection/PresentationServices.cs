@@ -67,6 +67,10 @@ public static class PresentationServices
         services.Register<IThermalProfileEditorWindowViewModel>(() => new ThermalProfileEditorWindowViewModel(
             resolver.GetService<IThermalProfileService>()
         ));
+        
+        services.Register<IThermalProfileRunnerViewModel>(() => new ThermalProfileRunnerViewModel(
+            resolver.GetService<IThermalProfileProcessingService>()
+        ));
 
         services.Register<IMainWindowViewModel>(() => new MainWindowViewModel(
             resolver.GetService<IThermalProfileEditorWindowViewModel>(),
@@ -74,6 +78,7 @@ public static class PresentationServices
             resolver.GetService<IConnectionViewModel>(),
             resolver.GetService<IMainPlotViewModel>(),
             resolver.GetService<IDevicesListViewModel>(),
+            resolver.GetService<IThermalProfileRunnerViewModel>(),
             resolver.GetService<IJobStateService>()
         ));
         

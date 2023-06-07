@@ -1,5 +1,4 @@
-﻿using SolderingStation.Hardware.Abstractions;
-using SolderingStationClient.BLL.Abstractions;
+﻿using SolderingStationClient.BLL.Abstractions;
 using SolderingStationClient.BLL.Abstractions.Services;
 using SolderingStationClient.Models;
 using SolderingStationClient.Models.TemperatureControllers;
@@ -37,13 +36,14 @@ public class TemperatureMonitorService : ITemperatureMonitorService
 
     public event EventHandler<TemperatureMeasurementEventArgs>? NewTemperatureMeasurement;
     
-    public void Enable()
+    public void Enable(double interval)
     {
         if (IsRunning) 
             return;
-        
+
+        ClearHistory();
         StartTime = DateTime.Now;
-        _timer.Interval = 1000;
+        _timer.Interval = interval;
         _timer.Start();
         _timer.TimerIntervalElapsed += Tick;
         IsRunning = true;
@@ -80,6 +80,18 @@ public class TemperatureMonitorService : ITemperatureMonitorService
     public void StopControllerTracking(TemperatureControllerKey temperatureControllerKey)
     {
         SwitchControllerState(temperatureControllerKey, false);
+    }
+
+    public void StartAllControllersTracking()
+    {
+        foreach (var controller in _trackedControllers)
+            SwitchControllerState(controller.Key, true);
+    }
+    
+    public void StopAllControllersTracking()
+    {
+        foreach (var controller in _trackedControllers)
+            SwitchControllerState(controller.Key, false);
     }
 
     private void OnDeviceConnected(object? sender, DeviceConnectedEventArgs args)

@@ -1,10 +1,11 @@
 ﻿using SolderingStationClient.BLL.Abstractions;
 using SolderingStationClient.BLL.Abstractions.Factories;
 using SolderingStationClient.BLL.Abstractions.Services;
+using SolderingStationClient.Models;
 
 namespace SolderingStationClient.BLL.Implementation.Services;
 
-public class ThermalProfileProcessingService
+public class ThermalProfileProcessingService : IThermalProfileProcessingService
 {
     private readonly ITemperatureControllerService _temperatureControllerService;
     private readonly IThermalProfileService _thermalProfileService;
@@ -22,9 +23,22 @@ public class ThermalProfileProcessingService
         _thermalProfileService = thermalProfileService;
     }
 
-    public async Task Start()
+    public async Task<IEnumerable<ThermalProfile>> GetAllThermalProfiles()
     {
-        _job = _thermalProfileProcessingJobFactory.Create();
+        return await _thermalProfileService.GetAll();
+    }
+    
+    public async Task<IEnumerable<ThermalProfile>> Select()
+    {
+        return await _thermalProfileService.GetAll();
+    }
+    
+    public async Task Start(IEnumerable<ThermalProfileControllerBinding> bindings)
+    {
+        if (_job != null)
+            throw new Exception("You can run only 1 job at the same time!");
+        
+        _job = _thermalProfileProcessingJobFactory.Create(bindings);
         await _job.RunAsync();
     }
     
@@ -34,5 +48,4 @@ public class ThermalProfileProcessingService
             throw new Exception("Job is not running!");
         _job.Cancel();
     }
-    
 }

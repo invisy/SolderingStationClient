@@ -2,7 +2,9 @@
 using SolderingStation.Hardware.Abstractions;
 using SolderingStation.Hardware.Models.ConnectionParameters;
 using SolderingStationClient.BLL.Abstractions;
+using SolderingStationClient.BLL.Abstractions.Factories;
 using SolderingStationClient.BLL.Abstractions.Services;
+using SolderingStationClient.BLL.Implementation.Factories;
 using SolderingStationClient.BLL.Implementation.Services;
 using Splat;
 
@@ -67,6 +69,17 @@ public static class BusinessLogicServices
         services.Register<IThermalProfileService>(() => new ThermalProfileService(
             resolver.GetService<IUnitOfWork>(),
             resolver.GetService<IUserProfileService>()
+        ));
+        
+        services.Register<IThermalProfileProcessingJobFactory>(() => new ThermalProfileProcessingJobFactory(
+            resolver.GetService<ITemperatureMonitorService>(),
+            resolver.GetService<ITemperatureControllerService>()
+        ));
+        
+        services.Register<IThermalProfileProcessingService>(() => new ThermalProfileProcessingService(
+            resolver.GetService<ITemperatureControllerService>(),
+            resolver.GetService<IThermalProfileService>(),
+            resolver.GetService<IThermalProfileProcessingJobFactory>()
         ));
     }
 }

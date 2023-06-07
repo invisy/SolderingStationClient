@@ -47,7 +47,7 @@ public class DevicesListViewModel : ViewModelBase, IDevicesListViewModel
         await _applicationDispatcher.DispatchAsync(async () =>
         {
             if (DevicesList.Count == 0)
-                _temperatureMonitor.Enable();
+                _temperatureMonitor.Enable(1000);
             
             var deviceVm = _deviceViewModelFactory.Create(args.Device);
             await deviceVm.Init();

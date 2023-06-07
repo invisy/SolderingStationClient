@@ -2,6 +2,7 @@
     CanResize="False"
     SizeToContent="WidthAndHeight"
     Title="Thermal profile runner"
+    WindowStartupLocation="CenterScreen"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d"
@@ -79,7 +80,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Button
-                    Command="{Binding ApplyCommand}"
+                    Command="{Binding Start}"
                     Content="{DynamicResource Localization.Apply}"
                     Grid.Column="0"
                     HorizontalAlignment="Stretch"

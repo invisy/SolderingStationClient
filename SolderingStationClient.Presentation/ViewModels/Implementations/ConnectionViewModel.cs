@@ -22,8 +22,6 @@ public class ConnectionViewModel : ViewModelBase, IConnectionViewModel
     private readonly ISerialPortsService _serialPortService;
     private readonly IMessageBoxService _messageBoxService;
 
-    private bool _isActive;
-
     private SerialPortInfoViewModel? _selectedPort;
 
     public ConnectionViewModel(
@@ -36,8 +34,17 @@ public class ConnectionViewModel : ViewModelBase, IConnectionViewModel
         _viewModelCreator = Guard.Against.Null(viewModelCreator);
         _serialPortService = Guard.Against.Null(serialPortService);
         _messageBoxService = Guard.Against.Null(messageBoxService);
+    }
+    
+    public void Init()
+    {
+        var serialPortInfoVms = _serialPortService.SerialPorts.Select(portInfo => CreateFromDto(portInfo));
+        AvailablePorts.AddRange(serialPortInfoVms);
+        SelectedPort = AvailablePorts.LastOrDefault();
 
-        Init();
+        _serialPortService.PortAdded += OnPortAdded;
+        _serialPortService.PortRemoved += OnPortRemoved;
+        _serialPortService.PortInfoUpdateEvent += OnPortInfoUpdated;
     }
 
     public IAvaloniaList<SerialPortInfoViewModel> AvailablePorts { get; } = new AvaloniaList<SerialPortInfoViewModel>();
@@ -61,8 +68,12 @@ public class ConnectionViewModel : ViewModelBase, IConnectionViewModel
 
     public override bool IsActive
     {
-        get => _isActive && AvailablePorts.Count > 0;
-        set => this.RaiseAndSetIfChanged(ref _isActive, value);
+        get => _isActive;
+        set
+        {
+            var resultValue = AvailablePorts.Count > 0 && value;
+            this.RaiseAndSetIfChanged(ref _isActive, resultValue);
+        }
     }
 
     public Interaction<ISerialPortAdvancedSettingsWindowViewModel, Unit> ShowSerialPortAdvancedSettingsWindow { get; } =
@@ -96,17 +107,6 @@ public class ConnectionViewModel : ViewModelBase, IConnectionViewModel
         var serialPortAdvancedSettingsWindowViewModel = _viewModelCreator.Create<ISerialPortAdvancedSettingsWindowViewModel>();
         await serialPortAdvancedSettingsWindowViewModel.Init(_selectedPort.SerialPortName);
         await ShowSerialPortAdvancedSettingsWindow.Handle(serialPortAdvancedSettingsWindowViewModel);
-    }
-
-    private void Init()
-    {
-        var serialPortInfoVms = _serialPortService.SerialPorts.Select(portInfo => CreateFromDto(portInfo));
-        AvailablePorts.AddRange(serialPortInfoVms);
-        SelectedPort = AvailablePorts.LastOrDefault();
-
-        _serialPortService.PortAdded += OnPortAdded;
-        _serialPortService.PortRemoved += OnPortRemoved;
-        _serialPortService.PortInfoUpdateEvent += OnPortInfoUpdated;
     }
 
     private void OnPortAdded(object? sender, SerialPortInfoEventArgs args)

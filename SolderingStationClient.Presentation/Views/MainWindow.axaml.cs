@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
+using SolderingStationClient.Models;
 using SolderingStationClient.Presentation.ViewModels.Interfaces;
 
 namespace SolderingStationClient.Presentation.Views;
@@ -16,7 +18,7 @@ public class MainWindow : ReactiveWindow<IMainWindowViewModel>
 #if DEBUG
         this.AttachDevTools();
 #endif
-        
+
         this.WhenActivated(d =>
             d(ViewModel!.ConnectionViewModel.ShowSerialPortAdvancedSettingsWindow.RegisterHandler(
                 DoShowSerialPortAdvancedSettingsWindow))
@@ -28,7 +30,7 @@ public class MainWindow : ReactiveWindow<IMainWindowViewModel>
         );
         
         this.WhenActivated(d =>
-            d(ViewModel!.ShowThermalProfileSelectorWindow.RegisterHandler(
+            d(ViewModel!.ShowThermalProfileRunnerWindow.RegisterHandler(
                 DoShowThermalProfileRunnerWindow))
         );
     }

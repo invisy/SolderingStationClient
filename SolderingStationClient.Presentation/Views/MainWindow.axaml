@@ -60,12 +60,26 @@
                             HorizontalContentAlignment="Center"
                             Margin="3,3,10,3" />
                         <Button
+                            Classes.IsIdle="{Binding !IsJobRunning, Mode=TwoWay}"
+                            Classes.IsRunning="{Binding IsJobRunning, Mode=TwoWay}"
                             Command="{Binding OpenThermalProfileRunnerWindow}"
-                            Content="{DynamicResource Localization.ChooseAndRunThermalProfileButton}"
                             Grid.Column="1"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center"
-                            Margin="3" />
+                            Margin="3">
+                            <Button.Styles>
+                                <Style Selector="Button.IsRunning">
+                                    <Style.Setters>
+                                        <Setter Property="Content" Value="{DynamicResource Localization.StopThermalProfile}" />
+                                    </Style.Setters>
+                                </Style>
+                                <Style Selector="Button.IsIdle">
+                                    <Style.Setters>
+                                        <Setter Property="Content" Value="{DynamicResource Localization.ChooseAndRunThermalProfileButton}" />
+                                    </Style.Setters>
+                                </Style>
+                            </Button.Styles>
+                        </Button>
                         <ProgressBar
                             Grid.Column="2"
                             Margin="0,4,5,4"

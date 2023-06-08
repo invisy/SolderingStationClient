@@ -30,6 +30,17 @@ public class DevicesListViewModel : ViewModelBase, IDevicesListViewModel
         _devicesService = Guard.Against.Null(devicesService);
     }
 
+    public override bool IsActive
+    {
+        get => base.IsActive;
+        set
+        {
+            foreach (var device in DevicesList)
+                device.IsActive = value;
+            base.IsActive = value;
+        }
+    }
+
     public IAvaloniaList<IDeviceViewModel> DevicesList { get; } = new AvaloniaList<IDeviceViewModel>();
 
     public async Task Init()

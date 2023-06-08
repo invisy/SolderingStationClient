@@ -31,10 +31,11 @@ public class ThermalProfileRunnerWindowViewModel : ViewModelBase, IThermalProfil
     {
         var thermalProfiles = (await _thermalProfileProcessingService.GetAllThermalProfiles()).ToList();
         var controllers = thermalProfiles[0].ControllersThermalProfiles.ToList();
-        var binding = new List<ThermalProfileControllerBinding>()
+        var bindings = new List<ThermalProfileControllerBinding>()
         {
             new ThermalProfileControllerBinding(controllers[0], new TemperatureControllerKey(1, 0))
         };
-        await _thermalProfileProcessingService.Start(binding);
+        
+        Task.Factory.StartNew(() => _thermalProfileProcessingService.Start(bindings));
     }
 }

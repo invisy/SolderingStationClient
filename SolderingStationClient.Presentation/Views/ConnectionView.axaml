@@ -40,7 +40,7 @@
                 Grid.Column="1"
                 Grid.Row="0"
                 HorizontalAlignment="Stretch"
-                IsEnabled="{Binding IsActive}"
+                IsEnabled="{Binding IsActive, Mode=TwoWay}"
                 Items="{Binding AvailablePorts}"
                 PlaceholderText="{DynamicResource Localization.PortsNotFound}"
                 SelectedIndex="0"
@@ -65,7 +65,7 @@
                 Grid.Column="0"
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Center"
-                IsEnabled="{Binding IsActive}"
+                IsEnabled="{Binding IsActive, Mode=TwoWay}"
                 Margin="0,0,5,0">
                 <Button.Styles>
                     <Style Selector="Button.IsConnected">
@@ -86,7 +86,7 @@
                 Grid.Column="1"
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Center"
-                IsEnabled="{Binding IsActive}" />
+                IsEnabled="{Binding IsActive, Mode=TwoWay}" />
         </Grid>
     </Grid>
 </UserControl>

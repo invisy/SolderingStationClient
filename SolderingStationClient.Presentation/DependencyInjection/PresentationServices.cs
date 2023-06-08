@@ -1,4 +1,6 @@
-﻿using SolderingStationClient.BLL.Abstractions;
+﻿using System.Reactive.Concurrency;
+using ReactiveUI;
+using SolderingStationClient.BLL.Abstractions;
 using SolderingStationClient.BLL.Abstractions.Services;
 using SolderingStationClient.Presentation.Services;
 using SolderingStationClient.Presentation.ViewModels.Factories.Implementations;
@@ -14,15 +16,13 @@ public static class PresentationServices
     public static void RegisterPresentationServices(this IMutableDependencyResolver services,
         IReadonlyDependencyResolver resolver)
     {
-        services.RegisterConstant<IViewModelCreator>(new ViewModelCreator(resolver));
-        
+        services.RegisterConstant<IScheduler>(RxApp.MainThreadScheduler);
         services.RegisterLazySingleton<IApplicationDispatcher>(() => new ApplicationDispatcher());
-        
         services.RegisterLazySingleton<IResourceProvider>(() => new ResourceProvider());
-        
         services.RegisterLazySingleton<IMessageBoxService>(() => new MessageBoxService(
             resolver.GetService<IResourceProvider>()
         ));
+        services.RegisterConstant<IViewModelCreator>(new ViewModelCreator(resolver));
         
         services.Register<ISerialPortAdvancedSettingsWindowViewModel>(() => new SerialPortAdvancedSettingsWindowViewModel(
             resolver.GetService<ISerialPortsSettingsService>()   
@@ -75,9 +75,10 @@ public static class PresentationServices
         ));
 
         services.Register<IMainWindowViewModel>(() => new MainWindowViewModel(
+            resolver.GetService<IScheduler>(),
             resolver.GetService<IViewModelCreator>(),
-            resolver.GetService<IJobStateService>()
+            resolver.GetService<IJobStateService>(),
+            resolver.GetService<IThermalProfileProcessingService>()
         ));
-        
     }
 }

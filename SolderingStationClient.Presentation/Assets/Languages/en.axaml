@@ -7,6 +7,7 @@
     <system:String x:Key="Localization.MainWindowTitle">Soldering station client</system:String>
 
     <system:String x:Key="Localization.ChooseAndRunThermalProfileButton">Choose and run thermal profile</system:String>
+    <system:String x:Key="Localization.StopThermalProfile">Stop thermal profile</system:String>
     <system:String x:Key="Localization.ThermalProfilesManagementButton">Thermal profiles management</system:String>
     <system:String x:Key="Localization.PlotAutoUpdating">Data auto-updating</system:String>
     <system:String x:Key="Localization.ClearPlotButton">Clear plot</system:String>

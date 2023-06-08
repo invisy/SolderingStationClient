@@ -5,5 +5,11 @@ namespace SolderingStationClient.Presentation.ViewModels.Implementations;
 
 public class ViewModelBase : ReactiveObject, IViewModelBase
 {
-    public virtual bool IsActive { get; set; } = true;
+    protected bool _isActive = true;
+
+    public virtual bool IsActive
+    {
+        get => _isActive;
+        set => this.RaiseAndSetIfChanged(ref _isActive, value);
+    }
 }

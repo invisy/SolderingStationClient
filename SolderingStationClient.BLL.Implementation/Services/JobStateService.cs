@@ -9,18 +9,18 @@ namespace SolderingStationClient.BLL.Implementation.Services;
 public class JobStateService : IJobStateService
 {
     private bool _isDisposed;
-    public IJob? ActiveJob { get; private set; }
+    private IJob? _activeJob;
 
     public event EventHandler<JobStartedEventArgs> JobStarted;
 
     public void AddJob(IJob job)
     {
-        if (ActiveJob != null)
+        if (_activeJob != null)
             throw new JobException("You can`t run second job at the same time!");
         
         SubscribeToJobEvents(job);
 
-        ActiveJob = job;
+        _activeJob = job;
         JobStarted?.Invoke(this, new JobStartedEventArgs(job));
     }
 
@@ -43,7 +43,7 @@ public class JobStateService : IJobStateService
         if (!e.JobState.IsCompleted())
             return;
 
-        ActiveJob = null;
+        _activeJob = null;
         UnsubscribeFromJobEvents(job);
     }
     
@@ -57,8 +57,8 @@ public class JobStateService : IJobStateService
         if (_isDisposed)
             return;
 
-        if (disposing && ActiveJob != null)
-            UnsubscribeFromJobEvents(ActiveJob);
+        if (disposing && _activeJob != null)
+            UnsubscribeFromJobEvents(_activeJob);
             
         _isDisposed = true;
     }

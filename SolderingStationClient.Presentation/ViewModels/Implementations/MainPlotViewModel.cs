@@ -14,14 +14,15 @@ namespace SolderingStationClient.Presentation.ViewModels.Implementations;
 
 public class MainPlotViewModel : ViewModelBase, IMainPlotViewModel
 {
-    public PlotModel Model { get; }
-    private readonly IApplicationDispatcher _applicationDispatcher;
+    private readonly IPlotModelFactory _plotModelFactory;
     private IDevicesService _devicesService;
+    private readonly IApplicationDispatcher _applicationDispatcher;
     private readonly ITemperatureMonitorService _temperatureMonitorService;
     private readonly IResourceProvider _resourceProvider;
 
     private bool _isAutoUpdatable = true;
 
+    public PlotModel Model { get; private set; }
     public bool IsAutoUpdatable
     {
         get => _isAutoUpdatable;
@@ -50,16 +51,14 @@ public class MainPlotViewModel : ViewModelBase, IMainPlotViewModel
         _devicesService = devicesService;
         _temperatureMonitorService = temperatureMonitorService;
         _resourceProvider = resourceProvider;
-
-        Model = plotModelFactory.Create();
-        UpdatePlotTitles();
-        
-        //TODO move call to Init
-        Init();
+        _plotModelFactory = plotModelFactory;
     }
 
     public void Init()
     {
+        Model = _plotModelFactory.Create();
+        UpdatePlotTitles();
+        
         _devicesService.DeviceConnected += OnConnectedDevice;
         _devicesService.DeviceDisconnected += OnDisconnectedDevice;
         _temperatureMonitorService.NewTemperatureMeasurement += OnNewTemperatureMeasurement;

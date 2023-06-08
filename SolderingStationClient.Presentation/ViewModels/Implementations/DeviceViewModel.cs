@@ -30,6 +30,17 @@ public class DeviceViewModel : ViewModelBase, IDeviceViewModel
 
     public ulong DeviceId { get; set; }
 
+    public override bool IsActive
+    {
+        get => base.IsActive;
+        set
+        {
+            foreach (var controller in TemperatureControllers)
+                controller.IsActive = value;
+            base.IsActive = value;
+        }
+    }
+
     public IAvaloniaList<ITemperatureControllerSettingsViewModel> TemperatureControllers { get; } =
         new AvaloniaList<ITemperatureControllerSettingsViewModel>();
 

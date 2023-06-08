@@ -3,6 +3,8 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using SolderingStation.DAL.Implementation;
+using SolderingStationClient.Presentation.Models;
+using SolderingStationClient.Presentation.Services;
 using SolderingStationClient.Presentation.ViewModels.Interfaces;
 using SolderingStationClient.Presentation.Views;
 using Splat;

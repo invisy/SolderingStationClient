@@ -123,7 +123,7 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         JobProgress = 0;
         IsJobRunning = false;
         
-        _job.ProgressUpdated -= OnCurrentProgress;
+        _job!.ProgressUpdated -= OnCurrentProgress;
         _job.StateChanged -= OnStateChanged;
         _job = null;
     }

@@ -12,7 +12,7 @@
 
     <ItemGroup>
         <PackageReference Include="Ardalis.GuardClauses" Version="4.0.1" />
-        <PackageReference Include="Invisy.SerialCommunicationProtocol" Version="1.0.1" />
+        <PackageReference Include="Invisy.SerialCommunicationProtocol" Version="1.0.2" />
         <PackageReference Include="Splat" Version="10.0.1" />
         <PackageReference Include="Splat.DependencyInjection.SourceGenerator" Version="1.1.93">
             <PrivateAssets>all</PrivateAssets>

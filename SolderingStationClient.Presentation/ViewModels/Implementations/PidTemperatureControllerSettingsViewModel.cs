@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using ReactiveUI;
 using SolderingStationClient.BLL.Abstractions.Services;
@@ -48,18 +49,21 @@ public class PidTemperatureControllerSettingsViewModel : TemperatureControllerSe
         set => this.RaiseAndSetIfChanged(ref _pidKd, value);
     }
 
+    [Range(0, 100, ErrorMessage = "Value must be between {1} and {2}.")]
     public float NewPidKp
     {
         get => _newPidKp;
         set => this.RaiseAndSetIfChanged(ref _newPidKp, value);
     }
 
+    [Range(0, 100, ErrorMessage = "Value must be between {1} and {2}.")]
     public float NewPidKi
     {
         get => _newPidKi;
         set => this.RaiseAndSetIfChanged(ref _newPidKi, value);
     }
 
+    [Range(0, 100, ErrorMessage = "Value must be between {1} and {2}.")]
     public float NewPidKd
     {
         get => _newPidKd;

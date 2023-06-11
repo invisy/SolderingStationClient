@@ -1,6 +1,5 @@
 ﻿using SolderingStationClient.Models.TemperatureControllers;
 
-
 namespace SolderingStationClient.Presentation.ViewModels.Implementations;
 
 public class TemperatureControllerViewModel : ViewModelBase

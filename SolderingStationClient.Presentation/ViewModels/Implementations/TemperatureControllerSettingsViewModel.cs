@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using ReactiveUI;
 using SolderingStationClient.BLL.Abstractions.Services;
@@ -25,7 +26,7 @@ public class TemperatureControllerSettingsViewModel : ViewModelBase, ITemperatur
     }
 
     public byte ControllerId => _key.ChannelId;
-
+    
     public ushort CurrentTemperature
     {
         get => _currentTemperature;
@@ -38,6 +39,7 @@ public class TemperatureControllerSettingsViewModel : ViewModelBase, ITemperatur
         set => this.RaiseAndSetIfChanged(ref _desiredTemperature, value);
     }
 
+    [Range(0, 500, ErrorMessage = "Value must be between {1} and {2}.")]
     public ushort NewDesiredTemperature
     {
         get => _newDesiredTemperature;

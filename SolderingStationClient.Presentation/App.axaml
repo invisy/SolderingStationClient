@@ -1,6 +1,7 @@
 <Application
     x:Class="SolderingStationClient.Presentation.App"
     xmlns="https://github.com/avaloniaui"
+    xmlns:helpers="clr-namespace:SolderingStationClient.Presentation.Helpers"
     xmlns:local="using:SolderingStationClient.Presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Application.DataTemplates>
@@ -13,12 +14,44 @@
                 <ResourceInclude Source="/Assets/Languages/en.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
+
+        <helpers:ExceptionConverter x:Key="ExceptionsConverter" />
+
+        <DataTemplate x:Key="TooltipDataValidationCustomErrorTemplate">
+            <Panel Background="Transparent" Name="PART_InlineErrorTemplatePanel">
+                <Panel.Styles>
+                    <Style Selector="Panel#PART_InlineErrorTemplatePanel">
+                        <Setter Property="Margin" Value="2,0" />
+                    </Style>
+                    <Style Selector="Panel#PART_InlineErrorTemplatePanel ToolTip">
+                        <Setter Property="BorderBrush" Value="{DynamicResource SystemControlErrorTextForegroundBrush}" />
+                    </Style>
+                    <Style Selector="Panel#PART_InlineErrorTemplatePanel ToolTip TextBlock">
+                        <Setter Property="TextWrapping" Value="Wrap" />
+                    </Style>
+                </Panel.Styles>
+                <ToolTip.Tip>
+                    <ItemsControl Items="{Binding,Converter={StaticResource ExceptionsConverter}}" />
+                </ToolTip.Tip>
+                <Path
+                    Data="M14,7 A7,7 0 0,0 0,7 M0,7 A7,7 0 1,0 14,7 M7,3l0,5 M7,9l0,2"
+                    Height="14"
+                    Stroke="{DynamicResource SystemControlErrorTextForegroundBrush}"
+                    StrokeThickness="2"
+                    Width="14" />
+            </Panel>
+        </DataTemplate>
     </Application.Resources>
 
     <Application.Styles>
         <FluentTheme Mode="Light" />
         <StyleInclude Source="resm:OxyPlot.Avalonia.Themes.Default.xaml?assembly=OxyPlot.Avalonia" />
         <StyleInclude Source="avares://ThemeEditor.Controls.ColorPicker/ColorPicker.axaml" />
+
+        <Style Selector="DataValidationErrors">
+            <Setter Property="Template" Value="{DynamicResource TooltipDataValidationContentTemplate}" />
+            <Setter Property="ErrorTemplate" Value="{DynamicResource TooltipDataValidationCustomErrorTemplate}" />
+        </Style>
 
         <Style Selector="Border.GroupBorder">
             <Setter Property="Background" Value="White" />

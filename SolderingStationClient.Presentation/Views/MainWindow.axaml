@@ -12,6 +12,8 @@
     x:Class="SolderingStationClient.Presentation.Views.MainWindow"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:implementations="clr-namespace:SolderingStationClient.Presentation.ViewModels.Implementations"
+    xmlns:interfaces="clr-namespace:SolderingStationClient.Presentation.ViewModels.Interfaces"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="clr-namespace:SolderingStationClient.Presentation.Views"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
@@ -43,7 +45,16 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Border Classes="GroupBorder" Grid.Row="0">
-                    <views:MainPlotView DataContext="{Binding MainPlotViewModel}" />
+                    <ContentControl Content="{Binding MainPlotViewModel, Mode=TwoWay}">
+                        <ContentControl.DataTemplates>
+                            <DataTemplate DataType="{x:Type interfaces:IIdlePlotViewModel}">
+                                <views:IdlePlotView />
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type interfaces:IJobPlotViewModel}">
+                                <views:JobPlotView />
+                            </DataTemplate>
+                        </ContentControl.DataTemplates>
+                    </ContentControl>
                 </Border>
                 <Border Classes="GroupBorder" Grid.Row="1">
                     <Grid>

@@ -61,14 +61,14 @@ public class MainWindow : ReactiveWindow<IMainWindowViewModel>
     }
     
     private async Task DoShowThermalProfileRunnerWindow(
-        InteractionContext<IThermalProfileRunnerWindowViewModel, Unit> interaction)
+        InteractionContext<IThermalProfileRunnerWindowViewModel, IEnumerable<ThermalProfileControllerBinding>?> interaction)
     {
         var window = new ThermalProfileRunnerWindow()
         {
             DataContext = interaction.Input
         };
 
-        await window.ShowDialog(this);
-        interaction.SetOutput(Unit.Default);
+        var result = await window.ShowDialog<IEnumerable<ThermalProfileControllerBinding>>(this);
+        interaction.SetOutput(result);
     }
 }

@@ -39,5 +39,9 @@
             <AutoGen>True</AutoGen>
             <DependentUpon>Localization.resx</DependentUpon>
         </Compile>
+        <Compile Update="Views\JobPlotView.axaml.cs">
+          <DependentUpon>JobPlotView.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 </Project>

@@ -2,7 +2,7 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d"
-    x:Class="SolderingStationClient.Presentation.Views.MainPlotView"
+    x:Class="SolderingStationClient.Presentation.Views.IdlePlotView"
     xmlns="https://github.com/avaloniaui"
     xmlns:avalonia="http://oxyplot.org/avalonia"
     xmlns:colorPicker="clr-namespace:ThemeEditor.Controls.ColorPicker;assembly=ThemeEditor.Controls.ColorPicker"

@@ -7,9 +7,9 @@ using SolderingStationClient.Presentation.ViewModels.Interfaces;
 
 namespace SolderingStationClient.Presentation.Views;
 
-public class MainPlotView : UserControl
+public class IdlePlotView : UserControl
 {
-    public MainPlotView()
+    public IdlePlotView()
     {
         InitializeComponent();
     }

@@ -117,6 +117,11 @@ public class ThermalProfileProcessingJob : IThermalProfileProcessingJob
     {
         _temperatureMonitor.Disable();
         _temperatureMonitor.StartAllControllersTracking();
+        
+        //Set all controller`s temperature to 0
+        foreach (var binding in _thermalProfileControllerBindings)
+            _temperatureControllerService.SetDesiredTemperature(binding.TemperatureControllerKey, 0);
+        
         _temperatureMonitor.NewTemperatureMeasurement -= OnTemperatureMeasurement;
     }
 
@@ -154,7 +159,7 @@ public class ThermalProfileProcessingJob : IThermalProfileProcessingJob
     private (bool, ushort) NextTemperature(IEnumerable<ThermalProfilePoint> thermalProfileCurve, float secondsElapsed)
     {
         var thermalProfileCurveList = thermalProfileCurve.ToList();
-        const float interpolationTimeSeconds = (float)UpdateTimeMs/1000*2;
+        const float interpolationTimeSeconds = (float)UpdateTimeMs/1000*4;
 
         for (var i = 0; i < thermalProfileCurveList.Count(); i++)
         {

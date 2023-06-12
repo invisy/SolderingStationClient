@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Avalonia.Collections;
 using OxyPlot;
 using ReactiveUI;
@@ -12,8 +14,11 @@ using IResourceProvider = SolderingStationClient.Presentation.Services.IResource
 
 namespace SolderingStationClient.Presentation.ViewModels.Implementations;
 
-public class MainPlotViewModel : ViewModelBase, IMainPlotViewModel
+public class IdlePlotViewModel : ViewModelBase, IIdlePlotViewModel
 {
+    private bool _isDisposed;
+    private const int UpdateInterval = 1000;
+    
     private readonly IPlotModelFactory _plotModelFactory;
     private IDevicesService _devicesService;
     private readonly IApplicationDispatcher _applicationDispatcher;
@@ -31,7 +36,7 @@ public class MainPlotViewModel : ViewModelBase, IMainPlotViewModel
             if (value)
             {
                 ClearPlot();
-                _temperatureMonitorService.Enable(1000);
+                _temperatureMonitorService.Enable(UpdateInterval);
             }
             else
                 _temperatureMonitorService.Disable();
@@ -41,7 +46,7 @@ public class MainPlotViewModel : ViewModelBase, IMainPlotViewModel
     }
     public AvaloniaList<TemperatureControllerIdlePlotViewModel> TemperatureControllers { get; } = new();
 
-    public MainPlotViewModel(IApplicationDispatcher applicationDispatcher,
+    public IdlePlotViewModel(IApplicationDispatcher applicationDispatcher,
         IResourceProvider resourceProvider, 
         IPlotModelFactory plotModelFactory,
         IDevicesService devicesService,
@@ -54,14 +59,25 @@ public class MainPlotViewModel : ViewModelBase, IMainPlotViewModel
         _plotModelFactory = plotModelFactory;
     }
 
-    public void Init()
+    public async Task Init()
     {
         Model = _plotModelFactory.Create();
         UpdatePlotTitles();
+
+        var devices = await _devicesService.GetDevices();
+        
+        _temperatureMonitorService.NewTemperatureMeasurement += OnNewTemperatureMeasurement;
+        
+        _applicationDispatcher.Dispatch(() =>
+        {
+            foreach (var device in devices)
+                AddDevice(device);
+            
+            IsAutoUpdatable = true;
+        });
         
         _devicesService.DeviceConnected += OnConnectedDevice;
         _devicesService.DeviceDisconnected += OnDisconnectedDevice;
-        _temperatureMonitorService.NewTemperatureMeasurement += OnNewTemperatureMeasurement;
     }
 
     public void ClearPlot()
@@ -73,20 +89,14 @@ public class MainPlotViewModel : ViewModelBase, IMainPlotViewModel
             controller.DesiredTemperature.Y = 0;
         }
         Model.InvalidatePlot(false);
+        GC.Collect(2, GCCollectionMode.Forced);
     }
 
     private void OnConnectedDevice(object? sender, DeviceConnectedEventArgs args)
     {
         _applicationDispatcher.Dispatch(() =>
         {
-            if (TemperatureControllers.Count == 0)
-                IsAutoUpdatable = true;
-            
-            foreach (var key in args.Device.TemperatureControllersKeys)
-            {
-                var vm = new TemperatureControllerIdlePlotViewModel($"{args.Device.ConnectionName}:{key.ChannelId}", key);
-                AddTemperatureController(vm);
-            }
+            AddDevice(args.Device);
         });
     }
     
@@ -112,6 +122,15 @@ public class MainPlotViewModel : ViewModelBase, IMainPlotViewModel
                 axis.Title = plotXTitle;
             else
                 axis.Title = plotYTitle;
+        }
+    }
+
+    private void AddDevice(Device device)
+    {
+        foreach (var key in device.TemperatureControllersKeys)
+        {
+            var vm = new TemperatureControllerIdlePlotViewModel($"{device.ConnectionName}:{key.ChannelId}", key);
+            AddTemperatureController(vm);
         }
     }
 
@@ -147,5 +166,25 @@ public class MainPlotViewModel : ViewModelBase, IMainPlotViewModel
             controller.DesiredTemperature.Y = args.DesiredTemperature;
             Model.InvalidatePlot(false);
         });
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+    }
+    
+    protected void Dispose(bool dispose)
+    {
+        if (_isDisposed)
+            return;
+        
+        _devicesService.DeviceConnected -= OnConnectedDevice;
+        _devicesService.DeviceDisconnected -= OnDisconnectedDevice;
+        _temperatureMonitorService.NewTemperatureMeasurement -= OnNewTemperatureMeasurement;
+
+        if (dispose)
+            TemperatureControllers.Clear();
+
+        _isDisposed = true;
     }
 }

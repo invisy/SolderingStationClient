@@ -1,6 +1,5 @@
 ﻿using Avalonia.Media;
 using OxyPlot;
-using OxyPlot.Avalonia;
 using ReactiveUI;
 using SolderingStationClient.Models;
 using SolderingStationClient.Models.TemperatureControllers;
@@ -21,7 +20,7 @@ public class TemperatureControllerJobPlotViewModel : TemperatureControllerViewMo
         get => _color;
         set
         {
-            TemperatureCurve.Color = value.ToOxyColor();
+            TemperatureCurve.Color = OxyColor.FromArgb(255, value.R, value.G, value.B);
             ThermalProfile.Color = OxyColor.FromArgb(ThermalProfileAlpha, value.R, value.G, value.B);
             this.RaiseAndSetIfChanged(ref _color, value);
         }
@@ -45,7 +44,6 @@ public class TemperatureControllerJobPlotViewModel : TemperatureControllerViewMo
         TemperatureCurve = new LineSeries();
         ThermalProfile = new LineSeries();
         AddThermalProfile(thermalProfile);
-        TemperatureCurve.Color = OxyColor.FromAColor(255, ThermalProfile.Color);
     }
 
     private void AddThermalProfile(ControllerThermalProfile thermalProfile)
@@ -54,6 +52,6 @@ public class TemperatureControllerJobPlotViewModel : TemperatureControllerViewMo
             ThermalProfile.Points.Add(new DataPoint(thermalProfilePoint.SecondsElapsed, thermalProfilePoint.Temperature));
 
         Color color = Color.FromUInt32((uint)thermalProfile.ArgbColor);
-        ThermalProfile.Color = OxyColor.FromArgb(ThermalProfileAlpha, color.R, color.G, color.B);
+        Color = color;
     }
 }

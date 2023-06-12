@@ -24,10 +24,10 @@ public class ThermalProfileRunnerWindowViewModel : ViewModelBase, IThermalProfil
         StartCommand = ReactiveCommand.CreateFromTask(Start);
     }
     
-    public ReactiveCommand<Unit, Unit> StartCommand { get; }
+    public ReactiveCommand<Unit, IEnumerable<ThermalProfileControllerBinding>> StartCommand { get; }
     public ReactiveCommand<Unit, Unit> CloseCommand { get; } = ReactiveCommand.Create(() => Unit.Default);
 
-    public async Task Start()
+    public async Task<IEnumerable<ThermalProfileControllerBinding>> Start()
     {
         var thermalProfiles = (await _thermalProfileProcessingService.GetAllThermalProfiles()).ToList();
         var controllers = thermalProfiles[0].ControllersThermalProfiles.ToList();
@@ -37,5 +37,7 @@ public class ThermalProfileRunnerWindowViewModel : ViewModelBase, IThermalProfil
         };
         
         Task.Factory.StartNew(() => _thermalProfileProcessingService.Start(bindings));
+
+        return bindings;
     }
 }

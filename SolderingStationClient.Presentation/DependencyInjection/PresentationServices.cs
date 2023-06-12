@@ -41,14 +41,6 @@ public static class PresentationServices
 
         services.RegisterLazySingleton<IPlotModelFactory>(() => new PlotModelFactory());
         
-        services.Register<IMainPlotViewModel>(() => new MainPlotViewModel(
-            resolver.GetService<IApplicationDispatcher>(),
-            resolver.GetService<IResourceProvider>(),
-            resolver.GetService<IPlotModelFactory>(),
-            resolver.GetService<IDevicesService>(),
-            resolver.GetService<ITemperatureMonitorService>()
-        ));
-
         services.Register<ITemperatureControllerViewModelFactory>(() =>
             new DefaultTemperatureControllerViewModelFactory(
                 resolver.GetService<ITemperatureControllerService>(),
@@ -74,11 +66,20 @@ public static class PresentationServices
             resolver.GetService<IThermalProfileProcessingService>()
         ));
 
+        services.Register<IMainPlotViewModelFactory>(() => new MainPlotViewModelFactory(
+            resolver.GetService<IApplicationDispatcher>(),
+            resolver.GetService<IResourceProvider>(),
+            resolver.GetService<IPlotModelFactory>(),
+            resolver.GetService<IDevicesService>(),
+            resolver.GetService<ITemperatureMonitorService>()
+        ));
+        
         services.Register<IMainWindowViewModel>(() => new MainWindowViewModel(
             resolver.GetService<IScheduler>(),
             resolver.GetService<IViewModelCreator>(),
             resolver.GetService<IJobStateService>(),
-            resolver.GetService<IThermalProfileProcessingService>()
+            resolver.GetService<IThermalProfileProcessingService>(),
+            resolver.GetService<IMainPlotViewModelFactory>()
         ));
     }
 }

@@ -15,6 +15,9 @@ public class ThermalProfileConfiguration : IEntityTypeConfiguration<ThermalProfi
             .IsRequired();
 
         builder.HasMany(e => e.Parts)
-            .WithOne().OnDelete(DeleteBehavior.ClientCascade);
+            .WithOne().OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Property(entity => entity.ProfileId)
+            .IsRequired();
     }
 }

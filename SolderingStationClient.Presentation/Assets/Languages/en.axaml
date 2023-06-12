@@ -54,6 +54,7 @@
     <system:String x:Key="Localization.DeviceIsNotSupported">Connected device is not supported.</system:String>
     <system:String x:Key="Localization.ConnectionError">Connection error. Try again.</system:String>
     <system:String x:Key="Localization.PortsNotFound">Ports were not found</system:String>
+    <system:String x:Key="Localization.UnknownError">Unknown error. Restart program and try again</system:String>
 
     <!--  AdvancedSettingsWindow localization  -->
     <system:String x:Key="Localization.AdvancedSerialPortSettingsTitle">Advanced serial port settings</system:String>

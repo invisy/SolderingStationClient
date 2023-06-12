@@ -96,6 +96,7 @@ public class IdlePlotViewModel : ViewModelBase, IIdlePlotViewModel
     {
         _applicationDispatcher.Dispatch(() =>
         {
+            ClearPlot();
             AddDevice(args.Device);
         });
     }

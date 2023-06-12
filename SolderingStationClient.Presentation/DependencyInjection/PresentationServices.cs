@@ -59,7 +59,8 @@ public static class PresentationServices
         ));
         
         services.Register<IThermalProfileEditorWindowViewModel>(() => new ThermalProfileEditorWindowViewModel(
-            resolver.GetService<IThermalProfileService>()
+            resolver.GetService<IThermalProfileService>(),
+            resolver.GetService<IMessageBoxService>()
         ));
         
         services.Register<IThermalProfileRunnerWindowViewModel>(() => new ThermalProfileRunnerWindowViewModel(

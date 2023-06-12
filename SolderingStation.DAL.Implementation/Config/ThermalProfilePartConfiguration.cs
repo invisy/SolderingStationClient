@@ -18,6 +18,6 @@ public class ThermalProfilePartConfiguration : IEntityTypeConfiguration<ThermalP
             .IsRequired();
         
         builder.HasMany(e => e.TemperatureCurve)
-            .WithOne().OnDelete(DeleteBehavior.ClientCascade);
+            .WithOne().OnDelete(DeleteBehavior.Cascade);
     }
 }

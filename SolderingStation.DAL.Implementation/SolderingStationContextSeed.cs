@@ -10,7 +10,7 @@ public static class SolderingStationContextSeed
     {
         if (dbContext.Database.IsSqlite())
         {
-            dbContext.Database.EnsureDeleted();
+            //dbContext.Database.EnsureDeleted();
             dbContext.Database.EnsureCreated();
             //dbContext.Database.Migrate();
         }

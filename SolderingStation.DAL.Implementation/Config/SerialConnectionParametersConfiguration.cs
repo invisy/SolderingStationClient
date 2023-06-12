@@ -25,5 +25,8 @@ public class SerialConnectionParametersConfiguration : IEntityTypeConfiguration<
         
         builder.Property(entity => entity.StopBits)
             .IsRequired();
+        
+        builder.Property(entity => entity.ProfileId)
+            .IsRequired();
     }
 }

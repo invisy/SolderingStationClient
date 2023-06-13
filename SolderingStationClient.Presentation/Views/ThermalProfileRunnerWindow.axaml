@@ -9,6 +9,7 @@
     x:Class="SolderingStationClient.Presentation.Views.ThermalProfileRunnerWindow"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:implementations="clr-namespace:SolderingStationClient.Presentation.ViewModels.Implementations"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Grid Margin="5" Width="400">
@@ -34,8 +35,15 @@
             <ComboBox
                 Grid.Row="1"
                 HorizontalAlignment="Stretch"
+                Items="{Binding ThermalProfilesList}"
                 Margin="5"
-                PlaceholderText="Test thermal profile" />
+                SelectedItem="{Binding SelectedThermalProfile}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
 
             <TextBlock
                 FontSize="16"
@@ -48,30 +56,36 @@
                 TextWrapping="Wrap" />
 
             <Grid Grid.Row="3">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition MinWidth="170" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
+                <ItemsControl Items="{Binding ControllersBindings}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type implementations:ThermalProfileControllerBindingViewModel}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition MinWidth="170" />
+                                </Grid.ColumnDefinitions>
 
-                <Label
-                    Content="Bottom heater"
-                    Grid.Column="0"
-                    Grid.Row="0"
-                    Margin="5"
-                    VerticalContentAlignment="Center" />
-                <ComboBox
-                    Grid.Column="1"
-                    Grid.Row="0"
-                    HorizontalAlignment="Stretch"
-                    Margin="5"
-                    PlaceholderText="COM5:0" />
+                                <Label
+                                    Content="{Binding ControllerThermalProfile.Name}"
+                                    Grid.Column="0"
+                                    Margin="5"
+                                    VerticalContentAlignment="Center" />
+                                <ComboBox
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Stretch"
+                                    Items="{Binding Parent.AvailableControllers}"
+                                    Margin="5"
+                                    SelectedItem="{Binding SelectedTemperatureController}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </Grid>
 
             <Grid Grid.Row="4">
@@ -85,6 +99,7 @@
                     Grid.Column="0"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Center"
+                    IsEnabled="{Binding StartIsPossible, Mode=TwoWay}"
                     Margin="5" />
                 <Button
                     Command="{Binding CloseCommand}"

@@ -113,6 +113,7 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         }
 
         var thermalProfileRunnerVm = _viewModelCreator.Create<IThermalProfileRunnerWindowViewModel>();
+        await thermalProfileRunnerVm.Init();
 
         var result = await ShowThermalProfileRunnerWindow.Handle(thermalProfileRunnerVm);
         if (result != null)

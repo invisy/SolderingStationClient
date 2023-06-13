@@ -64,6 +64,9 @@ public static class PresentationServices
         ));
         
         services.Register<IThermalProfileRunnerWindowViewModel>(() => new ThermalProfileRunnerWindowViewModel(
+            resolver.GetService<IApplicationDispatcher>(),
+            resolver.GetService<IDevicesService>(),
+            resolver.GetService<IThermalProfileService>(),
             resolver.GetService<IThermalProfileProcessingService>()
         ));
 

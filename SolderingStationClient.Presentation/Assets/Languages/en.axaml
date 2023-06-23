@@ -53,6 +53,7 @@
     <system:String x:Key="Localization.Error">Error</system:String>
     <system:String x:Key="Localization.DeviceIsNotSupported">Connected device is not supported.</system:String>
     <system:String x:Key="Localization.ConnectionError">Connection error. Try again.</system:String>
+    <system:String x:Key="Localization.ConnectionLost">Bad connection with device {0}. Reconnect the device or troubleshoot the connection</system:String>
     <system:String x:Key="Localization.PortsNotFound">Ports were not found</system:String>
     <system:String x:Key="Localization.UnknownError">Unknown error. Restart program and try again</system:String>
 

@@ -6,7 +6,6 @@ using Avalonia.Collections;
 using ReactiveUI;
 using SolderingStationClient.BLL.Abstractions.Services;
 using SolderingStationClient.Models;
-using SolderingStationClient.Models.TemperatureControllers;
 using SolderingStationClient.Presentation.Services;
 using SolderingStationClient.Presentation.ViewModels.Interfaces;
 
@@ -18,30 +17,30 @@ public class ThermalProfileRunnerWindowViewModel : ViewModelBase, IThermalProfil
     private readonly IDevicesService _devicesService;
     private readonly IThermalProfileService _thermalProfileService;
     private readonly IThermalProfileProcessingService _thermalProfileProcessingService;
-
-    private List<TemperatureControllerViewModel> AvailableControllers { get; } = new();
+    
+    private List<ThermalProfile> ThermalProfilesList { get; } = new();
     private bool _startIsPossible;
     private ThermalProfile? _selectedThermalProfile;
+    
+    public AvaloniaList<ThermalProfileControllerBindingViewModel> ControllersBindings { get; } = new();
+    public List<TemperatureControllerViewModel> AvailableControllers { get; } = new();
 
     public bool StartIsPossible
     {
         get => _startIsPossible;
         set => this.RaiseAndSetIfChanged(ref _startIsPossible, value);
     }
-    
-    public AvaloniaList<ThermalProfile> ThermalProfilesList { get; } = new();
-    
+
     public ThermalProfile? SelectedThermalProfile
     {
         get => _selectedThermalProfile;
         set
         {
             this.RaiseAndSetIfChanged(ref _selectedThermalProfile, value);
-            UpdateBindings(_selectedThermalProfile);
+            ReloadBindings(_selectedThermalProfile);
         }
     }
-
-    public AvaloniaList<ThermalProfileControllerBindingViewModel> ControllersBindings { get; set; } = new();
+    
 
     public ThermalProfileRunnerWindowViewModel(
         IApplicationDispatcher applicationDispatcher,
@@ -68,10 +67,11 @@ public class ThermalProfileRunnerWindowViewModel : ViewModelBase, IThermalProfil
 
 
             await ReloadDevicesList();
+            _devicesService.DeviceDisconnected += OnDeviceDisconnected;
         });
     }
-
-    public void Update(ThermalProfileControllerBindingViewModel selectedBinding, TemperatureControllerViewModel? selectedController)
+    
+    public void UpdateBindings(ThermalProfileControllerBindingViewModel selectedBinding, TemperatureControllerViewModel? selectedController)
     {
         foreach (var binding in ControllersBindings)
         {
@@ -94,7 +94,7 @@ public class ThermalProfileRunnerWindowViewModel : ViewModelBase, IThermalProfil
         StartIsPossible = true;
     }
 
-    private void UpdateBindings(ThermalProfile? thermalProfile)
+    private void ReloadBindings(ThermalProfile? thermalProfile)
     {
         StartIsPossible = false;
         ControllersBindings.Clear();
@@ -107,13 +107,27 @@ public class ThermalProfileRunnerWindowViewModel : ViewModelBase, IThermalProfil
             ControllersBindings.Add(vm);
         }
     }
+
+    private void OnDeviceDisconnected(object? sender, DeviceDisconnectedEventArgs args)
+    {
+        _applicationDispatcher.Dispatch(() =>
+        {
+            var searchedControllers = AvailableControllers.Where(deviceVm => deviceVm.Key.DeviceId == args.DeviceId).ToList();
+            foreach (var controller in searchedControllers)
+                AvailableControllers.Remove(controller);
+            ReloadBindings(_selectedThermalProfile);
+        });
+    }
     
     private async Task ReloadDevicesList()
     {
-        AvailableControllers.Clear();
-        var devices = await _devicesService.GetDevices();
-        foreach (var device in devices)
-            AddDevice(device);
+        await _applicationDispatcher.DispatchAsync(async () =>
+        {
+            AvailableControllers.Clear();
+            var devices = await _devicesService.GetDevices();
+            foreach (var device in devices)
+                AddDevice(device);
+        });
     }
     
     private void AddDevice(Device device)
@@ -137,7 +151,7 @@ public class ThermalProfileRunnerWindowViewModel : ViewModelBase, IThermalProfil
                 controllerBinding.SelectedTemperatureController!.Key));
         }
         
-        Task.Factory.StartNew(() => _thermalProfileProcessingService.Start(bindings));
+        await Task.Factory.StartNew(() => _thermalProfileProcessingService.Start(bindings));
 
         return bindings;
     }

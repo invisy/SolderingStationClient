@@ -53,7 +53,7 @@ public class PidTemperatureControllerService : TemperatureControllerService, IPi
         var handle = _deviceManager.TryGetDeviceCapability<IPidControllerCapability>(deviceId);
 
         if (handle == null)
-            throw new Exception();
+            throw new NullReferenceException(nameof(deviceId));
 
         return handle;
     }

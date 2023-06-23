@@ -11,17 +11,19 @@ using SolderingStationClient.Models;
 using SolderingStationClient.Models.TemperatureControllers;
 using SolderingStationClient.Presentation.Models;
 using SolderingStationClient.Presentation.Services;
+using SolderingStationClient.Presentation.ViewModels.Factories.Interfaces;
 using SolderingStationClient.Presentation.ViewModels.Interfaces;
 
 namespace SolderingStationClient.Presentation.ViewModels.Implementations;
 
 public class ThermalProfileEditorWindowViewModel : ViewModelBase, IThermalProfileEditorWindowViewModel
 {
+    private readonly IThermalProfileViewModelFactory _thermalProfileViewModelFactory;
     private readonly IMessageBoxService _messageBoxService;
     private readonly IThermalProfileService _thermalProfileService;
     private ThermalProfileViewModel? _selectedThermalProfile;
 
-    private IList<uint> _thermalProfilesSoftDeleteList = new List<uint>();
+    private readonly IList<uint> _thermalProfilesSoftDeleteList = new List<uint>();
    
     public IAvaloniaList<ThermalProfileViewModel> ThermalProfiles { get; } = new AvaloniaList<ThermalProfileViewModel>();
 
@@ -35,9 +37,11 @@ public class ThermalProfileEditorWindowViewModel : ViewModelBase, IThermalProfil
     public ReactiveCommand<Unit, Unit> CloseCommand { get; }
     
     public ThermalProfileEditorWindowViewModel(
+        IThermalProfileViewModelFactory thermalProfileViewModelFactory,
         IThermalProfileService thermalProfileService, 
         IMessageBoxService messageBoxService)
     {
+        _thermalProfileViewModelFactory = thermalProfileViewModelFactory;
         _thermalProfileService = thermalProfileService;
         _messageBoxService = messageBoxService;
 
@@ -52,7 +56,7 @@ public class ThermalProfileEditorWindowViewModel : ViewModelBase, IThermalProfil
     
     public void Create()
     {
-        var newThermalProfileVm = new ThermalProfileViewModel("New thermal profile");
+        var newThermalProfileVm =_thermalProfileViewModelFactory.Create("New thermal profile");
         ThermalProfiles.Add(newThermalProfileVm);
         SelectedThermalProfile = newThermalProfileVm;
     }
@@ -87,7 +91,7 @@ public class ThermalProfileEditorWindowViewModel : ViewModelBase, IThermalProfil
                 await _thermalProfileService.Add(profile);
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
             await _messageBoxService.ShowMessageBoxWithLocalizedMessage("Localization.UnknownError", MessageBoxType.Error);
         }
@@ -104,7 +108,7 @@ public class ThermalProfileEditorWindowViewModel : ViewModelBase, IThermalProfil
     
     private ThermalProfileViewModel Map(ThermalProfile thermalProfile)
     {
-        return new ThermalProfileViewModel(thermalProfile);
+        return _thermalProfileViewModelFactory.Create(thermalProfile);
     }
 
     private ThermalProfile Map(ThermalProfileViewModel vm)

@@ -11,7 +11,7 @@ public class JobStateService : IJobStateService
     private bool _isDisposed;
     private IJob? _activeJob;
 
-    public event EventHandler<JobStartedEventArgs> JobStarted;
+    public event EventHandler<JobStartedEventArgs>? JobStarted;
 
     public void AddJob(IJob job)
     {

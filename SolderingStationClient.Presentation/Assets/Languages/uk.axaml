@@ -53,6 +53,7 @@
     <system:String x:Key="Localization.Error">Помилка</system:String>
     <system:String x:Key="Localization.DeviceIsNotSupported">Підключений пристрій не підтримується.</system:String>
     <system:String x:Key="Localization.ConnectionError">Помилка з'єднання. Спробуйте знову.</system:String>
+    <system:String x:Key="Localization.ConnectionLost">Погане з'єднання з пристроєм {0}. Перепідключіть пристрій або усуньте проблеми зі з'єднанням</system:String>
     <system:String x:Key="Localization.PortsNotFound">Порти не було знайдено</system:String>
     <system:String x:Key="Localization.UnknownError">Невідома помилка. Перезапустіть програму та спробуйте ще раз.</system:String>
 

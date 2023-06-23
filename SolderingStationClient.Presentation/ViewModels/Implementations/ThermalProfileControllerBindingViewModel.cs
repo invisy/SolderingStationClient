@@ -1,5 +1,6 @@
 ﻿using ReactiveUI;
 using SolderingStationClient.Models;
+using SolderingStationClient.Presentation.ViewModels.Interfaces;
 
 namespace SolderingStationClient.Presentation.ViewModels.Implementations;
 
@@ -7,7 +8,7 @@ public class ThermalProfileControllerBindingViewModel : ViewModelBase
 {
     private TemperatureControllerViewModel? _selectedController;
 
-    private ThermalProfileRunnerWindowViewModel _parent;
+    private IThermalProfileRunnerWindowViewModel _parent;
     
     public ControllerThermalProfile ControllerThermalProfile { get; }
     public TemperatureControllerViewModel? SelectedTemperatureController
@@ -16,14 +17,17 @@ public class ThermalProfileControllerBindingViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref _selectedController, value);
-            _parent.Update(this, value);
+            
+            //Call method only if user selected another controller
+            if(value != null)
+                _parent.UpdateBindings(this, value);
         }
     }
 
-    public ThermalProfileRunnerWindowViewModel Parent => _parent;
+    public IThermalProfileRunnerWindowViewModel Parent => _parent;
 
     public ThermalProfileControllerBindingViewModel(
-        ThermalProfileRunnerWindowViewModel parent, 
+        IThermalProfileRunnerWindowViewModel parent, 
         ControllerThermalProfile controllerThermalProfile)
     {
         _parent = parent;

@@ -19,12 +19,11 @@ public class IdlePlotViewModel : ViewModelBase, IIdlePlotViewModel
     private bool _isDisposed;
     private const int UpdateInterval = 1000;
     
-    private readonly IPlotModelFactory _plotModelFactory;
-    private IDevicesService _devicesService;
+    private readonly IDevicesService _devicesService;
     private readonly IApplicationDispatcher _applicationDispatcher;
     private readonly ITemperatureMonitorService _temperatureMonitorService;
     private readonly IResourceProvider _resourceProvider;
-
+    
     private bool _isAutoUpdatable = true;
 
     public PlotModel Model { get; private set; }
@@ -56,14 +55,13 @@ public class IdlePlotViewModel : ViewModelBase, IIdlePlotViewModel
         _devicesService = devicesService;
         _temperatureMonitorService = temperatureMonitorService;
         _resourceProvider = resourceProvider;
-        _plotModelFactory = plotModelFactory;
+
+        Model = plotModelFactory.Create();
+        UpdatePlotTitles();
     }
 
     public async Task Init()
     {
-        Model = _plotModelFactory.Create();
-        UpdatePlotTitles();
-
         var devices = await _devicesService.GetDevices();
         
         _temperatureMonitorService.NewTemperatureMeasurement += OnNewTemperatureMeasurement;
@@ -78,6 +76,24 @@ public class IdlePlotViewModel : ViewModelBase, IIdlePlotViewModel
         
         _devicesService.DeviceConnected += OnConnectedDevice;
         _devicesService.DeviceDisconnected += OnDisconnectedDevice;
+        _resourceProvider.ResourcesChanged += OnResourceChanged;
+    }
+
+    private async void OnResourceChanged()
+    {
+        var done = false;
+        while (!done)
+        {
+            try
+            {
+                UpdatePlotTitles();
+                done = true;
+            }
+            catch (Exception)
+            {
+                await Task.Delay(100);
+            }
+        }
     }
 
     public void ClearPlot()
@@ -116,14 +132,14 @@ public class IdlePlotViewModel : ViewModelBase, IIdlePlotViewModel
         string plotTitle = _resourceProvider.GetResourceByName<string>("Localization.TemperaturePlotTitle");
         string plotXTitle = _resourceProvider.GetResourceByName<string>("Localization.PlotTimeLabel");
         string plotYTitle = _resourceProvider.GetResourceByName<string>("Localization.PlotTemperatureLabel");
+
         Model.Title = plotTitle;
         foreach (var axis in Model.Axes)
         {
-            if (axis.IsHorizontal())
-                axis.Title = plotXTitle;
-            else
-                axis.Title = plotYTitle;
+            axis.Title = axis.IsHorizontal() ? plotXTitle : plotYTitle;
         }
+        
+        Model.InvalidatePlot(false);
     }
 
     private void AddDevice(Device device)

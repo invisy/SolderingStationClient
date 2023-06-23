@@ -54,15 +54,10 @@ public class ConnectionViewModel : ViewModelBase, IConnectionViewModel
         get => _selectedPort;
         set
         {
-            if (value == null)
-            {
+            if (AvailablePorts.Count == 0 && value == null)
                 IsActive = false;
-            }
-            else
-            {
-                this.RaiseAndSetIfChanged(ref _selectedPort, value);
-                IsActive = true;
-            }
+            
+            this.RaiseAndSetIfChanged(ref _selectedPort, value);
         }
     }
 
@@ -116,6 +111,8 @@ public class ConnectionViewModel : ViewModelBase, IConnectionViewModel
         {
             AvailablePorts.Add(newPortVm);
             SelectedPort = newPortVm;
+            if(AvailablePorts.Count == 1)
+                IsActive = true;
         });
     }
 

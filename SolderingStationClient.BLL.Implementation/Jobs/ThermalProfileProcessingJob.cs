@@ -15,14 +15,13 @@ public class ThermalProfileProcessingJob : IThermalProfileProcessingJob
     private readonly ITemperatureMonitorService _temperatureMonitor;
     private readonly ITemperatureControllerService _temperatureControllerService;
     private readonly IEnumerable<ThermalProfileControllerBinding> _thermalProfileControllerBindings;
+    private readonly float _maxTimeInSeconds;
+    private readonly ConcurrentDictionary<TemperatureControllerKey, bool> _controllersInWork = new();
     
     private int _errors;
     private float _currentProgress;
-    private float _maxTimeInSeconds;
     private JobState _state = JobState.NotStarted;
-
-    private ConcurrentDictionary<TemperatureControllerKey, bool> _controllersInWork = new();
-
+    
     public JobState State
     {
         get => _state;

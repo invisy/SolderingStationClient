@@ -19,9 +19,15 @@ public class MessageBoxService : IMessageBoxService
         _resourceProvider = resourceProvider;
     }
 
-    public Task<ButtonResult> ShowMessageBoxWithLocalizedMessage(string key, MessageBoxType type)
+    public async Task<ButtonResult> ShowMessageBoxWithLocalizedMessage(string key, MessageBoxType type, params object?[] arguments)
     {
-        return ShowMessageBox(_resourceProvider.GetResourceByName<string>(key), type);
+        var line = _resourceProvider.GetResourceByName<string>(key);
+        return await ShowMessageBox(string.Format(line, arguments), type);
+    }
+
+    public async Task<ButtonResult> ShowMessageBoxWithLocalizedMessage(string key, MessageBoxType type)
+    {
+        return await ShowMessageBox(_resourceProvider.GetResourceByName<string>(key), type);
     }
 
     public Task<ButtonResult> ShowMessageBox(string message, MessageBoxType type)

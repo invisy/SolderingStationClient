@@ -16,7 +16,7 @@ public static class PresentationServices
     public static void RegisterPresentationServices(this IMutableDependencyResolver services,
         IReadonlyDependencyResolver resolver)
     {
-        services.RegisterConstant<IScheduler>(RxApp.MainThreadScheduler);
+        services.RegisterConstant(RxApp.MainThreadScheduler);
         services.RegisterLazySingleton<IApplicationDispatcher>(() => new ApplicationDispatcher());
         services.RegisterLazySingleton<IResourceProvider>(() => new ResourceProvider());
         services.RegisterLazySingleton<IMessageBoxService>(() => new MessageBoxService(
@@ -43,22 +43,31 @@ public static class PresentationServices
         
         services.Register<ITemperatureControllerViewModelFactory>(() =>
             new DefaultTemperatureControllerViewModelFactory(
+                resolver.GetService<IMessageBoxService>(),
                 resolver.GetService<ITemperatureControllerService>(),
                 resolver.GetService<IPidTemperatureControllerService>()
             ));
 
         services.Register<IDeviceViewModelFactory>(() => new DefaultDeviceViewModelFactory(
+            resolver.GetService<IMessageBoxService>(),
             resolver.GetService<ITemperatureControllerViewModelFactory>()
+        ));
+        
+        services.Register<IThermalProfileViewModelFactory>(() => new ThermalProfileViewModelFactory(
+            resolver.GetService<IPlotModelFactory>(),
+            resolver.GetService<IResourceProvider>()
         ));
 
         services.Register<IDevicesListViewModel>(() => new DevicesListViewModel(
             resolver.GetService<IApplicationDispatcher>(),
+            resolver.GetService<IMessageBoxService>(),
             resolver.GetService<IDeviceViewModelFactory>(),
             resolver.GetService<IDevicesService>(),
             resolver.GetService<ITemperatureMonitorService>()
         ));
         
         services.Register<IThermalProfileEditorWindowViewModel>(() => new ThermalProfileEditorWindowViewModel(
+            resolver.GetService<IThermalProfileViewModelFactory>(),
             resolver.GetService<IThermalProfileService>(),
             resolver.GetService<IMessageBoxService>()
         ));

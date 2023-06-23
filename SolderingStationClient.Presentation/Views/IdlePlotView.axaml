@@ -15,6 +15,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        <Label Content="{DynamicResource Localization.TemperaturePlotTitle}" IsVisible="false" />
         <avalonia:PlotView
             Grid.Row="0"
             MinHeight="400"

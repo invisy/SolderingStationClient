@@ -76,7 +76,17 @@ public class DevicesService : IDevicesService
     private async void OnDevicePresenceChanged(object? sender, DevicePresenceChangedEventArgs<ulong> args)
     {
         if (args.Status == PresenceStatus.Connected)
-            DeviceConnected?.Invoke(this, new DeviceConnectedEventArgs(await GetDevice(args.DeviceId)));
+        {
+            try
+            {
+                var device = await GetDevice(args.DeviceId);
+                DeviceConnected?.Invoke(this, new DeviceConnectedEventArgs(device));
+            }
+            catch (Exception e)
+            {
+                _deviceManager.RemoveDevice(args.DeviceId);
+            }
+        }
         else
             DeviceDisconnected?.Invoke(this, new DeviceDisconnectedEventArgs(args.DeviceId));
     }

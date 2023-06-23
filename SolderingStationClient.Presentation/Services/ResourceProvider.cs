@@ -1,10 +1,19 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Controls;
 
 namespace SolderingStationClient.Presentation.Services;
 
 public class ResourceProvider : IResourceProvider
 {
+    public event Action? ResourcesChanged;
+
+    public ResourceProvider()
+    {
+        Application.Current!.ResourcesChanged += OnResourceChanged;
+    }
+
     public T GetResourceByName<T>(string name)
     {
         if (Application.Current!.Resources.TryGetResource(name, out var message))
@@ -15,5 +24,11 @@ public class ResourceProvider : IResourceProvider
         
         throw new ArgumentException(name);
         
+    }
+    
+    private async void OnResourceChanged(object? sender, ResourcesChangedEventArgs? args)
+    {
+        await Task.Delay(100);
+        ResourcesChanged?.Invoke();
     }
 }

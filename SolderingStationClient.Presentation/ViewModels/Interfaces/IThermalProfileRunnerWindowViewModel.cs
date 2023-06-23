@@ -10,10 +10,14 @@ namespace SolderingStationClient.Presentation.ViewModels.Interfaces;
 
 public interface IThermalProfileRunnerWindowViewModel : IViewModelBase
 {
-    Task Init();
-    bool StartIsPossible { get; }
-    AvaloniaList<ThermalProfile> ThermalProfilesList { get; }
     AvaloniaList<ThermalProfileControllerBindingViewModel> ControllersBindings { get; }
+    List<TemperatureControllerViewModel> AvailableControllers { get; }
+    bool StartIsPossible { get; }
+    
     ReactiveCommand<Unit, IEnumerable<ThermalProfileControllerBinding>> StartCommand { get; }
     ReactiveCommand<Unit, Unit> CloseCommand { get; }
+
+    Task Init();
+    void UpdateBindings(ThermalProfileControllerBindingViewModel selectedBinding,
+        TemperatureControllerViewModel? selectedController);
 }

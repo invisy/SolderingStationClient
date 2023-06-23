@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
+using Invisy.SerialCommunicationProtocol.Exceptions;
 using ReactiveUI;
 using SolderingStationClient.BLL.Abstractions.Services;
 using SolderingStationClient.Models.TemperatureControllers;
+using SolderingStationClient.Presentation.Models;
+using SolderingStationClient.Presentation.Services;
 using SolderingStationClient.Presentation.ViewModels.Interfaces;
 
 namespace SolderingStationClient.Presentation.ViewModels.Implementations;
@@ -11,6 +14,7 @@ namespace SolderingStationClient.Presentation.ViewModels.Implementations;
 public class PidTemperatureControllerSettingsViewModel : TemperatureControllerSettingsViewModel,
     IPidTemperatureControllerSettingsViewModel
 {
+    private readonly IMessageBoxService _messageBoxService;
     private readonly IPidTemperatureControllerService _pidTemperatureControllerService;
 
     private float _newPidKd;
@@ -25,9 +29,12 @@ public class PidTemperatureControllerSettingsViewModel : TemperatureControllerSe
 
     private float _pidKp;
 
-    public PidTemperatureControllerSettingsViewModel(IPidTemperatureControllerService pidTemperatureControllerService,
-        TemperatureControllerKey key) : base(pidTemperatureControllerService, key)
+    public PidTemperatureControllerSettingsViewModel(
+        IMessageBoxService messageBoxService,
+        IPidTemperatureControllerService pidTemperatureControllerService,
+        TemperatureControllerKey key) : base(messageBoxService, pidTemperatureControllerService, key)
     {
+        _messageBoxService = Guard.Against.Null(messageBoxService);
         _pidTemperatureControllerService = Guard.Against.Null(pidTemperatureControllerService);
     }
 
@@ -72,19 +79,44 @@ public class PidTemperatureControllerSettingsViewModel : TemperatureControllerSe
 
     public async Task SetKp()
     {
-        await _pidTemperatureControllerService.SetPidKp(_key, NewPidKp);
+        try
+        {
+            await _pidTemperatureControllerService.SetPidKp(_key, NewPidKp);
+        }
+        catch (CommandException e)
+        {
+            await _messageBoxService.ShowMessageBoxWithLocalizedMessage("Localization.ConnectionLost", 
+                MessageBoxType.Error, _key.DeviceId);
+        }
+        
         await UpdateCoefficients();
     }
 
     public async Task SetKi()
     {
-        await _pidTemperatureControllerService.SetPidKi(_key, NewPidKi);
+        try
+        {
+            await _pidTemperatureControllerService.SetPidKi(_key, NewPidKi);
+        }
+        catch (CommandException e)
+        {
+            await _messageBoxService.ShowMessageBoxWithLocalizedMessage("Localization.ConnectionLost", 
+                MessageBoxType.Error, _key.DeviceId);
+        }
         await UpdateCoefficients();
     }
 
     public async Task SetKd()
     {
-        await _pidTemperatureControllerService.SetPidKd(_key, NewPidKd);
+        try
+        {
+            await _pidTemperatureControllerService.SetPidKd(_key, NewPidKd);
+        }
+        catch (CommandException e)
+        {
+            await _messageBoxService.ShowMessageBoxWithLocalizedMessage("Localization.ConnectionLost", 
+                MessageBoxType.Error, _key.DeviceId);
+        }
         await UpdateCoefficients();
     }
 
@@ -96,9 +128,18 @@ public class PidTemperatureControllerSettingsViewModel : TemperatureControllerSe
 
     private async Task UpdateCoefficients()
     {
-        var pidCoefs = await _pidTemperatureControllerService.GetCoefficients(_key);
-        PidKp = pidCoefs.Kp;
-        PidKi = pidCoefs.Ki;
-        PidKd = pidCoefs.Kd;
+        try
+        {
+            var pidCoefs = await _pidTemperatureControllerService.GetCoefficients(_key);
+            PidKp = pidCoefs.Kp;
+            PidKi = pidCoefs.Ki;
+            PidKd = pidCoefs.Kd;
+        }
+        catch (CommandException e)
+        {
+            await _messageBoxService.ShowMessageBoxWithLocalizedMessage("Localization.ConnectionLost", 
+                MessageBoxType.Error, _key.DeviceId);
+        }
+        
     }
 }

@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Collections;
 using OxyPlot;
-using OxyPlot.Axes;
 using ReactiveUI;
 using SolderingStationClient.Models;
+using SolderingStationClient.Presentation.Services;
+using SolderingStationClient.Presentation.ViewModels.Factories.Interfaces;
 
 namespace SolderingStationClient.Presentation.ViewModels.Implementations;
 
 public class ThermalProfileViewModel : ViewModelBase
 {
+    private readonly IResourceProvider _resourceProvider;
+    
     private string _name;
     private ThermalProfilePartViewModel? _activeThermalProfilePartViewModel;
     
@@ -33,8 +36,15 @@ public class ThermalProfileViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _activeThermalProfilePartViewModel, value);
     }
 
-    public ThermalProfileViewModel(ThermalProfile thermalProfile)
+    public ThermalProfileViewModel(ThermalProfile thermalProfile, IPlotModelFactory plotModelFactory, 
+        IResourceProvider resourceProvider)
     {
+        _resourceProvider = resourceProvider;
+        
+        PlotModel = plotModelFactory.Create();
+        UpdatePlotTitles();
+        EnableController();
+        
         Id = thermalProfile.Id;
         _name = thermalProfile.Name;
         foreach (var thermalProfilePart in thermalProfile.ControllersThermalProfiles)
@@ -47,23 +57,24 @@ public class ThermalProfileViewModel : ViewModelBase
         if(ThermalProfileParts.Count != 0)
             ActiveThermalProfilePart = ThermalProfileParts[0];
         
-        ConfigurePlotModel();
-        EnableController();
     }
     
-    public ThermalProfileViewModel(string name)
+    public ThermalProfileViewModel(string name, IPlotModelFactory plotModelFactory, IResourceProvider resourceProvider)
     {
+        _resourceProvider = resourceProvider;
+        
         Id = 0;
         _name = name;
 
-        ConfigurePlotModel();
+        PlotModel = plotModelFactory.Create();
+        UpdatePlotTitles();
         EnableController();
     }
-    
+
     public void EnableController()
     {
         var command = new DelegatePlotCommand<OxyMouseDownEventArgs>(
-            (v, c, a) =>
+            (_, _, a) =>
             {
                 a.Handled = true;
                 if (ActiveThermalProfilePart == null)
@@ -120,46 +131,22 @@ public class ThermalProfileViewModel : ViewModelBase
 
         return null;
     }
-
-    private void ConfigurePlotModel()
-    {
-        PlotModel.LegendBorderThickness = 0;
-        PlotModel.LegendOrientation = LegendOrientation.Horizontal;
-        PlotModel.LegendPlacement = LegendPlacement.Outside;
-        PlotModel.LegendPosition = LegendPosition.TopCenter;
-        PlotModel.PlotAreaBorderColor = OxyColor.Parse("#999999");
-        PlotModel.PlotMargins = new OxyThickness(50, 15, 30, 60);
-        PlotModel.Title = "Temperature graph";
-
-        var verticalAxis = new LinearAxis();
-        verticalAxis.AbsoluteMinimum = 0;
-        verticalAxis.AxisTitleDistance = 15;
-        verticalAxis.MajorStep = 10;
-        verticalAxis.Minimum = 0;
-        verticalAxis.MinimumRange = 100;
-        verticalAxis.MinorStep = 1;
-        verticalAxis.Position = AxisPosition.Left;
-        verticalAxis.Title = "Temperature (°C)";
-        verticalAxis.TitleColor = OxyColors.Chocolate;
-        verticalAxis.TitleFontSize = 12;
-        verticalAxis.TitleFontWeight = FontWeights.Bold;
-        PlotModel.Axes.Add(verticalAxis);
-        
-        var horizontalAxis = new LinearAxis();
-        horizontalAxis.AbsoluteMinimum = 0;
-        horizontalAxis.AxisTitleDistance = 10;
-        horizontalAxis.MajorStep = 10;
-        horizontalAxis.Minimum = 0;
-        horizontalAxis.MinimumRange = 100;
-        horizontalAxis.MinorStep = 1;
-        horizontalAxis.Position = AxisPosition.Bottom;
-        horizontalAxis.Title = "Time (s)";
-        horizontalAxis.TitleColor = OxyColors.Chocolate;
-        horizontalAxis.TitleFontSize = 12;
-        horizontalAxis.TitleFontWeight = FontWeights.Bold;
-        PlotModel.Axes.Add(horizontalAxis);
-    }
     
+    private void UpdatePlotTitles()
+    {
+        string plotTitle = _resourceProvider.GetResourceByName<string>("Localization.TemperaturePlotTitle");
+        string plotXTitle = _resourceProvider.GetResourceByName<string>("Localization.PlotTimeLabel");
+        string plotYTitle = _resourceProvider.GetResourceByName<string>("Localization.PlotTemperatureLabel");
+
+        PlotModel.Title = plotTitle;
+        foreach (var axis in PlotModel.Axes)
+        {
+            axis.Title = axis.IsHorizontal() ? plotXTitle : plotYTitle;
+        }
+        
+        PlotModel.InvalidatePlot(false);
+    }
+
     public void Add()
     {
         var thermalProfileVm = new ThermalProfilePartViewModel("New controller profile");

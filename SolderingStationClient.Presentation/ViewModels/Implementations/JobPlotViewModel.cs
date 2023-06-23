@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Collections;
@@ -17,12 +18,11 @@ public class JobPlotViewModel : ViewModelBase, IJobPlotViewModel
 {
     private bool _isDisposed;
     
-    private readonly IPlotModelFactory _plotModelFactory;
-    private IDevicesService _devicesService;
+    private readonly IDevicesService _devicesService;
     private readonly IApplicationDispatcher _applicationDispatcher;
     private readonly ITemperatureMonitorService _temperatureMonitorService;
     private readonly IResourceProvider _resourceProvider;
-    
+
     public PlotModel Model { get; private set; }
 
     public AvaloniaList<TemperatureControllerJobPlotViewModel> TemperatureControllers { get; } = new();
@@ -37,14 +37,13 @@ public class JobPlotViewModel : ViewModelBase, IJobPlotViewModel
         _devicesService = devicesService;
         _temperatureMonitorService = temperatureMonitorService;
         _resourceProvider = resourceProvider;
-        _plotModelFactory = plotModelFactory;
+
+        Model = plotModelFactory.Create();
+        UpdatePlotTitles();
     }
 
     public async Task Init(IEnumerable<ThermalProfileControllerBinding> bindings)
     {
-        Model = _plotModelFactory.Create();
-        UpdatePlotTitles();
-
         foreach (var binding in bindings)
         {
             var device = await _devicesService.GetDevice(binding.TemperatureControllerKey.DeviceId);
@@ -55,6 +54,24 @@ public class JobPlotViewModel : ViewModelBase, IJobPlotViewModel
         
         _devicesService.DeviceDisconnected += OnDisconnectedDevice;
         _temperatureMonitorService.NewTemperatureMeasurement += OnNewTemperatureMeasurement;
+        _resourceProvider.ResourcesChanged += OnResourceChanged;
+    }
+    
+    private async void OnResourceChanged()
+    {
+        var done = false;
+        while (!done)
+        {
+            try
+            {
+                UpdatePlotTitles();
+                done = true;
+            }
+            catch (Exception)
+            {
+                await Task.Delay(100);
+            }
+        }
     }
 
     private void OnDisconnectedDevice(object? sender, DeviceDisconnectedEventArgs args)
@@ -72,6 +89,7 @@ public class JobPlotViewModel : ViewModelBase, IJobPlotViewModel
         string plotTitle = _resourceProvider.GetResourceByName<string>("Localization.TemperaturePlotTitle");
         string plotXTitle = _resourceProvider.GetResourceByName<string>("Localization.PlotTimeLabel");
         string plotYTitle = _resourceProvider.GetResourceByName<string>("Localization.PlotTemperatureLabel");
+        
         Model.Title = plotTitle;
         foreach (var axis in Model.Axes)
         {

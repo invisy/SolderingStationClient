@@ -2,7 +2,7 @@
 
 namespace SolderingStation.Hardware.Abstractions;
 
-public interface IDevice : IDisposable
+public interface IDevice
 {
     IConnection Connection { get; }
     string Name { get; }

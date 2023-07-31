@@ -8,7 +8,6 @@ public class SerialPortsMonitor : ISerialPortsMonitor
 {
     private readonly ISerialPortsProvider _serialPortsProvider;
     private readonly ITimer _timer;
-    private bool _isDisposed;
 
     private List<string> _lastDetectedPortNames = new();
 
@@ -34,11 +33,6 @@ public class SerialPortsMonitor : ISerialPortsMonitor
         _timer.Stop();
     }
 
-    public void Dispose()
-    {
-        Dispose(true);
-    }
-
     private void CheckPortsStatus(object sender, DateTime dateTime)
     {
         var availablePorts = _serialPortsProvider.GetAvailablePorts().ToList();
@@ -53,16 +47,5 @@ public class SerialPortsMonitor : ISerialPortsMonitor
             PortPresenceStatusChanged?.Invoke(this, new SerialPortPresenceEventArgs(port, PresenceStatus.Disconnected));
 
         _lastDetectedPortNames = availablePorts;
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (_isDisposed)
-            return;
-
-        if (disposing)
-            _timer.Dispose();
-
-        _isDisposed = true;
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace SolderingStation.Hardware.Abstractions.Connections;
 
-public interface IConnection : IDisposable
+public interface IConnection
 {
     string Name { get; }
 }

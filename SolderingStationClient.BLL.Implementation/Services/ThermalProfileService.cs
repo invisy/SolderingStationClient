@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using SolderingStation.DAL.Abstractions;
+﻿using SolderingStation.DAL.Abstractions;
 using SolderingStation.Entities;
 using SolderingStationClient.BLL.Abstractions.Services;
 using SolderingStationClient.BLL.Implementation.Specifications;

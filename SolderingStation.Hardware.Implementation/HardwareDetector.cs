@@ -28,7 +28,7 @@ public class HardwareDetector<T> : IHardwareDetector<T> where T : IConnectionPar
                 return id;
             }
 
-            device.Dispose();
+            device.CloseConnection();
         }
 
         throw new UnsupportedDeviceException();

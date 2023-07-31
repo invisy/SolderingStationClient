@@ -182,7 +182,6 @@ public class TemperatureMonitorService : ITemperatureMonitorService
         {
             _devicesService.DeviceConnected -= OnDeviceConnected;
             _devicesService.DeviceDisconnected -= OnDeviceDisconnected;
-            _timer.Dispose();
             _semaphoreSlim.Dispose();
         }
 

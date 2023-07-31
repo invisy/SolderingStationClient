@@ -2,7 +2,7 @@
 
 namespace SolderingStationClient.BLL.Abstractions;
 
-public interface ISerialPortsMonitor : IDisposable
+public interface ISerialPortsMonitor
 {
     IReadOnlyList<string> AllPortNames { get; }
     event EventHandler<SerialPortPresenceEventArgs> PortPresenceStatusChanged;

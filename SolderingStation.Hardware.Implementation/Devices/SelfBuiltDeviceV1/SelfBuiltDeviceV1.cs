@@ -12,7 +12,6 @@ public class
     where TConnection : IConnectionGeneric<TConnectionParameters>, ISelfBuiltDeviceCommandProcessor
 {
     private readonly TConnection _connection;
-    private bool _disposed;
 
     public IConnection Connection => _connection;
 
@@ -44,16 +43,6 @@ public class
     public void CloseConnection()
     {
         _connection.Disconnect();
-    }
-
-    public void Dispose()
-    {
-        if (_disposed)
-            return;
-
-        _connection.Dispose();
-        _disposed = true;
-        GC.SuppressFinalize(this);
     }
 
     public async Task<byte> GetChannelsNumber()

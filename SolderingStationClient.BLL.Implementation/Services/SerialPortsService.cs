@@ -125,7 +125,6 @@ public class SerialPortsService : ISerialPortsService
         if (disposing)
         {
             _serialPortsMonitor.PortPresenceStatusChanged -= OnPortPresenceChanged;
-            _serialPortsMonitor.Dispose();
         }
 
         _isDisposed = true;

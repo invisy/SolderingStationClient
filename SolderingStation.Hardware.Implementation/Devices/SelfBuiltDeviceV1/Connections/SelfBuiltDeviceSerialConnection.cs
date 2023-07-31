@@ -10,8 +10,7 @@ public class SelfBuiltDeviceSerialConnection : IConnectionGeneric<SerialConnecti
     ISelfBuiltDeviceCommandProcessor
 {
     private readonly ISerialCommunicationClient _client;
-    private bool _disposed;
-    
+
     public string Name => _client.PortSettings.PortName;
 
     public SelfBuiltDeviceSerialConnection(ISerialCommunicationClient client,
@@ -44,16 +43,6 @@ public class SelfBuiltDeviceSerialConnection : IConnectionGeneric<SerialConnecti
     public void Disconnect()
     {
         _client.Close();
-    }
-
-    public void Dispose()
-    {
-        if (_disposed)
-            return;
-
-        Disconnect();
-        _disposed = true;
-        GC.SuppressFinalize(this);
     }
 
     public async Task ExecuteCommand<TRequest>(ISelfBuiltDeviceCommand<TRequest> command)

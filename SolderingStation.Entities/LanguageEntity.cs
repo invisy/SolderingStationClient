@@ -8,8 +8,9 @@ public class LanguageEntity : BaseEntity<uint>
         
     }
     
-    public LanguageEntity(string englishName, string nativeName, string code)
+    public LanguageEntity(uint id, string englishName, string nativeName, string code)
     {
+        Id = id;
         EnglishName = englishName;
         NativeName = nativeName;
         Code = code;

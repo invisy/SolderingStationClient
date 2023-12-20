@@ -1,24 +1,24 @@
-﻿using SolderingStation.DAL.Abstractions;
+﻿using SolderingStation.DAL.Implementation;
+using SolderingStation.Entities;
 using SolderingStationClient.BLL.Abstractions.Services;
-using SolderingStationClient.BLL.Implementation.Specifications;
 using SolderingStationClient.Models;
 
 namespace SolderingStationClient.BLL.Implementation.Services;
 
 public class LocalizationService : ILocalizationService
 {
-    private readonly IUnitOfWork _uow;
+    private readonly SolderingStationDbContext _context;
     private readonly IUserProfileService _userProfileService;
 
-    public LocalizationService(IUnitOfWork uow, IUserProfileService userProfileService)
+    public LocalizationService(SolderingStationDbContext context, IUserProfileService userProfileService)
     {
-        _uow = uow;
+        _context = context;
         _userProfileService = userProfileService;
     }
 
-    public async Task<IEnumerable<Locale>> GetAvailableLocalizations()
+    public IEnumerable<Locale> GetAvailableLocalizations()
     {
-        var localizations = await _uow.LanguagesRepository.GetListAsync();
+        var localizations = _context.GetCollection<LanguageEntity>().FindAll();
 
         var locales = localizations.Select(localization =>
             new Locale(localization.Id, localization.NativeName, localization.EnglishName, localization.Code));
@@ -26,25 +26,28 @@ public class LocalizationService : ILocalizationService
         return locales;
     }
 
-    public async Task<string> GetCurrentLanguageCode()
+    public string GetCurrentLanguageCode()
     {
         var currentProfileId = _userProfileService.GetProfileId();
-        var spec = new ProfileWithLanguageSpecification(currentProfileId);
-        var profile = await _uow.ProfilesRepository.GetBySpecAsync(spec);
+        var profiles = _context.GetCollection<ProfileEntity>();
+        var profile = profiles.FindOne(p => p.Id == currentProfileId);
+       
         if (profile is null)
             throw new ArgumentException("Profile doesn`t exist");
         
-        return profile.Language.Code;
+        var languages = _context.GetCollection<LanguageEntity>().FindOne(l => l.Id == profile.LanguageId);
+        
+        return languages.Code;
     }
 
-    public async Task SaveSelectedLocalization(uint languageId)
+    public void SaveSelectedLocalization(uint languageId)
     {
         var currentProfileId = _userProfileService.GetProfileId();
-        var profile = await _uow.ProfilesRepository.GetByIdAsync(currentProfileId);
+        var profilesCollection = _context.GetCollection<ProfileEntity>();
+        var profile = profilesCollection.FindOne(profiles => profiles.Id == currentProfileId);
         if (profile is null)
             throw new ArgumentException("Profile doesn`t exist");
         profile.LanguageId = languageId;
-        _uow.ProfilesRepository.Update(profile);
-        await _uow.SaveChanges();
+        profilesCollection.Update(profile);
     }
 }

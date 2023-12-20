@@ -4,7 +4,7 @@ public class ThermalProfilePartEntity : BaseEntity<uint>
 {
     public string Name { get; set; }
     public int Color { get; set; }
-    public IEnumerable<TemperatureMeasurementPointEntity> TemperatureCurve { get; set; }
+    public IList<TemperatureMeasurementPointEntity> TemperatureCurve { get; set; }
 
     //For EF
     public ThermalProfilePartEntity()
@@ -16,6 +16,6 @@ public class ThermalProfilePartEntity : BaseEntity<uint>
         Id = id;
         Name = name;
         Color = color;
-        TemperatureCurve = measurements;
+        TemperatureCurve = new List<TemperatureMeasurementPointEntity>(measurements);
     }
 }

@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SolderingStation.DAL.Abstractions\SolderingStation.DAL.Abstractions.csproj" />
+        <ProjectReference Include="..\SolderingStation.DAL.Implementation\SolderingStation.DAL.Implementation.csproj" />
         <ProjectReference Include="..\SolderingStation.Hardware.Abstractions\SolderingStation.Hardware.Abstractions.csproj" />
         <ProjectReference Include="..\SolderingStationClient.BLL.Abstractions\SolderingStationClient.BLL.Abstractions.csproj" />
         <ProjectReference Include="..\SolderingStationClient.Models\SolderingStationClient.Models.csproj" />

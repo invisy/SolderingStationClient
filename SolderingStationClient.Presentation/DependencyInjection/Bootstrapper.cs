@@ -1,4 +1,4 @@
-﻿using SolderingStation.DAL.Implementation.DependencyInjection;
+﻿using SolderingStation.DAL.Implementation;
 using SolderingStation.Hardware.Implementation.DependencyInjection;
 using SolderingStationClient.BLL.Implementation.DependencyInjection;
 using Splat;

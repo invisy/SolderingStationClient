@@ -1,7 +1,6 @@
-﻿using SolderingStation.DAL.Abstractions;
+﻿using SolderingStation.DAL.Implementation;
 using SolderingStation.Entities;
 using SolderingStationClient.BLL.Abstractions.Services;
-using SolderingStationClient.BLL.Implementation.Specifications;
 using SolderingStationClient.Models;
 using SolderingStationClient.Models.TemperatureControllers;
 
@@ -9,50 +8,71 @@ namespace SolderingStationClient.BLL.Implementation.Services;
 
 public class ThermalProfileService : IThermalProfileService
 {
-    private readonly IUnitOfWork _uow;
+    private readonly SolderingStationDbContext _context;
     private readonly IUserProfileService _userProfileService;
 
-    public ThermalProfileService(IUnitOfWork uow, IUserProfileService userProfileService)
+    public ThermalProfileService(SolderingStationDbContext context, IUserProfileService userProfileService)
     {
-        _uow = uow;
+        _context = context;
         _userProfileService = userProfileService;
     }
 
-    public async Task<IEnumerable<ThermalProfile>> GetAll()
+    public IEnumerable<ThermalProfile> GetAll()
     {
         var userProfileId = _userProfileService.GetProfileId();
-        var spec = new ThermalProfileWithAllDataByUserSpecification(userProfileId);
-        var result = await _uow.ThermalProfilesRepository.GetListBySpecAsync(spec);
+        var profiles = _context.GetCollection<ProfileEntity>().FindOne(profile => profile.Id == userProfileId);
+        
+        var result = profiles.ThermalProfiles;
         return result.Select(Map).ToList();
     }
 
-    public async Task<ThermalProfile> GetById(uint thermalProfileId)
+    public ThermalProfile GetById(uint thermalProfileId)
     {
-        var spec = new ThermalProfileWithAllDataSpecification(thermalProfileId);
-        var result = await _uow.ThermalProfilesRepository.GetBySpecAsync(spec);
+        var userProfileId = _userProfileService.GetProfileId();
+        var profiles = _context.GetCollection<ProfileEntity>().FindOne(profile => profile.Id == userProfileId);
+        
+        var result = profiles.ThermalProfiles.First(thermalProfile => thermalProfile.Id == thermalProfileId);
+
         if (result == null)
             throw new ArgumentNullException(nameof(thermalProfileId));
         
         return Map(result);
     }
 
-    public async Task Add(ThermalProfile thermalProfile)
+    public void Add(ThermalProfile newThermalProfile)
     {
-        var thermalProfileEntity = Map(thermalProfile);
-        _uow.ThermalProfilesRepository.Add(thermalProfileEntity);
-        await _uow.SaveChanges();
+        var userProfileId = _userProfileService.GetProfileId();
+        var profiles = _context.GetCollection<ProfileEntity>();
+        var profile = profiles.FindOne(profile => profile.Id == userProfileId);
+        
+        profile.ThermalProfiles.Add(Map(newThermalProfile));
+        
+        profiles.Update(profile);
     }
 
-    public async Task Remove(uint thermalProfileId)
+    public void Remove(uint thermalProfileId)
     {
-        _uow.ThermalProfilesRepository.Delete(thermalProfileId);
-        await _uow.SaveChanges();
+        var userProfileId = _userProfileService.GetProfileId();
+        var profiles = _context.GetCollection<ProfileEntity>();
+        var profile = profiles.FindOne(profile => profile.Id == userProfileId);
+        
+        var thermalProfile = profile.ThermalProfiles.First(tp => tp.Id == thermalProfileId);
+        profile.ThermalProfiles.Remove(thermalProfile);
+        
+        profiles.Update(profile);
     }
 
-    public async Task Update(ThermalProfile thermalProfile)
+    public void Update(ThermalProfile newThermalProfile)
     {
-        _uow.ThermalProfilesRepository.Update(Map(thermalProfile));
-        await _uow.SaveChanges();
+        var userProfileId = _userProfileService.GetProfileId();
+        var profiles = _context.GetCollection<ProfileEntity>();
+        var profile = profiles.FindOne(profile => profile.Id == userProfileId);
+
+        var thermalProfile = profile.ThermalProfiles.First(tp => tp.Id == newThermalProfile.Id);
+        profile.ThermalProfiles.Remove(thermalProfile);
+        profile.ThermalProfiles.Add(Map(newThermalProfile));
+        
+        profiles.Update(profile);
     }
 
     private ThermalProfile Map(ThermalProfileEntity entity)

@@ -100,7 +100,7 @@ public class ConnectionViewModel : ViewModelBase, IConnectionViewModel
             return;
 
         var serialPortAdvancedSettingsWindowViewModel = _viewModelCreator.Create<ISerialPortAdvancedSettingsWindowViewModel>();
-        await serialPortAdvancedSettingsWindowViewModel.Init(_selectedPort.SerialPortName);
+        serialPortAdvancedSettingsWindowViewModel.Init(_selectedPort.SerialPortName);
         await ShowSerialPortAdvancedSettingsWindow.Handle(serialPortAdvancedSettingsWindowViewModel);
     }
 

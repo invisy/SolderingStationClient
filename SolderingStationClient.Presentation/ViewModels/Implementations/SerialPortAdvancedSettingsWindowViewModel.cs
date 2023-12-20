@@ -26,13 +26,13 @@ public class SerialPortAdvancedSettingsWindowViewModel : ViewModelBase, ISerialP
         ApplyCommand = ReactiveCommand.CreateFromTask(Apply);
     }
 
-    public async Task Init(string portName)
+    public void Init(string portName)
     {
-        var settings = await _serialPortsSettingsService.GetByPortName(portName);
+        var settings = _serialPortsSettingsService.GetByPortName(portName);
         if (settings == null)
         {
             settings = new SerialPortSettings(portName);
-            await _serialPortsSettingsService.Add(settings);
+            _serialPortsSettingsService.Add(settings);
         }
         
         PortName = portName;
@@ -76,8 +76,8 @@ public class SerialPortAdvancedSettingsWindowViewModel : ViewModelBase, ISerialP
     {
         var portSettings = new SerialPortSettings(PortName, (int)BaudRate, (Parity)SelectedParity, (int)DataBits,
             (StopBits)SelectedStopBits);
-        await _serialPortsSettingsService.Remove(portSettings.PortName);
-        await _serialPortsSettingsService.Add(portSettings);
+        _serialPortsSettingsService.Remove(portSettings.PortName);
+        _serialPortsSettingsService.Add(portSettings);
     }
     
     public ReactiveCommand<Unit, Unit> ApplyCommand { get; }

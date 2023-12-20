@@ -4,9 +4,9 @@ namespace SolderingStationClient.BLL.Abstractions.Services;
 
 public interface IThermalProfileService
 {
-    Task<IEnumerable<ThermalProfile>> GetAll();
-    Task<ThermalProfile> GetById(uint thermalProfileId);
-    Task Add(ThermalProfile thermalProfile);
-    Task Remove(uint thermalProfileId);
-    Task Update(ThermalProfile thermalProfile);
+    IEnumerable<ThermalProfile> GetAll();
+    ThermalProfile GetById(uint thermalProfileId);
+    void Add(ThermalProfile thermalProfile);
+    void Remove(uint thermalProfileId);
+    void Update(ThermalProfile thermalProfile);
 }

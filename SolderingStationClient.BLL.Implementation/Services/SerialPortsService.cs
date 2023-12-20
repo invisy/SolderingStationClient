@@ -42,7 +42,7 @@ public class SerialPortsService : ISerialPortsService
 
     public async Task Connect(string portName)
     {
-        var serialPortSettings = await _serialPortsSettingsService.GetByPortName(portName) ?? new SerialPortSettings(portName);
+        var serialPortSettings = _serialPortsSettingsService.GetByPortName(portName) ?? new SerialPortSettings(portName);
         
         var portExists = _serialPorts.TryGetValue(portName, out var port);
 

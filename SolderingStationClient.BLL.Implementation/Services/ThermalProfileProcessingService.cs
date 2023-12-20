@@ -28,12 +28,12 @@ public class ThermalProfileProcessingService : IThermalProfileProcessingService
 
     public async Task<IEnumerable<ThermalProfile>> GetAllThermalProfiles()
     {
-        return await _thermalProfileService.GetAll();
+        return _thermalProfileService.GetAll();
     }
     
-    public async Task<IEnumerable<ThermalProfile>> Select()
+    public IEnumerable<ThermalProfile> Select()
     {
-        return await _thermalProfileService.GetAll();
+        return _thermalProfileService.GetAll();
     }
     
     public async Task Start(IEnumerable<ThermalProfileControllerBinding> bindings)

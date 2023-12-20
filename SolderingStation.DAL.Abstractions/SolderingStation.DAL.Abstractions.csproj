@@ -10,8 +10,4 @@
       <ProjectReference Include="..\SolderingStation.Entities\SolderingStation.Entities.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="Ardalis.Specification" Version="6.0.1" />
-    </ItemGroup>
-
 </Project>

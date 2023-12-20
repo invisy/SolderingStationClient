@@ -1,4 +1,4 @@
-﻿using SolderingStation.DAL.Abstractions;
+﻿using SolderingStation.DAL.Implementation;
 using SolderingStation.Hardware.Abstractions;
 using SolderingStation.Hardware.Models.ConnectionParameters;
 using SolderingStationClient.BLL.Abstractions;
@@ -27,12 +27,12 @@ public static class BusinessLogicServices
         services.RegisterConstant<IUserProfileService>(new UserProfileService());
         
         services.Register<ILocalizationService>(() => new LocalizationService(
-            resolver.GetService<IUnitOfWork>(),
+            resolver.GetService<SolderingStationDbContext>(),
             resolver.GetService<IUserProfileService>()
         ));
         
         services.RegisterLazySingleton<ISerialPortsSettingsService>(() => new SerialPortsSettingsService(
-            resolver.GetService<IUnitOfWork>(),
+            resolver.GetService<SolderingStationDbContext>(),
             resolver.GetService<IUserProfileService>()
         ));
 
@@ -67,7 +67,7 @@ public static class BusinessLogicServices
         services.RegisterLazySingleton<ITemperatureHistoryTracker>(() => new TemperatureHistoryTracker());
         
         services.Register<IThermalProfileService>(() => new ThermalProfileService(
-            resolver.GetService<IUnitOfWork>(),
+            resolver.GetService<SolderingStationDbContext>(),
             resolver.GetService<IUserProfileService>()
         ));
         

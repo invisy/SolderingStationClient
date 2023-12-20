@@ -6,6 +6,7 @@ public class SerialPortSettings
 {
     public string PortName { get; }
     public int BaudRate { get; } = 9600;
+    
     public Parity Parity { get; } = Parity.None;
     public int DataBits { get; } = 8;
     public StopBits StopBits { get; } = StopBits.One;

@@ -1,38 +1,16 @@
-﻿using System.Reflection;
-using Microsoft.EntityFrameworkCore;
+﻿using LiteDB;
 using SolderingStation.Entities;
 
 namespace SolderingStation.DAL.Implementation;
 
-public class SolderingStationDbContext : DbContext
+public class SolderingStationDbContext : LiteDatabase
 {
-    #pragma warning disable CS8618 // Required by Entity Framework to suppress warnings
+    public ILiteCollection<ProfileEntity> Profiles { get; }
+    public ILiteCollection<LanguageEntity> Languages { get; }
 
-    private readonly string _dbPath;
-    
-    public DbSet<ProfileEntity> Profiles { get; set; }
-    public DbSet<LanguageEntity> Languages { get; set; }
-    public DbSet<ThermalProfileEntity> ThermalProfiles { get; set; }
-    public DbSet<ThermalProfilePartEntity> ThermalProfileParts { get; set; }
-    public DbSet<TemperatureMeasurementPointEntity> TemperatureMeasurementPoints { get; set; }
-    public DbSet<SerialConnectionParametersEntity> SerialConnectionsParameters { get; set; }
-
-    public SolderingStationDbContext(DbContextOptions<SolderingStationDbContext> options) : base(options) {}
-    
-    public SolderingStationDbContext(string dbPath)
+    public SolderingStationDbContext(string dbPath) : base(dbPath)
     {
-        _dbPath = dbPath;
-    }
-
-    protected override void OnModelCreating(ModelBuilder builder)
-    {
-        base.OnModelCreating(builder);
-        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlite($"Data Source={_dbPath}");
-        optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+        Profiles = GetCollection<ProfileEntity>();
+        Languages = GetCollection<LanguageEntity>();
     }
 }

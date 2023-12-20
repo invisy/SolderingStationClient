@@ -80,15 +80,15 @@ public class ThermalProfileEditorWindowViewModel : ViewModelBase, IThermalProfil
             foreach (var id in _thermalProfilesSoftDeleteList)
             {
                 if (id != 0)
-                    await _thermalProfileService.Remove(id);
+                    _thermalProfileService.Remove(id);
             }
             _thermalProfilesSoftDeleteList.Clear();
 
             foreach (var profile in allThermalProfiles)
             {
                 if(profile.Id != 0)
-                    await _thermalProfileService.Remove(profile.Id);
-                await _thermalProfileService.Add(profile);
+                    _thermalProfileService.Remove(profile.Id);
+                _thermalProfileService.Add(profile);
             }
         }
         catch (Exception)
@@ -100,7 +100,7 @@ public class ThermalProfileEditorWindowViewModel : ViewModelBase, IThermalProfil
     private async Task LoadAllProfiles()
     {
         ThermalProfiles.Clear();
-        var thermalProfiles =  await _thermalProfileService.GetAll();
+        var thermalProfiles =  _thermalProfileService.GetAll();
         foreach (var thermalProfile in thermalProfiles)
             ThermalProfiles.Add(Map(thermalProfile));
         SelectedThermalProfile = ThermalProfiles.FirstOrDefault();

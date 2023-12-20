@@ -2,7 +2,6 @@
 
 public class SerialConnectionParametersEntity : BaseEntity<uint>
 {
-    public uint ProfileId { get; set; }
     public string PortName { get; set; } = string.Empty;
     public int BaudRate { get; set; }
     public int Parity { get; set; }
@@ -15,9 +14,8 @@ public class SerialConnectionParametersEntity : BaseEntity<uint>
         
     }
     
-    public SerialConnectionParametersEntity(uint profileId, string portName, int baudRate, int parity, int dataBits, int stopBits)
+    public SerialConnectionParametersEntity(string portName, int baudRate, int parity, int dataBits, int stopBits)
     {
-        ProfileId = profileId;
         PortName = portName;
         BaudRate = baudRate;
         Parity = parity;

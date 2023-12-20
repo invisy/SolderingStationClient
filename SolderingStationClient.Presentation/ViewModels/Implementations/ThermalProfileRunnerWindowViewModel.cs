@@ -59,7 +59,7 @@ public class ThermalProfileRunnerWindowViewModel : ViewModelBase, IThermalProfil
     {
         await _applicationDispatcher.DispatchAsync(async () =>
         {
-            var thermalProfiles = await _thermalProfileService.GetAll();
+            var thermalProfiles = _thermalProfileService.GetAll();
             ThermalProfilesList.AddRange(thermalProfiles);
 
             if (ThermalProfilesList.Count > 0)

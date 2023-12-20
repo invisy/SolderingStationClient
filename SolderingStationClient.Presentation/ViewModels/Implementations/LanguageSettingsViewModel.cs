@@ -25,8 +25,8 @@ public class LanguageSettingsViewModel : ViewModelBase, ILanguageSettingsViewMod
 
     public async Task Init()
     {
-        var locales = await _localizationService.GetAvailableLocalizations();
-        var selectedLocalizationCode = await _localizationService.GetCurrentLanguageCode();
+        var locales = _localizationService.GetAvailableLocalizations();
+        var selectedLocalizationCode = _localizationService.GetCurrentLanguageCode();
         AvailableLanguages.AddRange(locales.Select(locale => new LanguageViewModel(locale)));
         SelectedLanguage = AvailableLanguages.First(lang => lang.Locale.CultureCode == selectedLocalizationCode);
     }
@@ -45,7 +45,7 @@ public class LanguageSettingsViewModel : ViewModelBase, ILanguageSettingsViewMod
 
     private void UpdateLocalization(Locale locale)
     {
-        _localizationService.SaveSelectedLocalization(locale.Id).GetAwaiter().GetResult();
+        _localizationService.SaveSelectedLocalization(locale.Id);
         
         var translations = Application.Current?.Resources.MergedDictionaries.OfType<ResourceInclude>()
             .FirstOrDefault(x => x.Source?.OriginalString.Contains("/Languages/") ?? false);

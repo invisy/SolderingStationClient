@@ -1,56 +1,76 @@
 ﻿using System.IO.Ports;
-using SolderingStation.DAL.Abstractions;
+using SolderingStation.DAL.Implementation;
 using SolderingStation.Entities;
 using SolderingStationClient.BLL.Abstractions;
 using SolderingStationClient.BLL.Abstractions.Services;
-using SolderingStationClient.BLL.Implementation.Specifications;
 using SolderingStationClient.Models;
 
 namespace SolderingStationClient.BLL.Implementation.Services;
 
 public class SerialPortsSettingsService : ISerialPortsSettingsService
 {
-    private readonly IUnitOfWork _uow;
+    private readonly SolderingStationDbContext _context;
     private readonly IUserProfileService _userProfileService;
     
-    public SerialPortsSettingsService(IUnitOfWork uow, IUserProfileService userProfileService)
+    public SerialPortsSettingsService(SolderingStationDbContext context, IUserProfileService userProfileService)
     {
-        _uow = uow;
+        _context = context;
         _userProfileService = userProfileService;
     }
 
-    public async Task<SerialPortSettings?> GetByPortName(string portName)
+    public SerialPortSettings? GetByPortName(string portName)
     {
         var userProfileId = _userProfileService.GetProfileId();
-        var spec = new SerialConnectionParametersByPortNameSpecification(userProfileId, portName);
-        var serialConnectionParameters = await _uow.SerialConnectionParametersRepository.GetBySpecAsync(spec);
 
-        return serialConnectionParameters != null ? Map(serialConnectionParameters) : null;
-    }
+        var profiles = _context.GetCollection<ProfileEntity>();
+        var profile = profiles.FindOne(p => p.Id == userProfileId);
 
-    public async Task Add(SerialPortSettings portSettings)
-    {
-        _uow.SerialConnectionParametersRepository.Add(Map(portSettings));
-        await _uow.SaveChanges();
-    }
-
-    public async Task Remove(string portName)
-    {
-        var userProfileId = _userProfileService.GetProfileId();
-        var spec = new SerialConnectionParametersByPortNameSpecification(userProfileId, portName);
-        var serialConnectionParameters = await _uow.SerialConnectionParametersRepository.GetBySpecAsync(spec);
-        if (serialConnectionParameters != null)
+        if (profile.SerialConnectionsParameters != null)
         {
-            _uow.SerialConnectionParametersRepository.Delete(serialConnectionParameters.Id);
-            await _uow.SaveChanges();
+            var serialConnectionParameters =
+                profile.SerialConnectionsParameters.FirstOrDefault(sp => sp.PortName == portName);
+            return serialConnectionParameters != null ? Map(serialConnectionParameters) : null;
+        }
+
+        return null;
+    }
+
+    public void Add(SerialPortSettings portSettings)
+    {
+        var userProfileId = _userProfileService.GetProfileId();
+        var profiles = _context.GetCollection<ProfileEntity>();
+        var profile = profiles.FindOne(p => p.Id == userProfileId);
+        if (profile.SerialConnectionsParameters != null)
+        {
+            profile.SerialConnectionsParameters.Add(Map(portSettings));
+            profiles.Update(profile);
         }
     }
 
-    public async Task Update(SerialPortSettings portSettings)
+    public void Remove(string portName)
     {
         var userProfileId = _userProfileService.GetProfileId();
-        var spec = new SerialConnectionParametersByPortNameSpecification(userProfileId, portSettings.PortName);
-        var serialConnectionParameters = await _uow.SerialConnectionParametersRepository.GetBySpecAsync(spec);
+        
+        var profiles = _context.GetCollection<ProfileEntity>();
+        var profile = profiles.FindOne(p => p.Id == userProfileId);
+
+        var serialConnectionParameters = profile.SerialConnectionsParameters.FirstOrDefault(x => x.PortName == portName);
+        
+        if (serialConnectionParameters != null)
+        {
+            profile.SerialConnectionsParameters.Remove(serialConnectionParameters);
+            profiles.Update(profile);
+        }
+    }
+
+    public void Update(SerialPortSettings portSettings)
+    {
+        var userProfileId = _userProfileService.GetProfileId();
+        
+        var profiles = _context.GetCollection<ProfileEntity>();
+        var profile = profiles.FindOne(p => p.Id == userProfileId);
+
+        var serialConnectionParameters = profile.SerialConnectionsParameters.FirstOrDefault(x => x.PortName == portSettings.PortName);
         if (serialConnectionParameters == null)
             return;
         
@@ -59,8 +79,9 @@ public class SerialPortsSettingsService : ISerialPortsSettingsService
         serialConnectionParameters.BaudRate = portSettings.BaudRate;
         serialConnectionParameters.StopBits = (int)portSettings.StopBits;
         serialConnectionParameters.DataBits = portSettings.DataBits;
-        _uow.SerialConnectionParametersRepository.Update(serialConnectionParameters);
-        await _uow.SaveChanges();
+        
+        profile.SerialConnectionsParameters.Remove(serialConnectionParameters);
+        profiles.Update(profile);
     }
     
     private SerialPortSettings Map(SerialConnectionParametersEntity parameters)
@@ -72,8 +93,7 @@ public class SerialPortsSettingsService : ISerialPortsSettingsService
     private SerialConnectionParametersEntity Map(SerialPortSettings parameters)
     {
         var profileId = _userProfileService.GetProfileId();
-        return new SerialConnectionParametersEntity(
-            profileId, parameters.PortName, parameters.BaudRate, 
+        return new SerialConnectionParametersEntity(parameters.PortName, parameters.BaudRate, 
             (int)parameters.Parity, parameters.DataBits, (int)parameters.StopBits);
     }
 }

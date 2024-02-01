@@ -40,11 +40,16 @@ public class SerialPortsSettingsService : ISerialPortsSettingsService
         var userProfileId = _userProfileService.GetProfileId();
         var profiles = _context.GetCollection<ProfileEntity>();
         var profile = profiles.FindOne(p => p.Id == userProfileId);
-        if (profile.SerialConnectionsParameters != null)
+        if (profile.SerialConnectionsParameters == null)
         {
-            profile.SerialConnectionsParameters.Add(Map(portSettings));
-            profiles.Update(profile);
+            profile.SerialConnectionsParameters = new List<SerialConnectionParametersEntity>();
         }
+
+        profile.SerialConnectionsParameters.Add(Map(portSettings));
+
+        profiles.Update(profile);
+        
+
     }
 
     public void Remove(string portName)
@@ -54,13 +59,17 @@ public class SerialPortsSettingsService : ISerialPortsSettingsService
         var profiles = _context.GetCollection<ProfileEntity>();
         var profile = profiles.FindOne(p => p.Id == userProfileId);
 
-        var serialConnectionParameters = profile.SerialConnectionsParameters.FirstOrDefault(x => x.PortName == portName);
-        
-        if (serialConnectionParameters != null)
+        if (profile.SerialConnectionsParameters != null)
         {
-            profile.SerialConnectionsParameters.Remove(serialConnectionParameters);
-            profiles.Update(profile);
+            var serialConnectionParameters = profile.SerialConnectionsParameters.FirstOrDefault(x => x.PortName == portName);
+        
+            if (serialConnectionParameters != null)
+            {
+                profile.SerialConnectionsParameters.Remove(serialConnectionParameters);
+                profiles.Update(profile);
+            }
         }
+
     }
 
     public void Update(SerialPortSettings portSettings)

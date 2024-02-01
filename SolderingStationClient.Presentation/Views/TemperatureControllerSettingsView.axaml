@@ -70,7 +70,7 @@
                     Grid.Column="0"
                     Increment="10"
                     IsEnabled="{Binding IsActive, Mode=TwoWay}"
-                    Maximum="500"
+                    Maximum="800"
                     Minimum="0"
                     Name="NewDesiredTemperatureNumeric"
                     Text="{Binding NewDesiredTemperature}" />

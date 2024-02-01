@@ -46,7 +46,7 @@ public class TemperatureControllerSettingsViewModel : ViewModelBase, ITemperatur
         set => this.RaiseAndSetIfChanged(ref _desiredTemperature, value);
     }
 
-    [Range(0, 500, ErrorMessage = "Value must be between {1} and {2}.")]
+    [Range(0, 800, ErrorMessage = "Value must be between {1} and {2}.")]
     public ushort NewDesiredTemperature
     {
         get => _newDesiredTemperature;

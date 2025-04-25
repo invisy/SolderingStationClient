@@ -7,7 +7,7 @@ namespace SolderingStation.Hardware.Implementation.Devices.SelfBuiltDeviceV1.Com
 public record struct GetCurrentTemperatureCommandParameters(byte PidId);
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public record struct GetCurrentTemperatureCommandResult(ushort Temperature);
+public record struct GetCurrentTemperatureCommandResult(Q15 Temperature);
 
 public class
     GetCurrentTemperatureCommand : ISelfBuiltDeviceCommand<GetCurrentTemperatureCommandParameters,

@@ -7,12 +7,12 @@ namespace SolderingStation.Hardware.Implementation.Devices.SelfBuiltDeviceV1.Com
 public struct SetKdCoefficientCommandParameters
 {
     public byte PidId { get; init; }
-    public float Kd { get; init; }
+    public Q15 Kd { get; init; }
 }
 
 public class SetKdCoefficientCommand : ISelfBuiltDeviceCommand<SetKdCoefficientCommandParameters>
 {
-    public SetKdCoefficientCommand(byte pidId, float kd)
+    public SetKdCoefficientCommand(byte pidId, Q15 kd)
     {
         ParamsRequest = new SetKdCoefficientCommandParameters
         {

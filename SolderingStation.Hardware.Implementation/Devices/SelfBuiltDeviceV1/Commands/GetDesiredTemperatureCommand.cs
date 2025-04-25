@@ -12,7 +12,7 @@ public struct GetDesiredTemperatureCommandParameters
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct GetDesiredTemperatureCommandResult
 {
-    public ushort Temperature { get; }
+    public Q15 Temperature { get; }
 }
 
 public class GetDesiredTemperatureCommand : ISelfBuiltDeviceCommand<GetDesiredTemperatureCommandParameters

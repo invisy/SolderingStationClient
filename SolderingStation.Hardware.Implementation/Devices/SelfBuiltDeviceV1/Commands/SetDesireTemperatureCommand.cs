@@ -7,12 +7,12 @@ namespace SolderingStation.Hardware.Implementation.Devices.SelfBuiltDeviceV1.Com
 public struct SetDesireTemperatureCommandParameters
 {
     public byte PidId { get; init; }
-    public ushort Temperature { get; init; }
+    public Q15 Temperature { get; init; }
 }
 
 public class SetDesireTemperatureCommand : ISelfBuiltDeviceCommand<SetDesireTemperatureCommandParameters>
 {
-    public SetDesireTemperatureCommand(byte pidId, ushort temperature)
+    public SetDesireTemperatureCommand(byte pidId, Q15 temperature)
     {
         ParamsRequest = new SetDesireTemperatureCommandParameters
         {

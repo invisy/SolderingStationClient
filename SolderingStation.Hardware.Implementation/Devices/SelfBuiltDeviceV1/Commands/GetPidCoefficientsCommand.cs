@@ -12,9 +12,9 @@ public struct GetPidCoefficientsCommandParameters
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct GetPidCoefficientsCommandResult
 {
-    public float Kp { get; }
-    public float Ki { get; }
-    public float Kd { get; }
+    public Q15 Kp { get; }
+    public Q15 Ki { get; }
+    public Q15 Kd { get; }
 }
 
 public class

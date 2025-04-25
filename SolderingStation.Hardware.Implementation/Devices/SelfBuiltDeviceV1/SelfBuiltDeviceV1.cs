@@ -58,7 +58,7 @@ public class
         var command = new GetCurrentTemperatureCommand(channel);
         var result = await _connection.ExecuteCommand(command);
 
-        return result.Temperature;
+        return (ushort)result.Temperature.ToInt();
     }
 
     public async Task<ushort> GetDesiredTemperature(byte channel)
@@ -66,12 +66,12 @@ public class
         var command = new GetDesiredTemperatureCommand(channel);
         var result = await _connection.ExecuteCommand(command);
 
-        return result.Temperature;
+        return (ushort)result.Temperature.ToInt();
     }
 
     public async Task SetDesiredTemperature(byte channel, ushort temperature)
     {
-        var command = new SetDesireTemperatureCommand(channel, temperature);
+        var command = new SetDesireTemperatureCommand(channel, Q15.FromInt(temperature));
         await _connection.ExecuteCommand(command);
     }
 
@@ -80,26 +80,30 @@ public class
         var command = new GetPidCoefficientsCommand(channel);
         var commandResult = await _connection.ExecuteCommand(command);
 
-        var result = new PidCoefficients(commandResult.Kp, commandResult.Ki, commandResult.Kd);
+        var result = new PidCoefficients(
+            MathF.Round(commandResult.Kp.ToFloat(), 2), 
+            MathF.Round(commandResult.Ki.ToFloat(), 2), 
+            MathF.Round(commandResult.Kd.ToFloat(), 2)
+        );
 
         return result;
     }
 
     public async Task SetKpCoefficient(byte channel, float coefficient)
     {
-        var command = new SetKpCoefficientCommand(channel, coefficient);
+        var command = new SetKpCoefficientCommand(channel, Q15.FromFloat(coefficient));
         await _connection.ExecuteCommand(command);
     }
 
     public async Task SetKiCoefficient(byte channel, float coefficient)
     {
-        var command = new SetKiCoefficientCommand(channel, coefficient);
+        var command = new SetKiCoefficientCommand(channel, Q15.FromFloat(coefficient));
         await _connection.ExecuteCommand(command);
     }
 
     public async Task SetKdCoefficient(byte channel, float coefficient)
     {
-        var command = new SetKdCoefficientCommand(channel, coefficient);
+        var command = new SetKdCoefficientCommand(channel, Q15.FromFloat(coefficient));
         await _connection.ExecuteCommand(command);
     }
 }
